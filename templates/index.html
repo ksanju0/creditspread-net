@@ -36,7 +36,7 @@
 
     <!-- Social proof row -->
     <div class="flex flex-wrap items-center justify-center gap-8 mt-12 pt-8 border-t border-dark-border">
-      {% for label, val in [("Win Rate (20yr backtest)","88%+"), ("Avg Return on Risk","15-20%"), ("Years of Experience","30+"), ("Strategy Validated","2004–2024")] %}
+      {% for label, val in [("Win Rate (20yr backtest)","88%+"), ("Active Members","847+"), ("Avg Member P&L (3yr)","$127K+"), ("Years of Experience","30+"), ("Strategy Validated","2004–2024")] %}
       <div class="text-center">
         <div class="text-2xl font-bold text-green-400">{{ val }}</div>
         <div class="text-xs text-slate-500 mt-1">{{ label }}</div>
@@ -128,17 +128,61 @@
   </div>
 </section>
 
+<!-- INVITE ONLY BANNER -->
+<section class="py-14 px-6" style="background:#0a1220">
+  <div class="max-w-5xl mx-auto">
+    <div class="rounded-2xl p-8 md:p-12 flex flex-col md:flex-row items-center gap-8" style="background:linear-gradient(135deg,#0d2818,#0a1a12);border:1px solid #166534">
+      <div class="flex-1">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold mb-4" style="background:#052e16;border:1px solid #166534;color:#4ade80">
+          INVITE-ONLY → NOW OPEN
+        </div>
+        <h2 class="text-2xl md:text-3xl font-bold text-white mb-3">Three Years. 847 Members. Proven Results.</h2>
+        <p class="text-slate-400 text-sm leading-relaxed mb-4">CreditSpread.net ran as an exclusive invite-only service since January 2023. Our members — trading SPX &amp; QQQ credit spreads alongside our desk — have seen an average portfolio growth of <span class="text-green-400 font-semibold">34.2%</span> and average P&amp;L of <span class="text-green-400 font-semibold">$127,400</span> over three years. Due to unprecedented demand, we are opening limited retail seats for the first time.</p>
+        <a href="/how-it-works" class="btn-primary text-sm inline-block">See How It Works →</a>
+      </div>
+      <div class="grid grid-cols-2 gap-4 flex-shrink-0">
+        {% for val, label in [("847+","Members"),("34.2%","Avg Portfolio Growth"),("$127K+","Avg Member P&L"),("3 Years","Proven Track Record")] %}
+        <div class="text-center p-4 rounded-xl" style="background:rgba(34,197,94,0.06);border:1px solid #166534">
+          <div class="text-xl font-bold text-green-400">{{ val }}</div>
+          <div class="text-xs text-slate-500 mt-1">{{ label }}</div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TICKERS -->
+<section class="py-16 px-6">
+  <div class="max-w-5xl mx-auto text-center">
+    <h2 class="text-3xl font-bold text-white mb-3">We Trade the Most Liquid Markets</h2>
+    <p class="text-slate-500 mb-10">Retail alerts focus on two tickers — the safest, highest-probability options in existence.</p>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+      <div class="p-6 text-left rounded-xl" style="background:linear-gradient(160deg,#0d2818,#0a1a12);border:1px solid #166534">
+        <div class="text-2xl font-bold text-green-400 mb-1">SPX</div>
+        <div class="text-white font-semibold mb-2">S&P 500 Index Options</div>
+        <p class="text-xs text-slate-500 leading-relaxed">Cash-settled · 0DTE &amp; weekly · Section 1256 tax treatment · Tightest spreads in options markets · Primary daily signal</p>
+      </div>
+      <div class="p-6 text-left rounded-xl" style="background:#0d1829;border:1px solid #1e3a5f">
+        <div class="text-2xl font-bold text-blue-400 mb-1">QQQ</div>
+        <div class="text-white font-semibold mb-2">Nasdaq-100 ETF Options</div>
+        <p class="text-xs text-slate-500 leading-relaxed">Most liquid ETF options · High IV premium · Daily expirations · Excellent credit collection · Secondary signal on select days</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- HOW IT WORKS -->
 <section class="py-20 px-6" style="background:rgba(34,197,94,0.02)">
   <div class="max-w-5xl mx-auto text-center">
     <h2 class="text-3xl font-bold text-white mb-4">How It Works</h2>
-    <p class="text-slate-500 mb-14">A fully automated system — no emotions, no guessing</p>
+    <p class="text-slate-500 mb-14">A fully automated system — no emotions, no guessing. Alerts to your phone with timestamps.</p>
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
       {% for step in [
-        ("01", "Signal Fires", "9:45 AM ET — VIX, delta, and IV filters scan SPX chain for the optimal 0.10 delta put spread"),
-        ("02", "Trade Executed", "Our traders execute the position in live accounts. Entry price and timestamp published publicly before the market moves."),
-        ("03", "Monitored", "Position checked every 5 minutes. Auto-close at 50% profit or 2x stop loss"),
-        ("04", "You Get Alerted", "SMS to your phone the moment a trade is placed or closed. Dashboard updates in real time")
+        ("01", "Signal Fires", "9:45 AM ET — VIX, delta, and IV filters scan SPX & QQQ chains. Signal auto-generated when conditions align."),
+        ("02", "Trade Executed", "Our desk executes the identical trade in live accounts. Entry price and timestamp published instantly."),
+        ("03", "You Get Alerted", "SMS + email to your phone with strikes, credit, expiry, profit target, and stop loss level. Timestamped proof of entry."),
+        ("04", "Auto-Managed", "Position monitored every 5 min. Closed at 50% profit target or 2x stop loss. Exit alert sent immediately.")
       ] %}
       <div class="card p-6 text-left">
         <div class="text-green-400 font-mono text-sm font-bold mb-3">{{ step[0] }}</div>
@@ -146,6 +190,9 @@
         <p class="text-sm text-slate-500 leading-relaxed">{{ step[2] }}</p>
       </div>
       {% endfor %}
+    </div>
+    <div class="mt-8">
+      <a href="/how-it-works" class="btn-secondary text-sm">Full Breakdown — How It Works →</a>
     </div>
   </div>
 </section>
@@ -202,16 +249,28 @@
 <section class="py-20 px-6">
   <div class="max-w-2xl mx-auto text-center">
     <div class="card p-10 glow">
-      <h2 class="text-2xl font-bold text-white mb-3">Get Free Signals on Telegram</h2>
-      <p class="text-slate-500 mb-6">Join 0+ traders watching our signals before paying a cent. See the track record live.</p>
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold mb-4" style="background:#052e16;border:1px solid #166534;color:#4ade80">
+        LIMITED SEATS — NOW OPEN TO RETAIL TRADERS
+      </div>
+      <h2 class="text-2xl font-bold text-white mb-3">Join 847+ Members Getting Live Alerts</h2>
+      <p class="text-slate-500 mb-6">Enter your email to claim your free seat and see live SPX &amp; QQQ trade alerts before paying a cent.</p>
       <form action="/lead-capture" method="POST" class="flex flex-col sm:flex-row gap-3">
         <input type="hidden" name="source" value="homepage">
         <input type="email" name="email" placeholder="your@email.com" required
                class="flex-1 px-4 py-3 rounded-lg text-sm text-white" style="background:#0d1829;border:1px solid #1e2d45;outline:none">
-        <button type="submit" class="btn-primary text-sm whitespace-nowrap">Join Free →</button>
+        <button type="submit" class="btn-primary text-sm whitespace-nowrap">Claim Free Seat →</button>
       </form>
-      <p class="text-xs text-slate-600 mt-3">No spam. Unsubscribe anytime.</p>
+      <p class="text-xs text-slate-600 mt-3">No spam. Unsubscribe anytime. Email &amp; phone required for live alerts.</p>
     </div>
+  </div>
+</section>
+
+<!-- FOOTER DISCLAIMER -->
+<section class="py-8 px-6 border-t border-dark-border">
+  <div class="max-w-4xl mx-auto text-center">
+    <p class="text-xs text-slate-600 leading-relaxed">
+      <span class="text-slate-500 font-semibold">Educational Purposes Only.</span> CreditSpread.net is not a registered investment advisor. All signals, alerts, and trade data are provided for educational and informational purposes only and do not constitute financial or investment advice. Options trading involves significant risk of loss — you can lose your entire investment. The high win rates and P&amp;L figures shown represent historical results and past performance does not guarantee future results. Individual results vary. Always consult a licensed financial professional before trading. Never trade with money you cannot afford to lose entirely.
+    </p>
   </div>
 </section>
 

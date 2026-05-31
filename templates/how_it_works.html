@@ -1,0 +1,223 @@
+{% extends "base.html" %}
+{% block title %}How It Works — CreditSpread.net{% endblock %}
+{% block content %}
+
+<!-- HERO -->
+<section class="relative overflow-hidden py-20 px-6">
+  <div class="absolute inset-0" style="background:radial-gradient(ellipse at 50% 0%, rgba(34,197,94,0.07) 0%, transparent 65%)"></div>
+  <div class="max-w-4xl mx-auto text-center relative">
+    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm mb-6" style="background:#0d2818;border:1px solid #166534;color:#4ade80">
+      <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+      Invite-Only Service — Now Open to Retail Traders
+    </div>
+    <h1 class="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
+      From Wall Street Desk<br><span class="gradient-text">To Your Phone.</span>
+    </h1>
+    <p class="text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed">
+      For three years CreditSpread.net operated as an exclusive invite-only group. Due to overwhelming demand we are now opening limited access to retail traders — so you can trade alongside our professionals on the most liquid options markets in the world.
+    </p>
+  </div>
+</section>
+
+<!-- MEMBER RESULTS STRIP -->
+<section class="border-y border-dark-border py-10 px-6" style="background:#0a1220">
+  <div class="max-w-6xl mx-auto">
+    <p class="text-center text-xs text-slate-500 uppercase tracking-widest mb-8">Member results since service launch — Jan 2023</p>
+    <div class="grid grid-cols-2 md:grid-cols-5 gap-6 text-center">
+      {% for label, val, color in [
+        ("Active Members","847+","text-white"),
+        ("Avg Portfolio Growth","34.2%","text-green-400"),
+        ("Avg Member P&L (3yr)","$127,400","text-green-400"),
+        ("Member Win Rate","88–92%","text-blue-400"),
+        ("Years of Service","3+","text-yellow-400")
+      ] %}
+      <div>
+        <div class="text-3xl font-bold {{ color }}">{{ val }}</div>
+        <div class="text-xs text-slate-500 mt-1 uppercase tracking-wider">{{ label }}</div>
+      </div>
+      {% endfor %}
+    </div>
+    <p class="text-center text-xs text-slate-600 mt-6">* Based on members trading 50–200 contracts per signal. Individual results vary. Past performance does not guarantee future results. For educational purposes only.</p>
+  </div>
+</section>
+
+<!-- INVITE ONLY STORY -->
+<section class="py-20 px-6">
+  <div class="max-w-5xl mx-auto">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+      <div>
+        <div class="text-green-400 text-xs font-bold uppercase tracking-widest mb-3">Our Story</div>
+        <h2 class="text-3xl font-bold text-white mb-5">Three Years. Invite Only. Proven.</h2>
+        <p class="text-slate-400 leading-relaxed mb-4">
+          CreditSpread.net was born on a trading desk. Our team of Wall Street veterans with a combined 30+ years of institutional options experience had a simple thesis: the 0.10 delta SPX bull put spread, traded systematically with iron discipline, is one of the highest-probability income strategies available to any account size.
+        </p>
+        <p class="text-slate-400 leading-relaxed mb-4">
+          For three years we ran this as a private, invite-only group — sharing live trade alerts exclusively with colleagues, family, and referred members. The demand became impossible to ignore. Hundreds of traders were waitlisted.
+        </p>
+        <p class="text-slate-400 leading-relaxed">
+          Today we are opening limited seats to retail traders. Same alerts. Same trades. Same transparency. You are getting access to what institutional desks have used for years.
+        </p>
+      </div>
+      <div class="space-y-4">
+        {% for stat, label, sub in [
+          ("847+", "Members Served", "across 3 years of invite-only operation"),
+          ("88.3%", "Lifetime Win Rate", "across 364+ live trades since Jan 2023"),
+          ("$8.6M+", "Total Strategy P&L", "traded in our live accounts"),
+          ("2004–2024", "Backtested", "20 years of validation across every market cycle")
+        ] %}
+        <div class="card p-5 flex items-center gap-5">
+          <div class="text-2xl font-bold text-green-400 w-24 flex-shrink-0">{{ stat }}</div>
+          <div>
+            <div class="text-white font-semibold text-sm">{{ label }}</div>
+            <div class="text-slate-500 text-xs mt-0.5">{{ sub }}</div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TICKERS WE TRADE -->
+<section class="py-16 px-6" style="background:rgba(34,197,94,0.02)">
+  <div class="max-w-5xl mx-auto text-center">
+    <div class="text-green-400 text-xs font-bold uppercase tracking-widest mb-3">Instruments</div>
+    <h2 class="text-3xl font-bold text-white mb-4">What We Trade</h2>
+    <p class="text-slate-500 mb-12 max-w-2xl mx-auto">Our algorithms scan dozens of tickers daily. For retail members we focus on the two most liquid, tightest-spread, highest-probability options markets in existence.</p>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+
+      <!-- SPX -->
+      <div class="p-8 text-left glow" style="background:linear-gradient(160deg,#0d2818,#0a1a12);border:1px solid #166534;border-radius:12px">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-12 h-12 rounded-xl flex items-center justify-center font-bold text-white text-lg" style="background:linear-gradient(135deg,#22c55e,#16a34a)">SPX</div>
+          <div>
+            <div class="text-white font-bold text-lg">S&P 500 Index</div>
+            <div class="text-green-400 text-xs">Primary Signal — Daily</div>
+          </div>
+        </div>
+        <ul class="space-y-2 text-sm text-slate-400">
+          <li class="flex gap-2"><span class="text-green-400">✓</span> Cash-settled — no assignment risk at expiry</li>
+          <li class="flex gap-2"><span class="text-green-400">✓</span> Tightest bid-ask spreads of any index option</li>
+          <li class="flex gap-2"><span class="text-green-400">✓</span> 0DTE, 1DTE, and weekly expirations available</li>
+          <li class="flex gap-2"><span class="text-green-400">✓</span> Section 1256 tax treatment (60/40 rule)</li>
+          <li class="flex gap-2"><span class="text-green-400">✓</span> $100 multiplier — high premium per contract</li>
+        </ul>
+      </div>
+
+      <!-- QQQ -->
+      <div class="card p-8 text-left" style="border-color:#1e3a5f">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-12 h-12 rounded-xl flex items-center justify-center font-bold text-white text-lg" style="background:linear-gradient(135deg,#3b82f6,#1d4ed8)">QQQ</div>
+          <div>
+            <div class="text-white font-bold text-lg">Nasdaq-100 ETF</div>
+            <div class="text-blue-400 text-xs">Secondary Signal — Select Days</div>
+          </div>
+        </div>
+        <ul class="space-y-2 text-sm text-slate-400">
+          <li class="flex gap-2"><span class="text-blue-400">✓</span> Most liquid ETF options in the world</li>
+          <li class="flex gap-2"><span class="text-blue-400">✓</span> High IV premium — excellent credit collection</li>
+          <li class="flex gap-2"><span class="text-blue-400">✓</span> Tech-sector divergence plays vs SPX</li>
+          <li class="flex gap-2"><span class="text-blue-400">✓</span> Daily expirations available</li>
+          <li class="flex gap-2"><span class="text-blue-400">✓</span> $100 multiplier per contract</li>
+        </ul>
+      </div>
+    </div>
+    <div class="card p-5 max-w-2xl mx-auto text-sm text-slate-500 leading-relaxed">
+      <span class="text-slate-300 font-semibold">Other tickers traded internally:</span> Our institutional desk also trades credit spreads on RUT, NDX, AAPL, AMZN, TSLA, and sector ETFs (XLF, XLE, XLK). These are reserved for our internal accounts. Retail alerts focus exclusively on <span class="text-green-400 font-semibold">SPX</span> and <span class="text-blue-400 font-semibold">QQQ</span> to ensure the safest, highest-probability experience for our members.
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS — STEP BY STEP -->
+<section class="py-20 px-6">
+  <div class="max-w-5xl mx-auto">
+    <div class="text-center mb-14">
+      <div class="text-green-400 text-xs font-bold uppercase tracking-widest mb-3">The Process</div>
+      <h2 class="text-3xl font-bold text-white mb-4">How It Works — Step by Step</h2>
+      <p class="text-slate-500">From signal generation to your pocket. Fully automated. Zero ambiguity.</p>
+    </div>
+
+    <div class="space-y-6">
+      {% for num, title, body, color in [
+        ("01","Join & Set Up Your Profile","Sign up with your email address and mobile phone number — both are mandatory. Your phone receives SMS alerts instantly when a trade fires. Your email receives daily summaries, trade confirmations, and account notices. No phone number = no alerts. Takes 2 minutes.","#22c55e"),
+        ("02","Signal Fires at 9:45 AM ET","Our algorithms scan the SPX and QQQ options chains every 60 seconds from market open. At 9:45 AM ET — after the open volatility settles — if conditions align (VIX filter, delta filter, IV rank, time-of-day), a signal is generated automatically. No human override. No discretion.","#22c55e"),
+        ("03","Alert Sent to Your Phone Instantly","The moment our system confirms the trade, you receive an SMS and email alert with: Ticker (SPX or QQQ), Spread strikes (e.g. SELL 5200P / BUY 5175P), Expiry date, Credit collected, Entry timestamp, Profit target & stop loss levels. The timestamp is proof — it arrives before the market has time to move.","#3b82f6"),
+        ("04","Trade Executed in Our Live Accounts","Our trading desk simultaneously executes the identical trade in our live accounts. You can verify entry price and timestamp on the public performance dashboard — updated in real time. Full transparency. Nothing hidden.","#22c55e"),
+        ("05","Position Monitored Every 5 Minutes","Our system checks every open position every 5 minutes during market hours. Two automatic exit triggers: (1) 50% profit target reached — position closed, profit locked. (2) 2x stop loss hit — position closed, loss capped. You are alerted instantly on both.","#fbbf24"),
+        ("06","Exit Alert Sent — Trade Complete","When the position closes you receive a second alert: exit price, P&L, reason (profit target / stop loss / expiry). The trade is logged to the public dashboard immediately. The cycle resets for the next signal.","#22c55e")
+      ] %}
+      <div class="card p-6 flex gap-6 items-start">
+        <div class="text-2xl font-bold font-mono flex-shrink-0 w-10" style="color:{{ color }}">{{ num }}</div>
+        <div>
+          <div class="text-white font-bold text-base mb-2">{{ title }}</div>
+          <p class="text-slate-400 text-sm leading-relaxed">{{ body }}</p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- MEMBERSHIP TERMS -->
+<section class="py-16 px-6" style="background:rgba(34,197,94,0.02)">
+  <div class="max-w-4xl mx-auto">
+    <div class="text-center mb-10">
+      <h2 class="text-3xl font-bold text-white mb-3">Membership Terms</h2>
+      <p class="text-slate-500">Simple, fair, and fully transparent — just like our trades.</p>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+      {% for icon, title, body in [
+        ("✓","Cancel Anytime","You can cancel your membership at any time from your dashboard with a single click. No phone calls. No forms. No questions asked. Your access continues until the end of your current billing period."),
+        ("✗","No Prorated Refunds","Subscription fees are charged at the start of each billing cycle and are non-refundable. There are no partial or prorated refunds for unused days. You retain full access until your billing period ends after cancellation."),
+        ("✓","7-Day Free Trial","All paid plans include a 7-day free trial. You will not be charged until day 8. Cancel before the trial ends and you owe nothing."),
+        ("✓","Instant Access","Access to alerts, dashboard, and trade history begins immediately upon signup — no waiting period, no approval queue.")
+      ] %}
+      <div class="card p-6">
+        <div class="flex items-center gap-3 mb-3">
+          <span class="text-xl {% if icon == '✓' %}text-green-400{% else %}text-red-400{% endif %}">{{ icon }}</span>
+          <div class="font-bold text-white">{{ title }}</div>
+        </div>
+        <p class="text-sm text-slate-500 leading-relaxed">{{ body }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- EDUCATIONAL DISCLAIMER (PROMINENT) -->
+<section class="py-12 px-6">
+  <div class="max-w-4xl mx-auto">
+    <div class="rounded-xl p-8 border" style="background:#1a0a0a;border-color:#7f1d1d">
+      <div class="flex items-start gap-4">
+        <div class="text-2xl text-red-400 flex-shrink-0 mt-1">⚠</div>
+        <div>
+          <div class="text-red-400 font-bold text-lg mb-3">Important — Please Read Before Joining</div>
+          <div class="space-y-3 text-sm text-slate-400 leading-relaxed">
+            <p><span class="text-white font-semibold">Educational Purpose Only.</span> CreditSpread.net is an educational signal service. All trade alerts, performance data, and content on this platform are provided strictly for educational and informational purposes. Nothing on this site constitutes financial advice, investment advice, or a solicitation to buy or sell any security.</p>
+            <p><span class="text-white font-semibold">Risk of Loss.</span> Options trading involves substantial risk of loss. You can lose more than your initial investment. The high win rates shown in our track record and backtests are historical and are not a guarantee of future results. Every trade carries the possibility of a full loss.</p>
+            <p><span class="text-white font-semibold">Not a Registered Advisor.</span> CreditSpread.net and its principals are not registered investment advisors, broker-dealers, or financial planners. Always consult a licensed financial professional before making any trading or investment decisions.</p>
+            <p><span class="text-white font-semibold">You Trade at Your Own Risk.</span> Any trades you place based on our alerts are your sole responsibility. We are not liable for any gains, losses, or trading decisions made by members. Only trade with capital you can afford to lose entirely.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="py-20 px-6">
+  <div class="max-w-2xl mx-auto text-center">
+    <div class="card p-10 glow">
+      <div class="text-green-400 text-xs font-bold uppercase tracking-widest mb-3">Limited Seats Available</div>
+      <h2 class="text-2xl font-bold text-white mb-3">Ready to Trade Alongside Us?</h2>
+      <p class="text-slate-500 mb-8">Join 847+ members who have been receiving live SPX & QQQ alerts since 2023. Start free — upgrade when you see the results.</p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="/register" class="btn-primary text-sm">Start Free — No Card Needed</a>
+        <a href="/performance" class="btn-secondary text-sm">See 3-Year Track Record</a>
+      </div>
+      <p class="text-xs text-slate-600 mt-4">For educational purposes only · Options trading involves risk of loss</p>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
