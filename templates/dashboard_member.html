@@ -1,0 +1,240 @@
+{% extends "base.html" %}
+{% block title %}Member Dashboard — CreditSpread.net{% endblock %}
+{% block content %}
+
+<div class="max-w-7xl mx-auto px-6 py-10">
+
+  <!-- Welcome bar -->
+  <div class="flex items-center justify-between mb-8">
+    <div>
+      <h1 class="text-2xl font-bold text-white">Welcome back, {{ current_user.name or current_user.email.split('@')[0] }}</h1>
+      <p class="text-slate-500 text-sm mt-1">{{ current_user.plan|upper }} plan
+        {% if current_user.sub_status == 'active' %}
+          <span class="ml-2 px-2 py-0.5 rounded-full text-xs bg-green-900 text-green-400 border border-green-800">ACTIVE</span>
+        {% else %}
+          <span class="ml-2 px-2 py-0.5 rounded-full text-xs bg-slate-800 text-slate-400">FREE TIER</span>
+        {% endif %}
+      </p>
+    </div>
+    {% if current_user.plan == 'free' %}
+    <a href="/pricing" class="btn-primary text-sm">Upgrade to Pro →</a>
+    {% endif %}
+  </div>
+
+  <!-- Stats row -->
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+    {% for label, val, color in [
+      ("Total Trades",  stats.total_trades, "text-white"),
+      ("Win Rate",      stats.win_rate|string + "%", "text-green-400"),
+      ("Total P&L",     "$" + stats.total_pnl|string, "text-green-400" if stats.total_pnl >= 0 else "text-red-400"),
+      ("Open Trades",   stats.open_trades, "text-blue-400")
+    ] %}
+    <div class="card p-5 text-center">
+      <div class="text-2xl font-bold {{ color }}">{{ val }}</div>
+      <div class="text-xs text-slate-500 mt-1 uppercase tracking-wider">{{ label }}</div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+    <!-- Equity Curve -->
+    <div class="lg:col-span-2 card p-6">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="font-semibold text-white">Equity Curve</h2>
+        <span class="text-xs text-slate-500">Cumulative P&L · per trade</span>
+      </div>
+      <div id="equity-chart" class="flex items-end gap-1 h-40"></div>
+      <div class="text-xs text-slate-600 text-center mt-2">Each bar = one closed trade</div>
+    </div>
+
+    <!-- Next Signal Countdown -->
+    <div class="card p-6 flex flex-col justify-between">
+      <div>
+        <h2 class="font-semibold text-white mb-1">Next Entry Window</h2>
+        <p class="text-xs text-slate-500 mb-4">Signal scans at 9:45 AM & 2:00 PM ET</p>
+        <div class="text-4xl font-mono font-bold text-green-400" id="countdown">--:--:--</div>
+        <div class="text-xs text-slate-500 mt-2" id="window-label">Calculating...</div>
+      </div>
+      <div class="mt-6 p-4 rounded-lg" style="background:#0d1829;border:1px solid #1e2d45">
+        <div class="text-xs text-slate-500 uppercase tracking-wider mb-1">VIX Right Now</div>
+        <div class="text-2xl font-bold text-white">{{ vix }}</div>
+        <div class="text-xs mt-1 {% if vix|float < 18 %}text-green-400{% elif vix|float < 25 %}text-yellow-400{% else %}text-red-400{% endif %}">
+          {% if vix|float < 18 %}Green — Normal conditions
+          {% elif vix|float < 25 %}Yellow — Elevated, reduced size
+          {% else %}Red — High VIX, signals paused{% endif %}
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Trade Log -->
+  <div class="card mt-6 overflow-hidden">
+    <div class="flex items-center justify-between px-6 py-4 border-b border-dark-border">
+      <h2 class="font-semibold text-white">Trade Log</h2>
+      <span class="text-xs text-slate-500">Auto-updates every 30s</span>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="w-full">
+        <thead>
+          <tr style="background:#0d1829">
+            <th class="px-5 py-3 text-left text-xs text-slate-500 uppercase tracking-wider">Signal Time</th>
+            <th class="px-5 py-3 text-left text-xs text-slate-500 uppercase tracking-wider">Spread</th>
+            <th class="px-5 py-3 text-left text-xs text-slate-500 uppercase tracking-wider">Expiry</th>
+            <th class="px-5 py-3 text-left text-xs text-slate-500 uppercase tracking-wider">Credit</th>
+            <th class="px-5 py-3 text-left text-xs text-slate-500 uppercase tracking-wider">Max Loss</th>
+            <th class="px-5 py-3 text-left text-xs text-slate-500 uppercase tracking-wider">ROR</th>
+            <th class="px-5 py-3 text-left text-xs text-slate-500 uppercase tracking-wider">VIX</th>
+            <th class="px-5 py-3 text-left text-xs text-slate-500 uppercase tracking-wider">Exit</th>
+            <th class="px-5 py-3 text-left text-xs text-slate-500 uppercase tracking-wider">P&L</th>
+            <th class="px-5 py-3 text-left text-xs text-slate-500 uppercase tracking-wider">Status</th>
+          </tr>
+        </thead>
+        <tbody id="trade-tbody">
+          <tr><td colspan="10" class="px-5 py-10 text-center text-slate-500 text-sm">Loading trades...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Position Sizing Tool (Pro+) -->
+  {% if current_user.plan in ['pro','elite'] %}
+  <div class="card mt-6 p-6">
+    <h2 class="font-semibold text-white mb-4">Position Sizing Calculator</h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div>
+        <label class="text-xs text-slate-500 uppercase tracking-wider block mb-2">Account Size ($)</label>
+        <input type="number" id="account-size" value="25000" class="w-full px-4 py-3 rounded-lg text-white text-sm" style="background:#0d1829;border:1px solid #1e2d45">
+      </div>
+      <div>
+        <label class="text-xs text-slate-500 uppercase tracking-wider block mb-2">Risk Per Trade (%)</label>
+        <input type="number" id="risk-pct" value="2" step="0.5" class="w-full px-4 py-3 rounded-lg text-white text-sm" style="background:#0d1829;border:1px solid #1e2d45">
+      </div>
+      <div>
+        <label class="text-xs text-slate-500 uppercase tracking-wider block mb-2">Spread Width ($)</label>
+        <input type="number" id="spread-width" value="25" class="w-full px-4 py-3 rounded-lg text-white text-sm" style="background:#0d1829;border:1px solid #1e2d45">
+      </div>
+    </div>
+    <div class="mt-4 p-4 rounded-lg flex items-center gap-8" style="background:#0d1829">
+      <div><div class="text-xs text-slate-500 mb-1">Max Contracts</div><div class="text-2xl font-bold text-green-400" id="max-contracts">—</div></div>
+      <div><div class="text-xs text-slate-500 mb-1">Max Risk</div><div class="text-2xl font-bold text-white" id="max-risk">—</div></div>
+      <div><div class="text-xs text-slate-500 mb-1">Capital at Risk</div><div class="text-2xl font-bold text-yellow-400" id="risk-display">—</div></div>
+    </div>
+  </div>
+  {% else %}
+  <div class="card mt-6 p-6 text-center">
+    <div class="text-slate-500 text-sm mb-3">Position Sizing Calculator is a Pro feature</div>
+    <a href="/pricing" class="btn-primary text-sm">Upgrade to Pro</a>
+  </div>
+  {% endif %}
+
+</div>
+
+<script>
+// Load trades
+async function loadTrades() {
+  const r = await fetch('/api/trades');
+  const trades = await r.json();
+  const tbody = document.getElementById('trade-tbody');
+  if (!trades.length) {
+    tbody.innerHTML = '<tr><td colspan="10" class="px-5 py-10 text-center text-slate-500 text-sm">No trades yet — first signal fires Monday 9:45 AM ET</td></tr>';
+    return;
+  }
+  tbody.innerHTML = trades.map(t => {
+    const badge = t.status === 'OPEN'
+      ? '<span class="badge-open px-3 py-1 rounded-full text-xs font-semibold">OPEN</span>'
+      : t.status.includes('PROFIT')
+        ? '<span class="badge-win px-3 py-1 rounded-full text-xs font-semibold">WIN</span>'
+        : '<span class="badge-loss px-3 py-1 rounded-full text-xs font-semibold">LOSS</span>';
+    const pnl = t.pnl !== null
+      ? `<span class="${t.pnl >= 0 ? 'text-green-400' : 'text-red-400'} font-semibold">$${t.pnl}</span>`
+      : '<span class="text-slate-500">—</span>';
+    return `<tr class="border-t border-dark-border hover:bg-dark-card">
+      <td class="px-5 py-3 text-xs text-slate-400">${t.date}</td>
+      <td class="px-5 py-3 text-sm font-mono font-bold text-white">${t.short_strike}/${t.long_strike}P</td>
+      <td class="px-5 py-3 text-xs text-slate-400">${t.expiry}</td>
+      <td class="px-5 py-3 text-sm text-green-400 font-semibold">$${t.net_credit}</td>
+      <td class="px-5 py-3 text-sm text-red-400">$${t.max_loss}</td>
+      <td class="px-5 py-3 text-sm text-blue-400">${t.ror_pct}%</td>
+      <td class="px-5 py-3 text-sm text-slate-400">${t.vix}</td>
+      <td class="px-5 py-3 text-xs text-slate-500">${t.exit_reason || '—'}</td>
+      <td class="px-5 py-3 text-sm">${pnl}</td>
+      <td class="px-5 py-3">${badge}</td>
+    </tr>`;
+  }).join('');
+}
+
+// Equity chart
+async function loadChart() {
+  const r = await fetch('/api/stats');
+  const s = await r.json();
+  const el = document.getElementById('equity-chart');
+  if (!s.equity_curve || !s.equity_curve.length) {
+    el.innerHTML = '<div class="text-slate-500 text-sm m-auto">Equity curve will appear after first closed trade</div>';
+    return;
+  }
+  const vals = s.equity_curve;
+  const maxAbs = Math.max(...vals.map(Math.abs), 1);
+  el.innerHTML = vals.map((v, i) => {
+    const h = Math.max(4, Math.abs(v) / maxAbs * 140);
+    return `<div class="flex-1 rounded-t transition-all" style="height:${h}px;background:${v>=0?'#22c55e':'#f87171'};min-width:6px" title="Trade ${i+1}: $${v}"></div>`;
+  }).join('');
+}
+
+// Countdown to next entry window
+function updateCountdown() {
+  const now = new Date();
+  const day = now.getDay();
+  const h = now.getHours(), m = now.getMinutes(), s = now.getSeconds();
+  const totalSecs = h * 3600 + m * 60 + s;
+  const morning = 9 * 3600 + 45 * 60;
+  const afternoon = 14 * 3600;
+
+  let target, label;
+  if (day === 0 || day === 6) {
+    label = 'Market closed — opens Monday 9:45 AM ET';
+    document.getElementById('countdown').textContent = '--:--:--';
+    document.getElementById('window-label').textContent = label;
+    return;
+  }
+  if (totalSecs < morning) { target = morning; label = 'Until morning entry window'; }
+  else if (totalSecs < morning + 4500) { target = morning + 4500; label = 'Morning window OPEN now'; }
+  else if (totalSecs < afternoon) { target = afternoon; label = 'Until afternoon entry window'; }
+  else if (totalSecs < afternoon + 3600) { target = afternoon + 3600; label = 'Afternoon window OPEN now'; }
+  else { target = morning + 86400; label = 'Until tomorrow morning window'; }
+
+  const diff = target - totalSecs;
+  const hh = Math.floor(diff / 3600);
+  const mm = Math.floor((diff % 3600) / 60);
+  const ss = diff % 60;
+  document.getElementById('countdown').textContent =
+    `${String(hh).padStart(2,'0')}:${String(mm).padStart(2,'0')}:${String(ss).padStart(2,'0')}`;
+  document.getElementById('window-label').textContent = label;
+}
+
+// Position sizer
+function calcSize() {
+  const acc = parseFloat(document.getElementById('account-size').value) || 0;
+  const riskPct = parseFloat(document.getElementById('risk-pct').value) || 2;
+  const width = parseFloat(document.getElementById('spread-width').value) || 25;
+  const maxRisk = acc * riskPct / 100;
+  const contracts = Math.floor(maxRisk / (width * 100));
+  document.getElementById('max-contracts').textContent = contracts;
+  document.getElementById('max-risk').textContent = '$' + (contracts * width * 100).toLocaleString();
+  document.getElementById('risk-display').textContent = riskPct + '% of account';
+}
+
+loadTrades();
+loadChart();
+setInterval(loadTrades, 30000);
+setInterval(updateCountdown, 1000);
+updateCountdown();
+{% if current_user.plan in ['pro','elite'] %}
+document.getElementById('account-size').addEventListener('input', calcSize);
+document.getElementById('risk-pct').addEventListener('input', calcSize);
+document.getElementById('spread-width').addEventListener('input', calcSize);
+calcSize();
+{% endif %}
+</script>
+{% endblock %}

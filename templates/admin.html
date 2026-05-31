@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% block title %}Admin — CreditSpread.net{% endblock %}
+{% block content %}
+<div class="max-w-7xl mx-auto px-6 py-10">
+
+  <div class="flex items-center justify-between mb-8">
+    <div>
+      <h1 class="text-2xl font-bold text-white">Admin Dashboard</h1>
+      <p class="text-slate-500 text-sm mt-1">Member management · Revenue · Leads</p>
+    </div>
+    <span class="badge-live">ADMIN</span>
+  </div>
+
+  <!-- Revenue stats -->
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+    {% set pro_count   = users|selectattr('plan','eq','pro')|list|length %}
+    {% set elite_count = users|selectattr('plan','eq','elite')|list|length %}
+    {% set free_count  = users|selectattr('plan','eq','free')|list|length %}
+    {% set mrr = pro_count * 97 + elite_count * 197 %}
+    <div class="card p-5 text-center">
+      <div class="text-2xl font-bold text-green-400">${{ mrr }}</div>
+      <div class="text-xs text-slate-500 mt-1 uppercase tracking-wider">MRR</div>
+    </div>
+    <div class="card p-5 text-center">
+      <div class="text-2xl font-bold text-white">{{ users|length }}</div>
+      <div class="text-xs text-slate-500 mt-1 uppercase tracking-wider">Total Members</div>
+    </div>
+    <div class="card p-5 text-center">
+      <div class="text-2xl font-bold text-blue-400">{{ pro_count + elite_count }}</div>
+      <div class="text-xs text-slate-500 mt-1 uppercase tracking-wider">Paid Subscribers</div>
+    </div>
+    <div class="card p-5 text-center">
+      <div class="text-2xl font-bold text-yellow-400">{{ leads|length }}</div>
+      <div class="text-xs text-slate-500 mt-1 uppercase tracking-wider">Email Leads</div>
+    </div>
+  </div>
+
+  <!-- Members table -->
+  <div class="card overflow-hidden mb-8">
+    <div class="px-6 py-4 border-b border-dark-border">
+      <h2 class="font-semibold text-white">Members</h2>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="w-full">
+        <thead>
+          <tr style="background:#0d1829">
+            {% for h in ["ID","Name","Email","Plan","Status","Joined","Last Login","Referral"] %}
+            <th class="px-4 py-3 text-left text-xs text-slate-500 uppercase tracking-wider">{{ h }}</th>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for u in users %}
+          <tr class="border-t border-dark-border text-sm hover:bg-dark-card">
+            <td class="px-4 py-3 text-slate-500">{{ u.id }}</td>
+            <td class="px-4 py-3 text-white">{{ u.name or '—' }}</td>
+            <td class="px-4 py-3 text-slate-400">{{ u.email }}</td>
+            <td class="px-4 py-3">
+              {% if u.plan == 'elite' %}
+                <span class="px-2 py-1 rounded-full text-xs font-semibold bg-yellow-900 text-yellow-400">ELITE</span>
+              {% elif u.plan == 'pro' %}
+                <span class="px-2 py-1 rounded-full text-xs font-semibold bg-green-900 text-green-400">PRO</span>
+              {% else %}
+                <span class="px-2 py-1 rounded-full text-xs font-semibold bg-slate-800 text-slate-400">FREE</span>
+              {% endif %}
+            </td>
+            <td class="px-4 py-3 text-xs {{ 'text-green-400' if u.sub_status == 'active' else 'text-slate-500' }}">
+              {{ u.sub_status or 'inactive' }}
+            </td>
+            <td class="px-4 py-3 text-xs text-slate-500">{{ u.created_at.strftime('%Y-%m-%d') if u.created_at else '—' }}</td>
+            <td class="px-4 py-3 text-xs text-slate-500">{{ u.last_login.strftime('%Y-%m-%d') if u.last_login else '—' }}</td>
+            <td class="px-4 py-3 text-xs text-slate-500 font-mono">{{ u.referral_code or '—' }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Leads table -->
+  <div class="card overflow-hidden">
+    <div class="px-6 py-4 border-b border-dark-border">
+      <h2 class="font-semibold text-white">Email Leads</h2>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="w-full">
+        <thead>
+          <tr style="background:#0d1829">
+            {% for h in ["Email","Name","Source","Joined","Converted"] %}
+            <th class="px-4 py-3 text-left text-xs text-slate-500 uppercase tracking-wider">{{ h }}</th>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for l in leads %}
+          <tr class="border-t border-dark-border text-sm hover:bg-dark-card">
+            <td class="px-4 py-3 text-slate-300">{{ l.email }}</td>
+            <td class="px-4 py-3 text-slate-400">{{ l.name or '—' }}</td>
+            <td class="px-4 py-3 text-xs text-blue-400">{{ l.source }}</td>
+            <td class="px-4 py-3 text-xs text-slate-500">{{ l.created_at.strftime('%Y-%m-%d') if l.created_at else '—' }}</td>
+            <td class="px-4 py-3 text-xs {{ 'text-green-400' if l.converted else 'text-slate-600' }}">
+              {{ 'Yes' if l.converted else 'No' }}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

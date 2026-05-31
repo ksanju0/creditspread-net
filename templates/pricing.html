@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+{% block title %}Pricing — CreditSpread.net{% endblock %}
+{% block content %}
+
+<section class="py-20 px-6">
+  <div class="max-w-5xl mx-auto text-center">
+    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm mb-6" style="background:#0d2818;border:1px solid #166534;color:#4ade80">
+      7-day free trial on all paid plans · No credit card hassle
+    </div>
+    <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">Simple, Transparent Pricing</h1>
+    <p class="text-slate-500 text-lg mb-14">Start free. Upgrade when you see the results. Cancel anytime.</p>
+
+    <!-- Toggle monthly/annual -->
+    <div class="flex items-center justify-center gap-4 mb-12">
+      <span class="text-sm text-slate-400">Monthly</span>
+      <label class="relative inline-flex items-center cursor-pointer">
+        <input type="checkbox" id="annual-toggle" class="sr-only peer">
+        <div class="w-11 h-6 rounded-full peer-checked:bg-green-600 transition-colors" style="background:#1e2d45"></div>
+        <div class="absolute left-1 top-1 w-4 h-4 rounded-full bg-white transition-transform peer-checked:translate-x-5"></div>
+      </label>
+      <span class="text-sm text-slate-400">Annual <span class="text-green-400 font-semibold">Save 33%</span></span>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
+
+      <!-- FREE -->
+      <div class="card p-8">
+        <div class="text-slate-400 font-semibold text-sm mb-2">Free</div>
+        <div class="flex items-end gap-1 mb-1">
+          <span class="text-5xl font-bold text-white">$0</span>
+        </div>
+        <div class="text-slate-500 text-sm mb-8">forever</div>
+        <ul class="space-y-3 mb-10">
+          {% for f,ok in [
+            ("1 delayed signal per week", true),
+            ("Public trade log access", true),
+            ("Performance dashboard", true),
+            ("Backtested equity curve", true),
+            ("Real-time signals", false),
+            ("SMS & email alerts", false),
+            ("Position sizing tool", false),
+            ("Priority support", false)
+          ] %}
+          <li class="flex items-center gap-3 text-sm {% if ok %}text-slate-300{% else %}text-slate-600{% endif %}">
+            <span class="{% if ok %}text-green-400{% else %}text-slate-700{% endif %} font-bold text-base">{% if ok %}✓{% else %}✗{% endif %}</span>
+            {{ f }}
+          </li>
+          {% endfor %}
+        </ul>
+        <a href="/register" class="btn-secondary w-full block text-center text-sm">Get Started Free</a>
+      </div>
+
+      <!-- PRO -->
+      <div class="relative p-8 text-left glow" style="background:linear-gradient(160deg,#0d2818,#0a1a12);border:1px solid #166534;border-radius:12px">
+        <div class="absolute -top-4 left-1/2 -translate-x-1/2 px-5 py-1.5 rounded-full text-xs font-bold text-white" style="background:linear-gradient(135deg,#22c55e,#16a34a)">MOST POPULAR</div>
+        <div class="text-green-400 font-semibold text-sm mb-2">Pro</div>
+        <div class="flex items-end gap-1 mb-1">
+          <span class="text-5xl font-bold text-white monthly-price">$97</span>
+          <span class="text-5xl font-bold text-white annual-price hidden">$67</span>
+          <span class="text-slate-400 text-sm mb-2">/mo</span>
+        </div>
+        <div class="text-slate-500 text-sm mb-8 annual-note hidden">billed $797/year · save $367</div>
+        <div class="text-slate-500 text-sm mb-8 monthly-note">billed monthly · cancel anytime</div>
+        <ul class="space-y-3 mb-10">
+          {% for f in [
+            "Everything in Free",
+            "Real-time signals",
+            "SMS & email alerts",
+            "Full member dashboard",
+            "Position sizing calculator",
+            "Entry & exit price alerts",
+            "Trade history export",
+            "Priority email support"
+          ] %}
+          <li class="flex items-center gap-3 text-sm text-slate-300">
+            <span class="text-green-400 font-bold text-base">✓</span>{{ f }}
+          </li>
+          {% endfor %}
+        </ul>
+        <a href="/checkout/pro" class="btn-primary w-full block text-center text-sm">Start 7-Day Free Trial →</a>
+        <p class="text-xs text-slate-600 text-center mt-3">No charge for 7 days · Cancel before trial ends</p>
+      </div>
+
+      <!-- ELITE -->
+      <div class="card p-8" style="border-color:#713f12">
+        <div class="text-yellow-400 font-semibold text-sm mb-2">Elite</div>
+        <div class="flex items-end gap-1 mb-1">
+          <span class="text-5xl font-bold text-white monthly-price">$197</span>
+          <span class="text-5xl font-bold text-white annual-price hidden">$137</span>
+          <span class="text-slate-400 text-sm mb-2">/mo</span>
+        </div>
+        <div class="text-slate-500 text-sm mb-8 annual-note hidden">billed $1,597/year · save $767</div>
+        <div class="text-slate-500 text-sm mb-8 monthly-note">billed monthly · cancel anytime</div>
+        <ul class="space-y-3 mb-10">
+          {% for f in [
+            "Everything in Pro",
+            "Mirror trade instructions",
+            "1-on-1 onboarding call (30min)",
+            "Private Slack community",
+            "Weekly market outlook video",
+            "Early access to new features",
+            "Dedicated account manager",
+            "Same-day support response"
+          ] %}
+          <li class="flex items-center gap-3 text-sm text-slate-300">
+            <span class="text-yellow-400 font-bold text-base">✓</span>{{ f }}
+          </li>
+          {% endfor %}
+        </ul>
+        <a href="/checkout/elite" class="w-full block text-center text-sm py-3 px-6 rounded-lg font-semibold transition-all hover:bg-yellow-500 hover:text-black" style="border:1px solid #ca8a04;color:#ca8a04">Get Elite Access →</a>
+      </div>
+
+    </div>
+
+    <!-- FAQ -->
+    <div class="mt-20 text-left max-w-3xl mx-auto">
+      <h2 class="text-2xl font-bold text-white text-center mb-10">Frequently Asked Questions</h2>
+      <div class="space-y-4">
+        {% for q, a in [
+          ("Do your traders actually take these trades?", "Yes. Every signal you see on this platform is executed by our trading team in live accounts. We publish entry price, timestamp, and exit — full transparency, zero cherry-picking. You watch us trade in real time."),
+          ("How are signals generated?", "Fully automated. Our proprietary algorithms scan the SPX options chain every 60 seconds during market hours, applying VIX, delta, IV rank, and time-of-day filters. 30 years of Wall Street experience is baked into every parameter. No human discretion at entry."),
+          ("What is the win rate historically?", "Our 20-year backtest (2004–2024) shows 88%+ win rate on 0.10 delta SPX put spreads with 50% profit target and 2x stop loss. Live trade results since launch are shown publicly on the performance page — updated in real time."),
+          ("Can I cancel anytime?", "Yes. Cancel with one click from your dashboard. No questions asked. If you cancel mid-month, you keep access until the billing period ends."),
+          ("What broker do I need?", "You don't need any broker to follow the signals — we trade for you to watch. If you want to mirror our trades yourself, any brokerage that supports SPX options works (IBKR, Tastytrade, TD Ameritrade)."),
+          ("Is this financial advice?", "No. CreditSpread.net is an educational signal service. We are not registered investment advisors. Always consult a qualified financial professional before trading.")
+        ] %}
+        <div class="card p-6">
+          <div class="font-semibold text-white mb-2">{{ q }}</div>
+          <div class="text-sm text-slate-500 leading-relaxed">{{ a }}</div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<script>
+document.getElementById('annual-toggle').addEventListener('change', function() {
+  document.querySelectorAll('.monthly-price').forEach(el => el.classList.toggle('hidden', this.checked));
+  document.querySelectorAll('.annual-price').forEach(el => el.classList.toggle('hidden', !this.checked));
+  document.querySelectorAll('.monthly-note').forEach(el => el.classList.toggle('hidden', this.checked));
+  document.querySelectorAll('.annual-note').forEach(el => el.classList.toggle('hidden', !this.checked));
+});
+</script>
+{% endblock %}

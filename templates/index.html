@@ -1,0 +1,218 @@
+{% extends "base.html" %}
+{% block title %}CreditSpread.net — High Probability SPX Credit Spread Signals{% endblock %}
+{% block content %}
+
+<!-- HERO -->
+<section class="relative overflow-hidden py-24 px-6">
+  <div class="absolute inset-0" style="background:radial-gradient(ellipse at 50% 0%, rgba(34,197,94,0.08) 0%, transparent 70%)"></div>
+  <div class="max-w-5xl mx-auto text-center relative">
+
+    <!-- Trust badges -->
+    <div class="flex flex-wrap items-center justify-center gap-3 mb-8">
+      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm" style="background:#0d2818;border:1px solid #166534;color:#4ade80">
+        <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+        Live Trades — {{ total_trades }} positions logged with full transparency
+      </div>
+      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm" style="background:#1a1a2e;border:1px solid #2d2d5e;color:#93c5fd">
+        30 Years Wall Street Experience
+      </div>
+      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm" style="background:#1a1a2e;border:1px solid #2d2d5e;color:#fbbf24">
+        20-Year Backtested Strategy
+      </div>
+    </div>
+
+    <h1 class="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+      <span class="text-white">Wall Street Precision.</span><br>
+      <span class="gradient-text">Your Portfolio.</span>
+    </h1>
+    <p class="text-xl text-slate-400 mb-10 max-w-2xl mx-auto leading-relaxed">
+      Our team of 30-year Wall Street veterans and proprietary algorithms identify the highest probability SPX credit spread trades — and we trade them live alongside you, with full transparency on every position.
+    </p>
+    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+      <a href="/pricing" class="btn-primary text-base">Join Our Trading Community</a>
+      <a href="/performance" class="btn-secondary text-base">View Live Track Record</a>
+    </div>
+    <p class="text-xs text-slate-600 mt-4">No credit card required for free tier · Cancel anytime</p>
+
+    <!-- Social proof row -->
+    <div class="flex flex-wrap items-center justify-center gap-8 mt-12 pt-8 border-t border-dark-border">
+      {% for label, val in [("Win Rate (20yr backtest)","88%+"), ("Avg Return on Risk","15-20%"), ("Years of Experience","30+"), ("Strategy Validated","2004–2024")] %}
+      <div class="text-center">
+        <div class="text-2xl font-bold text-green-400">{{ val }}</div>
+        <div class="text-xs text-slate-500 mt-1">{{ label }}</div>
+      </div>
+      {% endfor %}
+    </div>
+
+  </div>
+</section>
+
+<!-- LIVE STATS BAR -->
+<section class="border-y border-dark-border py-6">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="grid grid-cols-2 md:grid-cols-5 gap-6 text-center">
+      <div>
+        <div class="text-3xl font-bold text-green-400">{{ win_rate }}%</div>
+        <div class="text-xs text-slate-500 mt-1 uppercase tracking-wider">Win Rate</div>
+      </div>
+      <div>
+        <div class="text-3xl font-bold text-white">{{ total_trades }}</div>
+        <div class="text-xs text-slate-500 mt-1 uppercase tracking-wider">Trades Logged</div>
+      </div>
+      <div>
+        <div class="text-3xl font-bold text-green-400">${{ avg_credit }}</div>
+        <div class="text-xs text-slate-500 mt-1 uppercase tracking-wider">Avg Credit</div>
+      </div>
+      <div>
+        <div class="text-3xl font-bold text-blue-400">{{ avg_ror }}%</div>
+        <div class="text-xs text-slate-500 mt-1 uppercase tracking-wider">Avg ROR</div>
+      </div>
+      <div>
+        <div class="text-3xl font-bold {% if total_pnl >= 0 %}text-green-400{% else %}text-red-400{% endif %}">${{ total_pnl_fmt }}</div>
+        <div class="text-xs text-slate-500 mt-1 uppercase tracking-wider">Total P&L (Live)</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RECENT TRADES (public proof) -->
+<section class="py-20 px-6">
+  <div class="max-w-7xl mx-auto">
+    <div class="flex items-center justify-between mb-8">
+      <div>
+        <h2 class="text-3xl font-bold text-white">Live Trade Log</h2>
+        <p class="text-slate-500 mt-1">Every signal timestamped before entry. Zero cherry-picking.</p>
+      </div>
+      <a href="/performance" class="btn-secondary text-sm">View All Trades</a>
+    </div>
+    <div class="card overflow-hidden">
+      <table class="w-full">
+        <thead>
+          <tr style="background:#0d1829">
+            <th class="px-5 py-4 text-left text-xs text-slate-500 uppercase tracking-wider">Date & Time</th>
+            <th class="px-5 py-4 text-left text-xs text-slate-500 uppercase tracking-wider">Spread</th>
+            <th class="px-5 py-4 text-left text-xs text-slate-500 uppercase tracking-wider">Credit</th>
+            <th class="px-5 py-4 text-left text-xs text-slate-500 uppercase tracking-wider">ROR</th>
+            <th class="px-5 py-4 text-left text-xs text-slate-500 uppercase tracking-wider">VIX</th>
+            <th class="px-5 py-4 text-left text-xs text-slate-500 uppercase tracking-wider">Result</th>
+            <th class="px-5 py-4 text-left text-xs text-slate-500 uppercase tracking-wider">P&L</th>
+          </tr>
+        </thead>
+        <tbody id="trade-tbody">
+          {% for t in recent_trades %}
+          <tr class="border-t border-dark-border hover:bg-dark-card transition-colors">
+            <td class="px-5 py-4 text-sm text-slate-400">{{ t.date }}</td>
+            <td class="px-5 py-4 text-sm font-mono font-semibold text-white">{{ t.short_strike }}/{{ t.long_strike }}P</td>
+            <td class="px-5 py-4 text-sm text-green-400 font-semibold">${{ t.net_credit }}</td>
+            <td class="px-5 py-4 text-sm text-blue-400">{{ t.ror_pct }}%</td>
+            <td class="px-5 py-4 text-sm text-slate-400">{{ t.vix }}</td>
+            <td class="px-5 py-4">
+              {% if t.status == 'OPEN' %}
+                <span class="badge-open px-3 py-1 rounded-full text-xs font-semibold">OPEN</span>
+              {% elif 'PROFIT' in t.status %}
+                <span class="badge-win px-3 py-1 rounded-full text-xs font-semibold">WIN</span>
+              {% else %}
+                <span class="badge-loss px-3 py-1 rounded-full text-xs font-semibold">LOSS</span>
+              {% endif %}
+            </td>
+            <td class="px-5 py-4 text-sm font-semibold {% if t.pnl and t.pnl > 0 %}text-green-400{% elif t.pnl %}text-red-400{% else %}text-slate-500{% endif %}">
+              {% if t.pnl_fmt %}${{ t.pnl_fmt }}{% else %}—{% endif %}
+            </td>
+          </tr>
+          {% else %}
+          <tr><td colspan="7" class="px-5 py-12 text-center text-slate-500">First trades will appear Monday 9:45 AM ET</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="py-20 px-6" style="background:rgba(34,197,94,0.02)">
+  <div class="max-w-5xl mx-auto text-center">
+    <h2 class="text-3xl font-bold text-white mb-4">How It Works</h2>
+    <p class="text-slate-500 mb-14">A fully automated system — no emotions, no guessing</p>
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+      {% for step in [
+        ("01", "Signal Fires", "9:45 AM ET — VIX, delta, and IV filters scan SPX chain for the optimal 0.10 delta put spread"),
+        ("02", "Trade Executed", "Our traders execute the position in live accounts. Entry price and timestamp published publicly before the market moves."),
+        ("03", "Monitored", "Position checked every 5 minutes. Auto-close at 50% profit or 2x stop loss"),
+        ("04", "You Get Alerted", "SMS to your phone the moment a trade is placed or closed. Dashboard updates in real time")
+      ] %}
+      <div class="card p-6 text-left">
+        <div class="text-green-400 font-mono text-sm font-bold mb-3">{{ step[0] }}</div>
+        <div class="font-bold text-white mb-2">{{ step[1] }}</div>
+        <p class="text-sm text-slate-500 leading-relaxed">{{ step[2] }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- PRICING PREVIEW -->
+<section class="py-20 px-6">
+  <div class="max-w-5xl mx-auto text-center">
+    <h2 class="text-3xl font-bold text-white mb-4">Simple Pricing</h2>
+    <p class="text-slate-500 mb-14">Start free. Upgrade when you see the results.</p>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+      <div class="card p-8 text-left">
+        <div class="text-slate-400 font-semibold mb-1">Free</div>
+        <div class="text-4xl font-bold text-white mb-1">$0</div>
+        <div class="text-slate-500 text-sm mb-6">forever</div>
+        <ul class="space-y-3 mb-8">
+          {% for f in ["1 delayed signal/week","Public trade log access","Performance dashboard","No alerts"] %}
+          <li class="flex items-center gap-2 text-sm text-slate-400"><span class="text-green-400">✓</span>{{ f }}</li>
+          {% endfor %}
+        </ul>
+        <a href="/register" class="btn-secondary w-full block text-center text-sm">Get Started Free</a>
+      </div>
+
+      <div class="relative p-8 text-left glow" style="background:#0d2818;border:1px solid #166534;border-radius:12px">
+        <div class="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-xs font-bold text-white" style="background:linear-gradient(135deg,#22c55e,#16a34a)">MOST POPULAR</div>
+        <div class="text-green-400 font-semibold mb-1">Pro</div>
+        <div class="text-4xl font-bold text-white mb-1">$97</div>
+        <div class="text-slate-500 text-sm mb-6">per month</div>
+        <ul class="space-y-3 mb-8">
+          {% for f in ["Real-time signals","SMS + email alerts","Full member dashboard","Position sizing tool","Entry & exit prices","Priority support"] %}
+          <li class="flex items-center gap-2 text-sm text-slate-300"><span class="text-green-400">✓</span>{{ f }}</li>
+          {% endfor %}
+        </ul>
+        <a href="/checkout/pro" class="btn-primary w-full block text-center text-sm">Start 7-Day Free Trial</a>
+      </div>
+
+      <div class="card p-8 text-left">
+        <div class="text-yellow-400 font-semibold mb-1">Elite</div>
+        <div class="text-4xl font-bold text-white mb-1">$197</div>
+        <div class="text-slate-500 text-sm mb-6">per month</div>
+        <ul class="space-y-3 mb-8">
+          {% for f in ["Everything in Pro","Mirror trade instructions","1-on-1 onboarding call","Slack community access","Weekly market outlook","VIP support"] %}
+          <li class="flex items-center gap-2 text-sm text-slate-400"><span class="text-yellow-400">✓</span>{{ f }}</li>
+          {% endfor %}
+        </ul>
+        <a href="/checkout/elite" class="btn-secondary w-full block text-center text-sm" style="border-color:#ca8a04;color:#ca8a04">Get Elite Access</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- EMAIL CAPTURE -->
+<section class="py-20 px-6">
+  <div class="max-w-2xl mx-auto text-center">
+    <div class="card p-10 glow">
+      <h2 class="text-2xl font-bold text-white mb-3">Get Free Signals on Telegram</h2>
+      <p class="text-slate-500 mb-6">Join 0+ traders watching our signals before paying a cent. See the track record live.</p>
+      <form action="/lead-capture" method="POST" class="flex flex-col sm:flex-row gap-3">
+        <input type="hidden" name="source" value="homepage">
+        <input type="email" name="email" placeholder="your@email.com" required
+               class="flex-1 px-4 py-3 rounded-lg text-sm text-white" style="background:#0d1829;border:1px solid #1e2d45;outline:none">
+        <button type="submit" class="btn-primary text-sm whitespace-nowrap">Join Free →</button>
+      </form>
+      <p class="text-xs text-slate-600 mt-3">No spam. Unsubscribe anytime.</p>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
