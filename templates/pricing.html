@@ -3,149 +3,98 @@
 {% block content %}
 
 <section class="py-20 px-6">
-  <div class="max-w-5xl mx-auto text-center">
+  <div class="max-w-3xl mx-auto text-center">
+
     <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm mb-6" style="background:#0d2818;border:1px solid #166534;color:#4ade80">
-      7-day free trial on all paid plans · No credit card hassle
+      <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+      Fully automated — zero management, zero hand-holding
     </div>
-    <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">Simple, Transparent Pricing</h1>
-    <p class="text-slate-500 text-lg mb-14">Start free. Upgrade when you see the results. Cancel anytime.</p>
+    <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">Two Tiers. One Decision.</h1>
+    <p class="text-slate-500 text-lg mb-16">Watch the trades for free. Get the live alerts when you're ready.</p>
 
-    <!-- Toggle monthly/annual -->
-    <div class="flex items-center justify-center gap-4 mb-12">
-      <span class="text-sm text-slate-400">Monthly</span>
-      <label class="relative inline-flex items-center cursor-pointer">
-        <input type="checkbox" id="annual-toggle" class="sr-only peer">
-        <div class="w-11 h-6 rounded-full peer-checked:bg-green-600 transition-colors" style="background:#1e2d45"></div>
-        <div class="absolute left-1 top-1 w-4 h-4 rounded-full bg-white transition-transform peer-checked:translate-x-5"></div>
-      </label>
-      <span class="text-sm text-slate-400">Annual <span class="text-green-400 font-semibold">Save 33%</span></span>
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-left max-w-2xl mx-auto">
 
       <!-- FREE -->
       <div class="card p-8">
-        <div class="text-slate-400 font-semibold text-sm mb-2">Free</div>
-        <div class="flex items-end gap-1 mb-1">
-          <span class="text-5xl font-bold text-white">$0</span>
-        </div>
-        <div class="text-slate-500 text-sm mb-8">forever</div>
+        <div class="text-slate-400 font-semibold text-sm uppercase tracking-wider mb-3">Free</div>
+        <div class="text-5xl font-bold text-white mb-1">$0</div>
+        <div class="text-slate-500 text-sm mb-8">forever · no card needed</div>
         <ul class="space-y-3 mb-10">
-          {% for f,ok in [
-            ("1 delayed signal per week", true),
-            ("Public trade log access", true),
-            ("Performance dashboard", true),
-            ("Backtested equity curve", true),
-            ("Real-time signals", false),
-            ("SMS & email alerts", false),
-            ("Position sizing tool", false),
-            ("Priority support", false)
+          {% for f, ok in [
+            ("Delayed trade signals (1/week)", true),
+            ("Full public trade log", true),
+            ("3-year performance history", true),
+            ("Live equity curve", true),
+            ("Real-time SMS alerts", false),
+            ("Instant email notifications", false),
+            ("Live entry & exit prices", false)
           ] %}
           <li class="flex items-center gap-3 text-sm {% if ok %}text-slate-300{% else %}text-slate-600{% endif %}">
-            <span class="{% if ok %}text-green-400{% else %}text-slate-700{% endif %} font-bold text-base">{% if ok %}✓{% else %}✗{% endif %}</span>
+            <span class="font-bold {% if ok %}text-green-400{% else %}text-slate-700{% endif %}">{% if ok %}✓{% else %}✗{% endif %}</span>
             {{ f }}
           </li>
           {% endfor %}
         </ul>
-        <a href="/register" class="btn-secondary w-full block text-center text-sm">Get Started Free</a>
+        <a href="/register" class="btn-secondary w-full block text-center text-sm">Create Free Account</a>
       </div>
 
-      <!-- PRO -->
+      <!-- MEMBER -->
       <div class="relative p-8 text-left glow" style="background:linear-gradient(160deg,#0d2818,#0a1a12);border:1px solid #166534;border-radius:12px">
-        <div class="absolute -top-4 left-1/2 -translate-x-1/2 px-5 py-1.5 rounded-full text-xs font-bold text-white" style="background:linear-gradient(135deg,#22c55e,#16a34a)">MOST POPULAR</div>
-        <div class="text-green-400 font-semibold text-sm mb-2">Pro</div>
+        <div class="absolute -top-4 left-1/2 -translate-x-1/2 px-5 py-1.5 rounded-full text-xs font-bold text-white whitespace-nowrap" style="background:linear-gradient(135deg,#22c55e,#16a34a)">FULL ACCESS</div>
+        <div class="text-green-400 font-semibold text-sm uppercase tracking-wider mb-3">Member</div>
         <div class="flex items-end gap-1 mb-1">
-          <span class="text-5xl font-bold text-white monthly-price">$97</span>
-          <span class="text-5xl font-bold text-white annual-price hidden">$67</span>
+          <span class="text-5xl font-bold text-white">$179</span>
           <span class="text-slate-400 text-sm mb-2">/mo</span>
         </div>
-        <div class="text-slate-500 text-sm mb-8 annual-note hidden">billed $797/year · save $367</div>
-        <div class="text-slate-500 text-sm mb-8 monthly-note">billed monthly · cancel anytime</div>
+        <div class="text-slate-500 text-sm mb-8">7-day free trial · cancel anytime</div>
         <ul class="space-y-3 mb-10">
           {% for f in [
-            "Everything in Free",
-            "Real-time signals",
-            "SMS & email alerts",
+            "Real-time SMS alert — every signal",
+            "Instant email — entry & exit",
+            "Live entry price & timestamp",
+            "Profit target & stop loss levels",
             "Full member dashboard",
-            "Position sizing calculator",
-            "Entry & exit price alerts",
-            "Trade history export",
-            "Priority email support"
+            "3-year trade history",
+            "Live equity curve",
+            "Automated — zero effort required"
           ] %}
           <li class="flex items-center gap-3 text-sm text-slate-300">
-            <span class="text-green-400 font-bold text-base">✓</span>{{ f }}
+            <span class="text-green-400 font-bold">✓</span>{{ f }}
           </li>
           {% endfor %}
         </ul>
-        <!-- Payment buttons — Pro -->
-        <div class="space-y-2">
-          <a href="/checkout/stripe/pro" class="btn-primary w-full flex items-center justify-center gap-2 text-sm">
-            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M13.976 9.15c-2.172-.806-3.356-1.426-3.356-2.409 0-.831.683-1.305 1.901-1.305 2.227 0 4.515.858 6.09 1.631l.89-5.494C18.252.975 15.697 0 12.165 0 9.667 0 7.589.654 6.104 1.872 4.56 3.147 3.757 4.992 3.757 7.218c0 4.039 2.467 5.76 6.476 7.219 2.585.92 3.445 1.574 3.445 2.583 0 .98-.84 1.545-2.354 1.545-1.875 0-4.965-.921-6.99-2.109l-.9 5.555C5.175 22.99 8.385 24 11.714 24c2.641 0 4.843-.624 6.328-1.813 1.664-1.305 2.525-3.236 2.525-5.732 0-4.128-2.524-5.851-6.591-7.305z"/></svg>
-            Pay with Card (Stripe)
-          </a>
-          <div id="paypal-pro-btn"></div>
-        </div>
-        <p class="text-xs text-slate-600 text-center mt-3">7-day free trial · No charge until day 8 · Cancel anytime</p>
-      </div>
 
-      <!-- ELITE -->
-      <div class="card p-8" style="border-color:#713f12">
-        <div class="text-yellow-400 font-semibold text-sm mb-2">Elite</div>
-        <div class="flex items-end gap-1 mb-1">
-          <span class="text-5xl font-bold text-white monthly-price">$197</span>
-          <span class="text-5xl font-bold text-white annual-price hidden">$137</span>
-          <span class="text-slate-400 text-sm mb-2">/mo</span>
-        </div>
-        <div class="text-slate-500 text-sm mb-8 annual-note hidden">billed $1,597/year · save $767</div>
-        <div class="text-slate-500 text-sm mb-8 monthly-note">billed monthly · cancel anytime</div>
-        <ul class="space-y-3 mb-8">
-          {% for f in [
-            "Everything in Pro",
-            "Mirror trade instructions",
-            "1-on-1 onboarding call (30min)",
-            "Private Slack community",
-            "Weekly market outlook video",
-            "Early access to new features",
-            "Dedicated account manager",
-            "Same-day support response"
-          ] %}
-          <li class="flex items-center gap-3 text-sm text-slate-300">
-            <span class="text-yellow-400 font-bold text-base">✓</span>{{ f }}
-          </li>
-          {% endfor %}
-        </ul>
-        <!-- Payment buttons — Elite -->
-        <div class="space-y-2">
-          <a href="/checkout/stripe/elite" class="w-full flex items-center justify-center gap-2 text-sm py-3 px-6 rounded-lg font-semibold transition-all hover:bg-yellow-500 hover:text-black" style="border:1px solid #ca8a04;color:#ca8a04">
-            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M13.976 9.15c-2.172-.806-3.356-1.426-3.356-2.409 0-.831.683-1.305 1.901-1.305 2.227 0 4.515.858 6.09 1.631l.89-5.494C18.252.975 15.697 0 12.165 0 9.667 0 7.589.654 6.104 1.872 4.56 3.147 3.757 4.992 3.757 7.218c0 4.039 2.467 5.76 6.476 7.219 2.585.92 3.445 1.574 3.445 2.583 0 .98-.84 1.545-2.354 1.545-1.875 0-4.965-.921-6.99-2.109l-.9 5.555C5.175 22.99 8.385 24 11.714 24c2.641 0 4.843-.624 6.328-1.813 1.664-1.305 2.525-3.236 2.525-5.732 0-4.128-2.524-5.851-6.591-7.305z"/></svg>
-            Pay with Card (Stripe)
+        <!-- Payment buttons -->
+        <div class="space-y-3">
+          <a href="/checkout/stripe/member" class="btn-primary w-full flex items-center justify-center gap-2 text-sm">
+            Pay with Card
           </a>
-          <div id="paypal-elite-btn"></div>
+          <div id="paypal-member-btn"></div>
         </div>
-        <p class="text-xs text-slate-600 text-center mt-3">7-day free trial · Cancel anytime · No prorated refunds</p>
+        <p class="text-xs text-slate-600 text-center mt-3">No charge for 7 days · No prorated refunds · Cancel anytime</p>
       </div>
 
     </div>
 
-    <!-- PAYMENT LOGOS -->
-    <div class="mt-10 flex items-center justify-center gap-4 flex-wrap">
-      <span class="text-xs text-slate-600 uppercase tracking-wider">Accepted payments:</span>
+    <!-- Payment accepted -->
+    <div class="mt-8 flex items-center justify-center gap-3 flex-wrap">
+      <span class="text-xs text-slate-600">Accepted:</span>
       {% for p in ["Visa","Mastercard","Amex","Discover","PayPal","Debit Card"] %}
-      <span class="px-3 py-1 rounded text-xs font-semibold text-slate-400" style="background:#131d30;border:1px solid #1e2d45">{{ p }}</span>
+      <span class="px-3 py-1 rounded text-xs text-slate-500" style="background:#131d30;border:1px solid #1e2d45">{{ p }}</span>
       {% endfor %}
     </div>
 
     <!-- FAQ -->
-    <div class="mt-20 text-left max-w-3xl mx-auto">
-      <h2 class="text-2xl font-bold text-white text-center mb-10">Frequently Asked Questions</h2>
+    <div class="mt-20 text-left max-w-2xl mx-auto">
+      <h2 class="text-2xl font-bold text-white text-center mb-10">Questions</h2>
       <div class="space-y-4">
         {% for q, a in [
-          ("Do your traders actually take these trades?", "Yes. Every signal you see on this platform is executed by our trading team in live accounts. We publish entry price, timestamp, and exit — full transparency, zero cherry-picking. You watch us trade in real time."),
-          ("How are signals generated?", "Fully automated. Our proprietary algorithms scan the SPX options chain every 60 seconds during market hours, applying VIX, delta, IV rank, and time-of-day filters. 30 years of Wall Street experience is baked into every parameter. No human discretion at entry."),
-          ("What is the win rate historically?", "Our 20-year backtest (2004–2024) shows 88%+ win rate on 0.10 delta SPX put spreads with 50% profit target and 2x stop loss. Live trade results since launch are shown publicly on the performance page — updated in real time."),
-          ("Can I cancel anytime?", "Yes. Cancel with one click from your dashboard. No questions asked. If you cancel mid-month, you keep access until the billing period ends."),
-          ("What broker do I need?", "You don't need any broker to follow the signals — we trade for you to watch. If you want to mirror our trades yourself, any brokerage that supports SPX options works (IBKR, Tastytrade, TD Ameritrade)."),
-          ("Is this financial advice?", "No. CreditSpread.net is an educational signal service. We are not registered investment advisors. Always consult a qualified financial professional before trading.")
+          ("What do I actually receive as a member?", "Two things — an SMS to your phone and an email to your inbox the moment each trade fires. Each alert contains: ticker (SPX or QQQ), spread strikes, credit collected, entry timestamp, profit target, and stop loss. A second alert goes out when the trade closes. That's it. Fully automated."),
+          ("Do I need to do anything after joining?", "No. Enter your email and phone number during signup. After that the system runs completely on its own. You receive alerts, you decide whether to mirror the trade yourself. We handle everything else."),
+          ("What's the 7-day free trial?", "You get full member access for 7 days at no charge. If you cancel before day 8, you owe nothing. After day 8 your card or PayPal is billed $179 for the first month."),
+          ("Can I cancel?", "Yes, instantly from your dashboard. One click. No calls, no forms. You keep access through the end of your billing period. No prorated refunds are issued for partial months."),
+          ("What broker do I need?", "None — to receive alerts. To mirror trades yourself you need any broker that supports SPX or QQQ options (IBKR, Tastytrade, TD Ameritrade, Schwab all work). Minimum recommended account size: $25,000."),
+          ("Is this financial advice?", "No. CreditSpread.net is an educational signal service. We are not registered investment advisors. All content is for educational purposes only. Options trading involves significant risk of loss. Always consult a licensed financial professional.")
         ] %}
         <div class="card p-6">
           <div class="font-semibold text-white mb-2">{{ q }}</div>
@@ -158,50 +107,24 @@
   </div>
 </section>
 
-<script>
-document.getElementById('annual-toggle').addEventListener('change', function() {
-  document.querySelectorAll('.monthly-price').forEach(el => el.classList.toggle('hidden', this.checked));
-  document.querySelectorAll('.annual-price').forEach(el => el.classList.toggle('hidden', !this.checked));
-  document.querySelectorAll('.monthly-note').forEach(el => el.classList.toggle('hidden', this.checked));
-  document.querySelectorAll('.annual-note').forEach(el => el.classList.toggle('hidden', !this.checked));
-});
-</script>
-
 {% if paypal_client_id and paypal_client_id != 'paypal_client_id_placeholder' %}
-<!-- PayPal SDK — loads subscription buttons -->
-<script src="https://www.paypal.com/sdk/js?client-id={{ paypal_client_id }}&vault=true&intent=subscription" data-sdk-integration-source="button-factory"></script>
+<script src="https://www.paypal.com/sdk/js?client-id={{ paypal_client_id }}&vault=true&intent=subscription"></script>
 <script>
-  // PRO PayPal button
   paypal.Buttons({
-    style: { shape:'rect', color:'blue', layout:'horizontal', label:'subscribe', height:42 },
+    style: { shape:'rect', color:'blue', layout:'horizontal', label:'subscribe', height:44 },
     createSubscription: function(data, actions) {
-      return actions.subscription.create({ plan_id: '{{ paypal_pro_plan_id }}' });
+      return actions.subscription.create({ plan_id: '{{ paypal_member_plan_id }}' });
     },
     onApprove: function(data) {
-      window.location.href = '/checkout/paypal/success?subscription_id=' + data.subscriptionID + '&plan=pro';
+      window.location.href = '/checkout/paypal/success?subscription_id=' + data.subscriptionID + '&plan=member';
     }
-  }).render('#paypal-pro-btn');
-
-  // ELITE PayPal button
-  paypal.Buttons({
-    style: { shape:'rect', color:'gold', layout:'horizontal', label:'subscribe', height:42 },
-    createSubscription: function(data, actions) {
-      return actions.subscription.create({ plan_id: '{{ paypal_elite_plan_id }}' });
-    },
-    onApprove: function(data) {
-      window.location.href = '/checkout/paypal/success?subscription_id=' + data.subscriptionID + '&plan=elite';
-    }
-  }).render('#paypal-elite-btn');
+  }).render('#paypal-member-btn');
 </script>
 {% else %}
 <script>
-  // PayPal not yet configured — show placeholder buttons
-  ['paypal-pro-btn','paypal-elite-btn'].forEach(function(id) {
-    var el = document.getElementById(id);
-    if (el) {
-      el.innerHTML = '<div style="background:#1a2744;border:1px solid #1e3a5f;border-radius:6px;padding:10px;text-align:center;color:#64748b;font-size:12px;cursor:default">PayPal — Coming Soon</div>';
-    }
-  });
+  var el = document.getElementById('paypal-member-btn');
+  if (el) el.innerHTML = '<div style="background:#0d1829;border:1px solid #1e2d45;border-radius:6px;padding:11px;text-align:center;color:#475569;font-size:12px">PayPal — Coming Soon</div>';
 </script>
 {% endif %}
+
 {% endblock %}

@@ -36,15 +36,13 @@ login_manager.login_message_category = 'error'
 stripe.api_key = os.getenv('STRIPE_SECRET_KEY', '')
 
 STRIPE_PRICES = {
-    'pro':   os.getenv('STRIPE_PRO_PRICE_ID',   'price_pro_placeholder'),
-    'elite': os.getenv('STRIPE_ELITE_PRICE_ID', 'price_elite_placeholder'),
+    'member': os.getenv('STRIPE_MEMBER_PRICE_ID', 'price_member_placeholder'),
 }
 
-PAYPAL_CLIENT_ID     = os.getenv('PAYPAL_CLIENT_ID',     'paypal_client_id_placeholder')
-PAYPAL_CLIENT_SECRET = os.getenv('PAYPAL_CLIENT_SECRET', 'paypal_secret_placeholder')
-PAYPAL_PRO_PLAN_ID   = os.getenv('PAYPAL_PRO_PLAN_ID',   'paypal_pro_plan_placeholder')
-PAYPAL_ELITE_PLAN_ID = os.getenv('PAYPAL_ELITE_PLAN_ID', 'paypal_elite_plan_placeholder')
-PAYPAL_API_BASE      = 'https://api-m.paypal.com'   # use https://api-m.sandbox.paypal.com for testing
+PAYPAL_CLIENT_ID      = os.getenv('PAYPAL_CLIENT_ID',      'paypal_client_id_placeholder')
+PAYPAL_CLIENT_SECRET  = os.getenv('PAYPAL_CLIENT_SECRET',  'paypal_secret_placeholder')
+PAYPAL_MEMBER_PLAN_ID = os.getenv('PAYPAL_MEMBER_PLAN_ID', 'paypal_member_plan_placeholder')
+PAYPAL_API_BASE       = 'https://api-m.paypal.com'
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -153,8 +151,7 @@ def index():
 def pricing():
     return render_template('pricing.html',
         paypal_client_id=PAYPAL_CLIENT_ID,
-        paypal_pro_plan_id=PAYPAL_PRO_PLAN_ID,
-        paypal_elite_plan_id=PAYPAL_ELITE_PLAN_ID)
+        paypal_member_plan_id=PAYPAL_MEMBER_PLAN_ID)
 
 @app.route('/performance')
 def performance():
