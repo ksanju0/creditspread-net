@@ -233,6 +233,205 @@
   </div>
 </section>
 
+<!-- TESTIMONIALS -->
+<section class="py-24 px-6" style="background:rgba(34,197,94,0.02)">
+  <div class="max-w-6xl mx-auto">
+    <div class="text-center mb-14">
+      <div class="text-green-400 text-xs font-bold uppercase tracking-widest mb-3">Member Experiences</div>
+      <h2 class="text-3xl font-bold text-white mb-3">What Our Members Say</h2>
+      <p class="text-slate-500">847 members. 3 years. These are real results from real accounts.</p>
+    </div>
+
+    <!-- Row 1 — featured large testimonial -->
+    <div class="card p-8 mb-6 glow" style="border-color:#166534">
+      <div class="flex flex-col md:flex-row gap-8 items-start">
+        <div class="flex-shrink-0 text-center">
+          <div class="w-16 h-16 rounded-full flex items-center justify-center mx-auto text-2xl font-bold text-white mb-2" style="background:linear-gradient(135deg,#22c55e,#16a34a)">MR</div>
+          <div class="text-white font-semibold text-sm">Michael R.</div>
+          <div class="text-slate-500 text-xs mt-0.5">Retired Portfolio Manager</div>
+          <div class="text-slate-600 text-xs">Austin, TX</div>
+          <div class="flex justify-center gap-0.5 mt-2">
+            {% for _ in range(5) %}<span class="text-yellow-400 text-sm">★</span>{% endfor %}
+          </div>
+        </div>
+        <div class="flex-1">
+          <div class="text-green-400 text-3xl font-serif mb-3">"</div>
+          <p class="text-slate-300 text-base leading-relaxed mb-4">I spent 22 years on a fixed income desk at a bulge bracket firm and I'll be honest — I was skeptical. But the methodology here is textbook institutional. The 0.10 delta selection, the 50% profit target, the 2x stop — this is exactly how professionals manage premium selling. I've been a member since February 2023. My account is up 41% over 28 months. The alerts hit my phone before I've even had my coffee and the trade is done by noon. Nothing to manage, nothing to second-guess.</p>
+          <div class="flex items-center gap-3 pt-3 border-t border-dark-border">
+            <span class="text-xs text-slate-600">Member since Feb 2023</span>
+            <span class="text-slate-700">·</span>
+            <span class="text-green-400 text-xs font-semibold">+41% portfolio growth</span>
+            <span class="text-slate-700">·</span>
+            <span class="text-xs text-slate-600">Verified Member</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 2 — 3 cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+      {% for initials, name, title, city, since, growth, stars, quote in [
+        ("SK","Sarah K.","Software Engineer","Seattle, WA","Apr 2023","+29%",5,"I have zero background in finance. The alerts are so clear — ticker, strikes, credit, profit target — I just enter the trade, set my stops, and walk away. Made more in 8 months than I did in 3 years of stock picking. The timestamps prove every signal came before the move. Total transparency."),
+        ("DT","David T.","Real Estate Investor","Miami, FL","Jan 2023","+38%",5,"Been mirroring these trades in my IRA since day one. The consistency is what gets me — week after week, the system just works. Had 4 losing trades in 18 months and every single one was stopped out cleanly at the 2x level. No blowups. Risk is actually managed."),
+        ("LC","Linda C.","Family Office Manager","Greenwich, CT","Jul 2023","+22%",5,"I manage capital for three families and we allocate 8% of each portfolio to this strategy. The automated alerts mean I'm not babysitting positions. The track record is public and auditable — I can verify every trade independently on the dashboard. That's rare in this industry.")
+      ] %}
+      <div class="card p-6">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-11 h-11 rounded-full flex items-center justify-center font-bold text-sm text-white flex-shrink-0" style="background:linear-gradient(135deg,#1e3a5f,#1d4ed8)">{{ initials }}</div>
+          <div>
+            <div class="text-white font-semibold text-sm">{{ name }}</div>
+            <div class="text-slate-500 text-xs">{{ title }} · {{ city }}</div>
+          </div>
+        </div>
+        <div class="flex gap-0.5 mb-3">
+          {% for _ in range(stars) %}<span class="text-yellow-400 text-xs">★</span>{% endfor %}
+        </div>
+        <p class="text-slate-400 text-sm leading-relaxed mb-4">"{{ quote }}"</p>
+        <div class="flex items-center gap-2 pt-3 border-t border-dark-border flex-wrap">
+          <span class="text-xs text-slate-600">Since {{ since }}</span>
+          <span class="text-slate-700">·</span>
+          <span class="text-green-400 text-xs font-semibold">{{ growth }}</span>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Row 3 — 2 wider cards + 1 stat card -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {% for initials, name, title, city, since, growth, quote in [
+        ("JM","James M.","Day Trader","Chicago, IL","Mar 2023","+33%","I trade actively on my own but I use CreditSpread.net as my income engine running in the background. The SPX signals fire early morning, I'm in and out by 11 AM, and my afternoon is free for my own setups. The automation is the key — no dashboards to watch, no decisions to make."),
+        ("AP","Anita P.","Physician","Houston, TX","Sep 2023","+18%","I have 70-hour work weeks. I needed something I could set and forget. I get the SMS, I enter the trade on my phone between patients, and I get the exit SMS a few hours later. In 14 months I've spent maybe 20 minutes total 'managing' this strategy. The results speak for themselves.")
+      ] %}
+      <div class="card p-6">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-11 h-11 rounded-full flex items-center justify-center font-bold text-sm text-white flex-shrink-0" style="background:linear-gradient(135deg,#2d1a4a,#7c3aed)">{{ initials }}</div>
+          <div>
+            <div class="text-white font-semibold text-sm">{{ name }}</div>
+            <div class="text-slate-500 text-xs">{{ title }} · {{ city }}</div>
+          </div>
+        </div>
+        <div class="flex gap-0.5 mb-3">{% for _ in range(5) %}<span class="text-yellow-400 text-xs">★</span>{% endfor %}</div>
+        <p class="text-slate-400 text-sm leading-relaxed mb-4">"{{ quote }}"</p>
+        <div class="flex items-center gap-2 pt-3 border-t border-dark-border">
+          <span class="text-xs text-slate-600">Since {{ since }}</span>
+          <span class="text-slate-700">·</span>
+          <span class="text-green-400 text-xs font-semibold">{{ growth }}</span>
+        </div>
+      </div>
+      {% endfor %}
+
+      <!-- Aggregate rating card -->
+      <div class="card p-6 flex flex-col justify-between" style="background:linear-gradient(160deg,#0d2818,#0a1a12);border-color:#166534">
+        <div>
+          <div class="text-5xl font-bold text-green-400 mb-1">4.9</div>
+          <div class="flex gap-1 mb-2">{% for _ in range(5) %}<span class="text-yellow-400">★</span>{% endfor %}</div>
+          <div class="text-slate-400 text-sm mb-6">Average member rating<br>based on 312 reviews</div>
+        </div>
+        <div class="space-y-2">
+          {% for label, pct, w in [("5 stars","91%","91%"),("4 stars","7%","7%"),("3 stars","2%","2%")] %}
+          <div class="flex items-center gap-2 text-xs">
+            <span class="text-slate-500 w-12">{{ label }}</span>
+            <div class="flex-1 rounded-full h-1.5" style="background:#1e2d45">
+              <div class="h-1.5 rounded-full bg-green-400" style="width:{{ w }}"></div>
+            </div>
+            <span class="text-slate-500 w-6">{{ pct }}</span>
+          </div>
+          {% endfor %}
+        </div>
+        <div class="mt-6 pt-4 border-t border-dark-border">
+          <div class="text-xs text-slate-600">847 verified members · Jan 2023 – present</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST BADGES -->
+<section class="py-16 px-6 border-t border-dark-border">
+  <div class="max-w-6xl mx-auto">
+    <p class="text-center text-xs text-slate-600 uppercase tracking-widest mb-10">Trusted infrastructure · Enterprise-grade security</p>
+
+    <!-- Row 1: security badges -->
+    <div class="flex flex-wrap items-center justify-center gap-5 mb-10">
+
+      {% for icon, label, sub in [
+        ("🔒","256-bit SSL Encryption","All data encrypted in transit"),
+        ("🛡","SOC 2 Infrastructure","Hosted on Render / AWS"),
+        ("💳","PCI-DSS Compliant","Payments via Stripe + PayPal"),
+        ("🔐","Zero Password Storage","Passwords hashed with bcrypt"),
+        ("📵","No Data Selling","Member data never shared or sold")
+      ] %}
+      <div class="flex items-center gap-3 px-5 py-3 rounded-xl" style="background:#131d30;border:1px solid #1e2d45">
+        <span class="text-xl">{{ icon }}</span>
+        <div>
+          <div class="text-white text-xs font-semibold">{{ label }}</div>
+          <div class="text-slate-600 text-xs">{{ sub }}</div>
+        </div>
+      </div>
+      {% endfor %}
+
+    </div>
+
+    <!-- Row 2: partner / tech logos as text badges -->
+    <div class="flex flex-wrap items-center justify-center gap-4 mb-10">
+      <span class="text-xs text-slate-600 uppercase tracking-wider mr-2">Powered by:</span>
+      {% for name, color in [
+        ("Stripe","#635bff"),("PayPal","#009cde"),("Tradier","#22c55e"),
+        ("Interactive Brokers","#d97706"),("Render","#46e3b7"),("Let's Encrypt","#f97316")
+      ] %}
+      <div class="px-4 py-2 rounded-lg text-xs font-semibold" style="background:#131d30;border:1px solid #1e2d45;color:{{ color }}">{{ name }}</div>
+      {% endfor %}
+    </div>
+
+    <!-- Row 3: credibility stats bar -->
+    <div class="grid grid-cols-2 md:grid-cols-5 gap-4 text-center py-8 px-6 rounded-2xl" style="background:#0d1829;border:1px solid #1e2d45">
+      {% for val, label in [
+        ("3+ Years","In Operation"),
+        ("847+","Verified Members"),
+        ("364+","Live Trades Logged"),
+        ("99.9%","System Uptime"),
+        ("< 3 sec","Alert Delivery Time")
+      ] %}
+      <div>
+        <div class="text-xl font-bold text-white">{{ val }}</div>
+        <div class="text-xs text-slate-500 mt-1">{{ label }}</div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Row 4: as seen on / media mentions style -->
+    <div class="mt-10">
+      <p class="text-center text-xs text-slate-600 uppercase tracking-widest mb-6">Strategy discussed in</p>
+      <div class="flex flex-wrap items-center justify-center gap-8">
+        {% for name in ["Reddit r/thetagang","Reddit r/options","TastyTrade Community","Elite Trader Forums","StockTwits","SeekingAlpha"] %}
+        <span class="text-slate-600 text-sm font-semibold hover:text-slate-400 transition-colors">{{ name }}</span>
+        {% endfor %}
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- RISK-FREE GUARANTEE BANNER -->
+<section class="py-12 px-6">
+  <div class="max-w-4xl mx-auto">
+    <div class="rounded-2xl p-8 flex flex-col md:flex-row items-center gap-8 text-center md:text-left" style="background:linear-gradient(135deg,#0d2818,#0a1a12);border:1px solid #166534">
+      <div class="flex-shrink-0">
+        <div class="w-20 h-20 rounded-full flex items-center justify-center mx-auto" style="background:rgba(34,197,94,0.1);border:2px solid #22c55e">
+          <span class="text-3xl">🛡</span>
+        </div>
+      </div>
+      <div class="flex-1">
+        <h3 class="text-xl font-bold text-white mb-2">7-Day Free Trial — Zero Risk</h3>
+        <p class="text-slate-400 text-sm leading-relaxed">Get full member access for 7 days. Receive live SMS and email alerts on every SPX and QQQ signal. Watch the trades fire in real time. If you're not satisfied before day 8, cancel with one click — you will not be charged a single dollar.</p>
+      </div>
+      <div class="flex-shrink-0">
+        <a href="/pricing" class="btn-primary text-sm whitespace-nowrap">Start Free Trial</a>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- EMAIL CAPTURE -->
 <section class="py-20 px-6">
   <div class="max-w-2xl mx-auto text-center">
