@@ -40,6 +40,12 @@ STRIPE_PRICES = {
     'elite': os.getenv('STRIPE_ELITE_PRICE_ID', 'price_elite_placeholder'),
 }
 
+PAYPAL_CLIENT_ID     = os.getenv('PAYPAL_CLIENT_ID',     'paypal_client_id_placeholder')
+PAYPAL_CLIENT_SECRET = os.getenv('PAYPAL_CLIENT_SECRET', 'paypal_secret_placeholder')
+PAYPAL_PRO_PLAN_ID   = os.getenv('PAYPAL_PRO_PLAN_ID',   'paypal_pro_plan_placeholder')
+PAYPAL_ELITE_PLAN_ID = os.getenv('PAYPAL_ELITE_PLAN_ID', 'paypal_elite_plan_placeholder')
+PAYPAL_API_BASE      = 'https://api-m.paypal.com'   # use https://api-m.sandbox.paypal.com for testing
+
 @login_manager.user_loader
 def load_user(user_id):
     return db.session.get(User, int(user_id))
@@ -145,7 +151,10 @@ def index():
 
 @app.route('/pricing')
 def pricing():
-    return render_template('pricing.html')
+    return render_template('pricing.html',
+        paypal_client_id=PAYPAL_CLIENT_ID,
+        paypal_pro_plan_id=PAYPAL_PRO_PLAN_ID,
+        paypal_elite_plan_id=PAYPAL_ELITE_PLAN_ID)
 
 @app.route('/performance')
 def performance():
@@ -233,6 +242,7 @@ def member_dashboard():
 
 # ── stripe checkout ───────────────────────────────────────────────────────────
 
+@app.route('/checkout/stripe/<plan>')
 @app.route('/checkout/<plan>')
 @login_required
 def checkout(plan):
@@ -274,6 +284,50 @@ def checkout_success():
         except Exception:
             pass
     return redirect(url_for('member_dashboard'))
+
+@app.route('/checkout/paypal/success')
+@login_required
+def paypal_success():
+    import requests as req
+    subscription_id = request.args.get('subscription_id', '')
+    plan = request.args.get('plan', 'pro')
+    if subscription_id and PAYPAL_CLIENT_ID != 'paypal_client_id_placeholder':
+        try:
+            # Get PayPal access token
+            token_resp = req.post(f'{PAYPAL_API_BASE}/v1/oauth2/token',
+                auth=(PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET),
+                data={'grant_type': 'client_credentials'}, timeout=10)
+            access_token = token_resp.json().get('access_token', '')
+            # Verify subscription
+            sub_resp = req.get(f'{PAYPAL_API_BASE}/v1/billing/subscriptions/{subscription_id}',
+                headers={'Authorization': f'Bearer {access_token}'}, timeout=10)
+            sub_data = sub_resp.json()
+            if sub_data.get('status') in ('ACTIVE', 'APPROVAL_PENDING'):
+                current_user.plan = plan
+                current_user.stripe_subscription_id = subscription_id  # reuse field for PayPal sub ID
+                current_user.sub_status = 'active'
+                db.session.commit()
+                flash(f'Welcome to CreditSpread.net {plan.title()}! PayPal subscription active.', 'success')
+        except Exception as e:
+            flash(f'PayPal verification error: {str(e)}', 'error')
+    return redirect(url_for('member_dashboard'))
+
+@app.route('/webhook/paypal', methods=['POST'])
+def paypal_webhook():
+    data = request.get_json(silent=True) or {}
+    event_type = data.get('event_type', '')
+    resource = data.get('resource', {})
+    sub_id = resource.get('id', '')
+    if event_type == 'BILLING.SUBSCRIPTION.CANCELLED':
+        user = User.query.filter_by(stripe_subscription_id=sub_id).first()
+        if user:
+            user.sub_status = 'cancelled'; user.plan = 'free'
+            db.session.commit()
+    if event_type == 'BILLING.SUBSCRIPTION.SUSPENDED':
+        user = User.query.filter_by(stripe_subscription_id=sub_id).first()
+        if user:
+            user.sub_status = 'past_due'; db.session.commit()
+    return jsonify({'status': 'ok'})
 
 @app.route('/webhook/stripe', methods=['POST'])
 def stripe_webhook():
