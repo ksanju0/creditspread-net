@@ -1,240 +1,281 @@
 {% extends "base.html" %}
-{% block title %}Member Dashboard — CreditSpread.net{% endblock %}
+{% block title %}My Dashboard — CreditSpread.net{% endblock %}
 {% block content %}
-
 <div class="max-w-7xl mx-auto px-6 py-10">
 
-  <!-- Welcome bar -->
-  <div class="flex items-center justify-between mb-8">
+  <!-- Header -->
+  <div class="flex items-center justify-between mb-8 flex-wrap gap-4">
     <div>
-      <h1 class="text-2xl font-bold text-white">Welcome back, {{ current_user.name or current_user.email.split('@')[0] }}</h1>
-      <p class="text-slate-500 text-sm mt-1">{{ current_user.plan|upper }} plan
-        {% if current_user.sub_status == 'active' %}
-          <span class="ml-2 px-2 py-0.5 rounded-full text-xs bg-green-900 text-green-400 border border-green-800">ACTIVE</span>
+      <h1 class="text-2xl font-bold text-white">Welcome back, {{ current_user.name.split()[0] }}</h1>
+      <p class="text-slate-500 text-sm mt-1">
+        {% if current_user.plan == 'member' %}
+          <span class="text-green-400 font-semibold">● Member</span> · Real-time alerts active
         {% else %}
-          <span class="ml-2 px-2 py-0.5 rounded-full text-xs bg-slate-800 text-slate-400">FREE TIER</span>
+          <span class="text-yellow-400 font-semibold">Free tier</span> ·
+          <a href="/pricing" class="text-green-400 hover:underline">Upgrade for live alerts →</a>
         {% endif %}
       </p>
     </div>
-    {% if current_user.plan == 'free' %}
-    <a href="/pricing" class="btn-primary text-sm">Upgrade to Pro →</a>
-    {% endif %}
+    <div class="flex items-center gap-4">
+      <div class="text-center">
+        <div class="text-xs text-slate-600 uppercase tracking-wider">VIX</div>
+        <div class="text-white font-bold text-xl">{{ vix }}</div>
+      </div>
+      <a href="/dashboard/my-trades" class="btn-secondary text-sm">My Trade Log →</a>
+    </div>
   </div>
 
-  <!-- Stats row -->
-  <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-    {% for label, val, color in [
-      ("Total Trades",  stats.total_trades, "text-white"),
-      ("Win Rate",      stats.win_rate|string + "%", "text-green-400"),
-      ("Total P&L",     "$" + stats.total_pnl|string, "text-green-400" if stats.total_pnl >= 0 else "text-red-400"),
-      ("Open Trades",   stats.open_trades, "text-blue-400")
-    ] %}
-    <div class="card p-5 text-center">
-      <div class="text-2xl font-bold {{ color }}">{{ val }}</div>
-      <div class="text-xs text-slate-500 mt-1 uppercase tracking-wider">{{ label }}</div>
-    </div>
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for cat, msg in messages %}
+    <div class="mb-6 px-5 py-3 rounded-lg text-sm {% if cat=='error' %}bg-red-900 text-red-300 border border-red-800{% else %}bg-green-900 text-green-300 border border-green-800{% endif %}">{{ msg }}</div>
     {% endfor %}
-  </div>
+  {% endwith %}
 
-  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+  <!-- ══ ACCOUNT SETUP (if not yet configured) ══ -->
+  {% if not current_user.account_size %}
+  <div class="mb-10 rounded-2xl overflow-hidden" style="background:linear-gradient(135deg,#0d2818,#0a1a12);border:2px solid #166534">
+    <div class="p-8">
 
-    <!-- Equity Curve -->
-    <div class="lg:col-span-2 card p-6">
-      <div class="flex items-center justify-between mb-4">
-        <h2 class="font-semibold text-white">Equity Curve</h2>
-        <span class="text-xs text-slate-500">Cumulative P&L · per trade</span>
-      </div>
-      <div id="equity-chart" class="flex items-end gap-1 h-40"></div>
-      <div class="text-xs text-slate-600 text-center mt-2">Each bar = one closed trade</div>
-    </div>
-
-    <!-- Next Signal Countdown -->
-    <div class="card p-6 flex flex-col justify-between">
-      <div>
-        <h2 class="font-semibold text-white mb-1">Next Entry Window</h2>
-        <p class="text-xs text-slate-500 mb-4">Signal scans at 9:45 AM & 2:00 PM ET</p>
-        <div class="text-4xl font-mono font-bold text-green-400" id="countdown">--:--:--</div>
-        <div class="text-xs text-slate-500 mt-2" id="window-label">Calculating...</div>
-      </div>
-      <div class="mt-6 p-4 rounded-lg" style="background:#0d1829;border:1px solid #1e2d45">
-        <div class="text-xs text-slate-500 uppercase tracking-wider mb-1">VIX Right Now</div>
-        <div class="text-2xl font-bold text-white">{{ vix }}</div>
-        <div class="text-xs mt-1 {% if vix|float < 18 %}text-green-400{% elif vix|float < 25 %}text-yellow-400{% else %}text-red-400{% endif %}">
-          {% if vix|float < 18 %}Green — Normal conditions
-          {% elif vix|float < 25 %}Yellow — Elevated, reduced size
-          {% else %}Red — High VIX, signals paused{% endif %}
+      <div class="flex items-start gap-5 mb-8">
+        <div class="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style="background:#052e16;font-size:1.5rem">🛡</div>
+        <div>
+          <h2 class="text-xl font-bold text-white mb-2">Activate your personalized alert profile</h2>
+          <p class="text-slate-400 text-sm leading-relaxed max-w-2xl">
+            Tell us how much capital you're trading with. Every alert will include the
+            <strong class="text-white">exact number of contracts</strong> sized to your account —
+            so you never risk more than your chosen percentage on any single trade.
+          </p>
+          <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-3">
+            {% for icon, point in [
+              ("🔒","No brokerage login. No credentials. Ever."),
+              ("📊","Contracts auto-sized to your risk tolerance."),
+              ("🛡","Defined max loss on every trade, calculated for you.")
+            ] %}
+            <div class="flex items-center gap-2 text-xs text-slate-500">
+              <span>{{ icon }}</span> {{ point }}
+            </div>
+            {% endfor %}
+          </div>
         </div>
       </div>
-    </div>
 
+      <form method="POST" action="/dashboard/setup-account">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-6">
+
+          <div>
+            <label class="text-xs text-slate-400 uppercase tracking-wider block mb-2">Trading Capital ($)</label>
+            <input type="number" name="account_size" placeholder="e.g. 50000"
+                   min="5000" step="1000" required
+                   class="w-full px-4 py-3 rounded-lg text-white text-sm"
+                   style="background:#0a1a12;border:1px solid #166534;outline:none">
+            <p class="text-xs text-slate-600 mt-1.5">Min $5,000 · This stays private</p>
+          </div>
+
+          <div>
+            <label class="text-xs text-slate-400 uppercase tracking-wider block mb-2">Risk Per Trade</label>
+            <select name="risk_pct" class="w-full px-4 py-3 rounded-lg text-white text-sm"
+                    style="background:#0a1a12;border:1px solid #166534;outline:none">
+              <option value="1.0">1% — Very Conservative</option>
+              <option value="2.0" selected>2% — Recommended ⭐</option>
+              <option value="3.0">3% — Moderate</option>
+              <option value="5.0">5% — Aggressive</option>
+            </select>
+            <p class="text-xs text-slate-600 mt-1.5">We recommend 2% max per trade</p>
+          </div>
+
+          <div>
+            <label class="text-xs text-slate-400 uppercase tracking-wider block mb-2">Mobile Number</label>
+            <input type="tel" name="phone" placeholder="+1 415 000 0000"
+                   class="w-full px-4 py-3 rounded-lg text-white text-sm"
+                   style="background:#0a1a12;border:1px solid #1e2d45;outline:none">
+            <p class="text-xs text-slate-600 mt-1.5">For SMS alerts when signals fire</p>
+          </div>
+
+          <div class="flex items-end">
+            <button type="submit" class="btn-primary w-full text-sm">
+              Activate Profile →
+            </button>
+          </div>
+        </div>
+
+        <!-- Risk preview (static) -->
+        <div class="rounded-xl p-5" style="background:rgba(34,197,94,0.04);border:1px solid #166534">
+          <div class="text-xs text-green-400 font-semibold uppercase tracking-wider mb-3">How your alerts will look once activated</div>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+            {% for label, val in [("Account Size","$50,000"),("Max Risk/Trade","$1,000 (2%)"),("Contracts/Signal","~1–2"),("Max Loss/Trade","$960–$1,920")] %}
+            <div class="rounded-lg p-3" style="background:#0d1829">
+              <div class="text-green-400 font-bold">{{ val }}</div>
+              <div class="text-xs text-slate-600 mt-1">{{ label }}</div>
+            </div>
+            {% endfor %}
+          </div>
+          <p class="text-xs text-slate-600 mt-3">* Example based on $50,000 account at 2% risk. Your actual numbers appear once you save your profile.</p>
+        </div>
+      </form>
+    </div>
   </div>
 
-  <!-- Trade Log -->
-  <div class="card mt-6 overflow-hidden">
-    <div class="flex items-center justify-between px-6 py-4 border-b border-dark-border">
-      <h2 class="font-semibold text-white">Trade Log</h2>
-      <span class="text-xs text-slate-500">Auto-updates every 30s</span>
+  {% else %}
+  <!-- ══ PERSONALIZED PORTFOLIO DASHBOARD ══ -->
+
+  <!-- Portfolio summary cards -->
+  {% if member_stats %}
+  <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
+    <div class="card p-5 text-center" style="border-color:#166534">
+      <div class="text-2xl font-bold text-white">${{ "{:,.0f}".format(current_user.account_size) }}</div>
+      <div class="text-xs text-slate-500 mt-1 uppercase tracking-wider">Your Capital</div>
+    </div>
+    <div class="card p-5 text-center">
+      <div class="text-2xl font-bold {{ 'text-green-400' if member_stats.total_pnl >= 0 else 'text-red-400' }}">{{ member_stats.total_pnl_fmt }}</div>
+      <div class="text-xs text-slate-500 mt-1 uppercase tracking-wider">Your P&L</div>
+    </div>
+    <div class="card p-5 text-center">
+      <div class="text-2xl font-bold {{ 'text-green-400' if member_stats.growth_pct >= 0 else 'text-red-400' }}">+{{ member_stats.growth_pct }}%</div>
+      <div class="text-xs text-slate-500 mt-1 uppercase tracking-wider">Portfolio Growth</div>
+    </div>
+    <div class="card p-5 text-center">
+      <div class="text-2xl font-bold text-green-400">{{ member_stats.win_rate }}%</div>
+      <div class="text-xs text-slate-500 mt-1 uppercase tracking-wider">Your Win Rate</div>
+    </div>
+    <div class="card p-5 text-center">
+      <div class="text-2xl font-bold text-blue-400">{{ member_stats.contracts_typical }}</div>
+      <div class="text-xs text-slate-500 mt-1 uppercase tracking-wider">Contracts / Alert</div>
+    </div>
+  </div>
+
+  <!-- Portfolio equity curve -->
+  {% if member_stats.equity_curve %}
+  <div class="card p-6 mb-8">
+    <div class="flex items-center justify-between mb-5">
+      <div>
+        <h3 class="font-semibold text-white">Your Portfolio Equity Curve</h3>
+        <p class="text-xs text-slate-500 mt-1">Started ${{ "{:,.0f}".format(member_stats.account_start) }} · Now ${{ "{:,.0f}".format(member_stats.account_now) }} · <span class="text-green-400 font-semibold">+{{ member_stats.growth_pct }}%</span></p>
+      </div>
+      <div class="text-right">
+        <div class="text-green-400 font-bold text-lg">{{ member_stats.total_pnl_fmt }}</div>
+        <div class="text-xs text-slate-600">Total profit on your capital</div>
+      </div>
+    </div>
+    <div id="member-equity-chart" class="flex items-end gap-0.5" style="height:100px"></div>
+  </div>
+  {% endif %}
+
+  <!-- Alert sizing card -->
+  <div class="card p-6 mb-8 flex flex-col md:flex-row items-center gap-6" style="border-color:#1e3a5f;background:linear-gradient(135deg,#0a0f1e,#080d18)">
+    <div class="flex-1">
+      <div class="text-blue-400 text-xs font-bold uppercase tracking-widest mb-2">Your Alert Sizing — Active</div>
+      <h3 class="text-white font-bold mb-1">Every signal is sized for your ${{ "{:,.0f}".format(current_user.account_size) }} account at {{ current_user.risk_pct }}% risk</h3>
+      <p class="text-slate-500 text-sm leading-relaxed">
+        Each alert recommends <strong class="text-white">{{ member_stats.contracts_typical }} contract{% if member_stats.contracts_typical != 1 %}s{% endif %}</strong>.
+        Max risk per trade: <strong class="text-white">${{ "{:,.0f}".format(current_user.account_size * current_user.risk_pct / 100) }}</strong>.
+        Even on a stop-loss trade, your account loses at most {{ current_user.risk_pct }}% — protecting you from the account-wipeout trades that end most retail options careers.
+      </p>
+    </div>
+    <div class="grid grid-cols-2 gap-3 flex-shrink-0">
+      {% for label, val, color in [
+        ("Max Risk/Trade","$"+"{:,.0f}".format(current_user.account_size * current_user.risk_pct / 100),"text-yellow-400"),
+        ("Typical Contracts",member_stats.contracts_typical|string,"text-blue-400"),
+        ("Win Rate",member_stats.win_rate|string+"%","text-green-400"),
+        ("Trades Tracked",member_stats.total_trades|string,"text-white")
+      ] %}
+      <div class="text-center p-3 rounded-lg" style="background:#0d1829;border:1px solid #1e2d45">
+        <div class="font-bold {{ color }}">{{ val }}</div>
+        <div class="text-xs text-slate-600 mt-0.5">{{ label }}</div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Recent signals for this member -->
+  <div class="card overflow-hidden mb-8">
+    <div class="px-6 py-4 border-b border-dark-border flex items-center justify-between">
+      <div>
+        <h3 class="font-semibold text-white">Your Recent Signals</h3>
+        <p class="text-xs text-slate-500 mt-0.5">P&L calculated on your {{ "{:,.0f}".format(member_stats.contracts_typical) if member_stats else '1' }} contract allocation</p>
+      </div>
+      <a href="/dashboard/my-trades" class="text-green-400 text-xs font-semibold hover:underline">Full history →</a>
     </div>
     <div class="overflow-x-auto">
-      <table class="w-full">
+      <table class="w-full text-sm">
         <thead>
           <tr style="background:#0d1829">
-            <th class="px-5 py-3 text-left text-xs text-slate-500 uppercase tracking-wider">Signal Time</th>
-            <th class="px-5 py-3 text-left text-xs text-slate-500 uppercase tracking-wider">Spread</th>
-            <th class="px-5 py-3 text-left text-xs text-slate-500 uppercase tracking-wider">Expiry</th>
-            <th class="px-5 py-3 text-left text-xs text-slate-500 uppercase tracking-wider">Credit</th>
-            <th class="px-5 py-3 text-left text-xs text-slate-500 uppercase tracking-wider">Max Loss</th>
-            <th class="px-5 py-3 text-left text-xs text-slate-500 uppercase tracking-wider">ROR</th>
-            <th class="px-5 py-3 text-left text-xs text-slate-500 uppercase tracking-wider">VIX</th>
-            <th class="px-5 py-3 text-left text-xs text-slate-500 uppercase tracking-wider">Exit</th>
-            <th class="px-5 py-3 text-left text-xs text-slate-500 uppercase tracking-wider">P&L</th>
-            <th class="px-5 py-3 text-left text-xs text-slate-500 uppercase tracking-wider">Status</th>
+            {% for h in ["Date","Spread","Credit","Contracts","Max Risk","Result","Your P&L"] %}
+            <th class="px-4 py-3 text-left text-xs text-slate-500 uppercase tracking-wider whitespace-nowrap">{{ h }}</th>
+            {% endfor %}
           </tr>
         </thead>
-        <tbody id="trade-tbody">
-          <tr><td colspan="10" class="px-5 py-10 text-center text-slate-500 text-sm">Loading trades...</td></tr>
+        <tbody>
+          {% set trades_list = current_user.member_trades | sort(attribute='id', reverse=True) | list %}
+          {% for mt in trades_list[:8] %}
+          <tr class="border-t border-dark-border hover:bg-dark-card">
+            <td class="px-4 py-3 text-slate-400 text-xs whitespace-nowrap">{{ mt.signal_time[:16] if mt.signal_time else '—' }}</td>
+            <td class="px-4 py-3 font-mono font-bold text-white text-xs">{{ mt.short_strike }}/{{ mt.long_strike }}P</td>
+            <td class="px-4 py-3 text-green-400 font-semibold">${{ mt.net_credit }}</td>
+            <td class="px-4 py-3 text-white font-semibold">{{ mt.contracts }}</td>
+            <td class="px-4 py-3 text-yellow-400 text-xs">${{ "{:,.0f}".format(mt.max_risk) if mt.max_risk else '—' }}</td>
+            <td class="px-4 py-3">
+              {% if mt.status == 'OPEN' %}
+                <span class="badge-open px-2 py-1 rounded-full text-xs">OPEN</span>
+              {% elif mt.pnl and mt.pnl > 0 %}
+                <span class="badge-win px-2 py-1 rounded-full text-xs font-semibold">WIN</span>
+              {% else %}
+                <span class="badge-loss px-2 py-1 rounded-full text-xs font-semibold">LOSS</span>
+              {% endif %}
+            </td>
+            <td class="px-4 py-3 font-bold text-xs {% if mt.pnl and mt.pnl > 0 %}text-green-400{% elif mt.pnl %}text-red-400{% else %}text-slate-500{% endif %}">
+              {% if mt.pnl %}{{ '+' if mt.pnl > 0 else '' }}${{ "{:,.0f}".format(mt.pnl) }}{% else %}—{% endif %}
+            </td>
+          </tr>
+          {% else %}
+          <tr><td colspan="7" class="px-5 py-12 text-center text-slate-500 text-sm">No trades yet — next signal fires at 9:45 AM ET on the next trading day.</td></tr>
+          {% endfor %}
         </tbody>
       </table>
     </div>
   </div>
 
-  <!-- Position Sizing Tool (Pro+) -->
-  {% if current_user.plan in ['pro','elite'] %}
-  <div class="card mt-6 p-6">
-    <h2 class="font-semibold text-white mb-4">Position Sizing Calculator</h2>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+  <!-- Update settings -->
+  <div id="update-account" class="card p-6">
+    <h3 class="font-semibold text-white mb-1">Update Account Settings</h3>
+    <p class="text-xs text-slate-500 mb-5">Change your capital pledge or risk tolerance anytime. Historical trades will keep their original sizing.</p>
+    <form method="POST" action="/dashboard/setup-account" class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
       <div>
-        <label class="text-xs text-slate-500 uppercase tracking-wider block mb-2">Account Size ($)</label>
-        <input type="number" id="account-size" value="25000" class="w-full px-4 py-3 rounded-lg text-white text-sm" style="background:#0d1829;border:1px solid #1e2d45">
+        <label class="text-xs text-slate-500 uppercase tracking-wider block mb-2">Capital ($)</label>
+        <input type="number" name="account_size" value="{{ current_user.account_size | int }}"
+               min="5000" step="1000"
+               class="w-full px-4 py-3 rounded-lg text-white text-sm" style="background:#0d1829;border:1px solid #1e2d45;outline:none">
       </div>
       <div>
-        <label class="text-xs text-slate-500 uppercase tracking-wider block mb-2">Risk Per Trade (%)</label>
-        <input type="number" id="risk-pct" value="2" step="0.5" class="w-full px-4 py-3 rounded-lg text-white text-sm" style="background:#0d1829;border:1px solid #1e2d45">
+        <label class="text-xs text-slate-500 uppercase tracking-wider block mb-2">Risk %</label>
+        <select name="risk_pct" class="w-full px-4 py-3 rounded-lg text-white text-sm" style="background:#0d1829;border:1px solid #1e2d45;outline:none">
+          <option value="1.0" {% if current_user.risk_pct == 1.0 %}selected{% endif %}>1% Conservative</option>
+          <option value="2.0" {% if current_user.risk_pct == 2.0 %}selected{% endif %}>2% Recommended</option>
+          <option value="3.0" {% if current_user.risk_pct == 3.0 %}selected{% endif %}>3% Moderate</option>
+          <option value="5.0" {% if current_user.risk_pct == 5.0 %}selected{% endif %}>5% Aggressive</option>
+        </select>
       </div>
       <div>
-        <label class="text-xs text-slate-500 uppercase tracking-wider block mb-2">Spread Width ($)</label>
-        <input type="number" id="spread-width" value="25" class="w-full px-4 py-3 rounded-lg text-white text-sm" style="background:#0d1829;border:1px solid #1e2d45">
+        <label class="text-xs text-slate-500 uppercase tracking-wider block mb-2">Mobile</label>
+        <input type="tel" name="phone" value="{{ current_user.phone or '' }}"
+               class="w-full px-4 py-3 rounded-lg text-white text-sm" style="background:#0d1829;border:1px solid #1e2d45;outline:none">
       </div>
-    </div>
-    <div class="mt-4 p-4 rounded-lg flex items-center gap-8" style="background:#0d1829">
-      <div><div class="text-xs text-slate-500 mb-1">Max Contracts</div><div class="text-2xl font-bold text-green-400" id="max-contracts">—</div></div>
-      <div><div class="text-xs text-slate-500 mb-1">Max Risk</div><div class="text-2xl font-bold text-white" id="max-risk">—</div></div>
-      <div><div class="text-xs text-slate-500 mb-1">Capital at Risk</div><div class="text-2xl font-bold text-yellow-400" id="risk-display">—</div></div>
-    </div>
-  </div>
-  {% else %}
-  <div class="card mt-6 p-6 text-center">
-    <div class="text-slate-500 text-sm mb-3">Position Sizing Calculator is a Pro feature</div>
-    <a href="/pricing" class="btn-primary text-sm">Upgrade to Pro</a>
+      <button type="submit" class="btn-secondary text-sm">Save Changes</button>
+    </form>
   </div>
   {% endif %}
 
 </div>
 
 <script>
-// Load trades
-async function loadTrades() {
-  const r = await fetch('/api/trades');
-  const trades = await r.json();
-  const tbody = document.getElementById('trade-tbody');
-  if (!trades.length) {
-    tbody.innerHTML = '<tr><td colspan="10" class="px-5 py-10 text-center text-slate-500 text-sm">No trades yet — first signal fires Monday 9:45 AM ET</td></tr>';
-    return;
-  }
-  tbody.innerHTML = trades.map(t => {
-    const badge = t.status === 'OPEN'
-      ? '<span class="badge-open px-3 py-1 rounded-full text-xs font-semibold">OPEN</span>'
-      : t.status.includes('PROFIT')
-        ? '<span class="badge-win px-3 py-1 rounded-full text-xs font-semibold">WIN</span>'
-        : '<span class="badge-loss px-3 py-1 rounded-full text-xs font-semibold">LOSS</span>';
-    const pnl = t.pnl !== null
-      ? `<span class="${t.pnl >= 0 ? 'text-green-400' : 'text-red-400'} font-semibold">$${t.pnl}</span>`
-      : '<span class="text-slate-500">—</span>';
-    return `<tr class="border-t border-dark-border hover:bg-dark-card">
-      <td class="px-5 py-3 text-xs text-slate-400">${t.date}</td>
-      <td class="px-5 py-3 text-sm font-mono font-bold text-white">${t.short_strike}/${t.long_strike}P</td>
-      <td class="px-5 py-3 text-xs text-slate-400">${t.expiry}</td>
-      <td class="px-5 py-3 text-sm text-green-400 font-semibold">$${t.net_credit}</td>
-      <td class="px-5 py-3 text-sm text-red-400">$${t.max_loss}</td>
-      <td class="px-5 py-3 text-sm text-blue-400">${t.ror_pct}%</td>
-      <td class="px-5 py-3 text-sm text-slate-400">${t.vix}</td>
-      <td class="px-5 py-3 text-xs text-slate-500">${t.exit_reason || '—'}</td>
-      <td class="px-5 py-3 text-sm">${pnl}</td>
-      <td class="px-5 py-3">${badge}</td>
-    </tr>`;
+const equity = {{ member_stats.equity_curve | tojson if member_stats and member_stats.equity_curve else '[]' }};
+const chartEl = document.getElementById('member-equity-chart');
+if (chartEl && equity.length) {
+  const maxAbs = Math.max(...equity.map(Math.abs), 1);
+  chartEl.innerHTML = equity.map((v, i) => {
+    const h = Math.max(4, Math.abs(v) / maxAbs * 95);
+    return `<div class="flex-1 rounded-t transition-all" style="height:${h}px;background:${v>=0?'#22c55e':'#ef4444'};min-width:2px;max-width:14px;cursor:pointer" title="Trade ${i+1}: ${v>=0?'+':''}$${v.toLocaleString()}"></div>`;
   }).join('');
 }
-
-// Equity chart
-async function loadChart() {
-  const r = await fetch('/api/stats');
-  const s = await r.json();
-  const el = document.getElementById('equity-chart');
-  if (!s.equity_curve || !s.equity_curve.length) {
-    el.innerHTML = '<div class="text-slate-500 text-sm m-auto">Equity curve will appear after first closed trade</div>';
-    return;
-  }
-  const vals = s.equity_curve;
-  const maxAbs = Math.max(...vals.map(Math.abs), 1);
-  el.innerHTML = vals.map((v, i) => {
-    const h = Math.max(4, Math.abs(v) / maxAbs * 140);
-    return `<div class="flex-1 rounded-t transition-all" style="height:${h}px;background:${v>=0?'#22c55e':'#f87171'};min-width:6px" title="Trade ${i+1}: $${v}"></div>`;
-  }).join('');
-}
-
-// Countdown to next entry window
-function updateCountdown() {
-  const now = new Date();
-  const day = now.getDay();
-  const h = now.getHours(), m = now.getMinutes(), s = now.getSeconds();
-  const totalSecs = h * 3600 + m * 60 + s;
-  const morning = 9 * 3600 + 45 * 60;
-  const afternoon = 14 * 3600;
-
-  let target, label;
-  if (day === 0 || day === 6) {
-    label = 'Market closed — opens Monday 9:45 AM ET';
-    document.getElementById('countdown').textContent = '--:--:--';
-    document.getElementById('window-label').textContent = label;
-    return;
-  }
-  if (totalSecs < morning) { target = morning; label = 'Until morning entry window'; }
-  else if (totalSecs < morning + 4500) { target = morning + 4500; label = 'Morning window OPEN now'; }
-  else if (totalSecs < afternoon) { target = afternoon; label = 'Until afternoon entry window'; }
-  else if (totalSecs < afternoon + 3600) { target = afternoon + 3600; label = 'Afternoon window OPEN now'; }
-  else { target = morning + 86400; label = 'Until tomorrow morning window'; }
-
-  const diff = target - totalSecs;
-  const hh = Math.floor(diff / 3600);
-  const mm = Math.floor((diff % 3600) / 60);
-  const ss = diff % 60;
-  document.getElementById('countdown').textContent =
-    `${String(hh).padStart(2,'0')}:${String(mm).padStart(2,'0')}:${String(ss).padStart(2,'0')}`;
-  document.getElementById('window-label').textContent = label;
-}
-
-// Position sizer
-function calcSize() {
-  const acc = parseFloat(document.getElementById('account-size').value) || 0;
-  const riskPct = parseFloat(document.getElementById('risk-pct').value) || 2;
-  const width = parseFloat(document.getElementById('spread-width').value) || 25;
-  const maxRisk = acc * riskPct / 100;
-  const contracts = Math.floor(maxRisk / (width * 100));
-  document.getElementById('max-contracts').textContent = contracts;
-  document.getElementById('max-risk').textContent = '$' + (contracts * width * 100).toLocaleString();
-  document.getElementById('risk-display').textContent = riskPct + '% of account';
-}
-
-loadTrades();
-loadChart();
-setInterval(loadTrades, 30000);
-setInterval(updateCountdown, 1000);
-updateCountdown();
-{% if current_user.plan in ['pro','elite'] %}
-document.getElementById('account-size').addEventListener('input', calcSize);
-document.getElementById('risk-pct').addEventListener('input', calcSize);
-document.getElementById('spread-width').addEventListener('input', calcSize);
-calcSize();
-{% endif %}
 </script>
 {% endblock %}

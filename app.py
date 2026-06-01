@@ -18,7 +18,7 @@ if os.path.exists(ENV_FILE):
 TRADES_DB  = os.getenv('TRADES_DB_PATH', os.path.join(BASE_DIR, 'trades.db'))
 MEMBERS_DB = os.getenv('MEMBERS_DB_PATH', os.path.join(BASE_DIR, 'members.db'))
 
-from models import db, User, Lead, SocialPost
+from models import db, User, Lead, SocialPost, MemberTrade
 
 app = Flask(__name__)
 CORS(app)
@@ -131,6 +131,133 @@ def get_vix_now():
         return get_vix()
     except Exception:
         return '—'
+
+# ── Position sizing ───────────────────────────────────────────────────────────
+
+def calc_contracts(account_size, net_credit, risk_pct=2.0):
+    """
+    How many contracts to trade based on account size and risk %.
+    Uses 2x stop loss (practical max loss) as the per-contract risk.
+    Minimum 1 contract.
+    """
+    if not account_size or account_size <= 0 or not net_credit:
+        return 1
+    stop_loss_value = net_credit * 2 * 100   # 2x credit per contract
+    max_risk        = account_size * (risk_pct / 100)
+    contracts       = max(1, int(max_risk / stop_loss_value))
+    return contracts
+
+def fmt_dollar(val):
+    """Format as $1.2M, $45.3K, $1,234"""
+    if val is None: return '—'
+    if abs(val) >= 1_000_000: return f"${val/1_000_000:,.2f}M"
+    if abs(val) >= 1_000:     return f"${val/1_000:,.1f}K"
+    return f"${val:,.0f}"
+
+# ── Member trade sync ─────────────────────────────────────────────────────────
+
+def sync_member_trades_for_user(user):
+    """
+    For a given member, ensure every trade in trades.db has a corresponding
+    MemberTrade record in members.db. Updates closed trades with P&L.
+    Only runs for paid (member) accounts.
+    """
+    if user.plan == 'free' or not user.account_size:
+        return
+    import sqlite3
+    try:
+        conn = sqlite3.connect(TRADES_DB)
+        conn.row_factory = sqlite3.Row
+        cur  = conn.cursor()
+        cur.execute("SELECT * FROM trades ORDER BY id")
+        trades = [dict(r) for r in cur.fetchall()]
+        conn.close()
+
+        existing_ids = {mt.trade_id for mt in user.member_trades}
+
+        for t in trades:
+            contracts = calc_contracts(user.account_size, t.get('net_credit', 3.0), user.risk_pct)
+            mlpc      = round((t.get('spread_width', 25) - t.get('net_credit', 0)) * 100, 2)
+            max_risk  = round(contracts * mlpc, 2)
+
+            if t['id'] not in existing_ids:
+                # Create new member trade record
+                mt = MemberTrade(
+                    user_id              = user.id,
+                    trade_id             = t['id'],
+                    signal_time          = t.get('signal_time', ''),
+                    short_strike         = t.get('short_strike'),
+                    long_strike          = t.get('long_strike'),
+                    expiry               = t.get('expiry', ''),
+                    dte                  = t.get('dte'),
+                    net_credit           = t.get('net_credit'),
+                    max_loss_per_contract= mlpc,
+                    contracts            = contracts,
+                    max_risk             = max_risk,
+                    profit_target        = t.get('profit_target'),
+                    stop_loss_level      = t.get('stop_loss_level'),
+                    vix                  = t.get('vix_at_entry'),
+                    spx                  = t.get('spx_at_entry'),
+                    status               = t.get('status', 'OPEN'),
+                    exit_price           = t.get('exit_price'),
+                    exit_time            = t.get('exit_time'),
+                    exit_reason          = t.get('exit_reason'),
+                    account_snapshot     = user.account_size,
+                )
+                if t.get('pnl') is not None:
+                    unit_pnl   = t['net_credit'] - (t.get('exit_price') or 0)
+                    raw_pnl    = round(unit_pnl * 100 * contracts, 2)
+                    mt.pnl     = raw_pnl
+                    mt.pnl_pct_account = round(raw_pnl / user.account_size * 100, 3) if user.account_size else 0
+                db.session.add(mt)
+            else:
+                # Update existing if trade is now closed
+                mt = MemberTrade.query.filter_by(user_id=user.id, trade_id=t['id']).first()
+                if mt and mt.status == 'OPEN' and t.get('status', 'OPEN') != 'OPEN':
+                    mt.status     = t['status']
+                    mt.exit_price = t.get('exit_price')
+                    mt.exit_time  = t.get('exit_time')
+                    mt.exit_reason= t.get('exit_reason')
+                    unit_pnl      = (t.get('net_credit', 0)) - (t.get('exit_price') or 0)
+                    mt.pnl        = round(unit_pnl * 100 * mt.contracts, 2)
+                    mt.pnl_pct_account = round(mt.pnl / user.account_size * 100, 3) if user.account_size else 0
+
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+
+def get_member_stats(user):
+    """Compute portfolio summary for a member."""
+    if not user.member_trades:
+        return None
+    closed = [mt for mt in user.member_trades if mt.status != 'OPEN' and mt.pnl is not None]
+    open_t = [mt for mt in user.member_trades if mt.status == 'OPEN']
+    wins   = [mt for mt in closed if mt.pnl > 0]
+    total_pnl    = round(sum(mt.pnl for mt in closed), 2) if closed else 0
+    win_rate     = round(len(wins) / len(closed) * 100, 1) if closed else 0
+    account_now  = (user.account_size or 0) + total_pnl
+    growth_pct   = round(total_pnl / user.account_size * 100, 1) if user.account_size else 0
+    # Equity curve
+    cum, equity = 0.0, []
+    for mt in sorted(closed, key=lambda x: x.id):
+        cum += mt.pnl
+        equity.append(round(cum, 2))
+    return {
+        'total_trades' : len(user.member_trades),
+        'closed_trades': len(closed),
+        'open_trades'  : len(open_t),
+        'wins'         : len(wins),
+        'losses'       : len(closed) - len(wins),
+        'win_rate'     : win_rate,
+        'total_pnl'    : total_pnl,
+        'total_pnl_fmt': fmt_dollar(total_pnl),
+        'account_start': user.account_size,
+        'account_now'  : round(account_now, 2),
+        'account_now_fmt': fmt_dollar(account_now),
+        'growth_pct'   : growth_pct,
+        'equity_curve' : equity,
+        'contracts_typical': calc_contracts(user.account_size, 4.80, user.risk_pct),
+    }
 
 # ── public routes ─────────────────────────────────────────────────────────────
 
@@ -256,7 +383,72 @@ def logout():
 def member_dashboard():
     stats, _ = get_trade_stats()
     vix = get_vix_now()
-    return render_template('dashboard_member.html', stats=stats, vix=vix)
+    # Sync & compute personalized stats
+    sync_member_trades_for_user(current_user)
+    member_stats = get_member_stats(current_user) if current_user.account_size else None
+    contracts    = calc_contracts(current_user.account_size or 0, 4.80, current_user.risk_pct or 2.0)
+    return render_template('dashboard_member.html',
+        stats=stats, vix=vix,
+        member_stats=member_stats,
+        contracts=contracts)
+
+@app.route('/dashboard/setup-account', methods=['POST'])
+@login_required
+def setup_account():
+    try:
+        acct  = float(request.form.get('account_size', 0))
+        risk  = float(request.form.get('risk_pct', 2.0))
+        phone = request.form.get('phone', '').strip()
+        if acct < 5000:
+            flash('Minimum recommended account size is $5,000.', 'error')
+            return redirect(url_for('member_dashboard'))
+        if not 0.5 <= risk <= 5.0:
+            flash('Risk % must be between 0.5% and 5%.', 'error')
+            return redirect(url_for('member_dashboard'))
+        current_user.account_size        = acct
+        current_user.risk_pct            = risk
+        current_user.account_pledge_date = datetime.utcnow()
+        if phone:
+            current_user.phone = phone
+        db.session.commit()
+        # Sync existing trades for this member immediately
+        sync_member_trades_for_user(current_user)
+        flash(f'Account profile saved. Alerts sized for ${acct:,.0f} at {risk}% risk per trade.', 'success')
+    except ValueError:
+        flash('Please enter a valid number.', 'error')
+    return redirect(url_for('member_dashboard'))
+
+@app.route('/dashboard/my-trades')
+@login_required
+def my_trades():
+    sync_member_trades_for_user(current_user)
+    member_stats = get_member_stats(current_user) if current_user.account_size else None
+    trades = sorted(current_user.member_trades, key=lambda x: x.id, reverse=True)
+    # Format for template
+    formatted = []
+    for mt in trades:
+        formatted.append({
+            'id'           : mt.id,
+            'trade_id'     : mt.trade_id,
+            'date'         : mt.signal_time[:16] if mt.signal_time else '—',
+            'spread'       : f"{mt.short_strike}/{mt.long_strike}P" if mt.short_strike else '—',
+            'expiry'       : mt.expiry,
+            'credit'       : mt.net_credit,
+            'contracts'    : mt.contracts,
+            'max_risk'     : fmt_dollar(mt.max_risk),
+            'max_risk_raw' : mt.max_risk,
+            'ror'          : round(mt.net_credit / (mt.max_loss_per_contract / 100) * 100, 1) if mt.max_loss_per_contract else 0,
+            'vix'          : mt.vix,
+            'status'       : mt.status,
+            'exit_reason'  : mt.exit_reason,
+            'pnl'          : mt.pnl,
+            'pnl_fmt'      : fmt_dollar(mt.pnl),
+            'pnl_pct'      : mt.pnl_pct_account,
+        })
+    return render_template('my_trades.html',
+        trades=formatted,
+        member_stats=member_stats,
+        user=current_user)
 
 # ── stripe checkout ───────────────────────────────────────────────────────────
 

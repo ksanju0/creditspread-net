@@ -249,6 +249,100 @@
   </div>
 </section>
 
+<!-- PERSONALIZED ALERTS + RISK PROTECTION — embedded naturally -->
+<section class="py-20 px-6" style="background:#080d18">
+  <div class="max-w-6xl mx-auto">
+
+    <!-- Two column: left = narrative, right = live example -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center mb-16">
+      <div>
+        <div class="text-green-400 text-xs font-bold uppercase tracking-widest mb-4">Your account. Your sizing. Your log.</div>
+        <h2 class="text-3xl font-bold text-white mb-5 leading-tight">Every alert is calculated for your exact account size.</h2>
+        <p class="text-slate-400 leading-relaxed mb-5">
+          Most signal services send the same alert to everyone — a doctor trading a $500K account and a student with $20K get identical instructions. That's not a service. That's noise.
+        </p>
+        <p class="text-slate-400 leading-relaxed mb-5">
+          When you join CreditSpread.net, you tell us your trading capital. Every signal you receive includes the <strong class="text-white">exact number of contracts</strong> scaled to your account at your chosen risk percentage — typically 2% max loss per trade.
+        </p>
+        <p class="text-slate-400 leading-relaxed">
+          Your dashboard tracks every alert against your capital — entry, exit, P&L, portfolio growth. You see exactly how the strategy performs on <em>your</em> money, not a theoretical account.
+        </p>
+      </div>
+
+      <!-- Alert card mockup -->
+      <div class="rounded-2xl overflow-hidden" style="background:#0a0f1e;border:1px solid #1e2d45">
+        <div class="px-5 py-3 border-b border-dark-border flex items-center justify-between" style="background:#080d18">
+          <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+            <span class="text-xs text-green-400 font-semibold">LIVE SIGNAL — 9:47 AM ET</span>
+          </div>
+          <span class="text-xs text-slate-600">creditspread.net</span>
+        </div>
+        <div class="p-6">
+          <div class="text-white font-bold text-lg mb-1">SPX Bull Put Spread</div>
+          <div class="font-mono text-2xl font-bold text-green-400 mb-4">SELL 5250P / BUY 5225P</div>
+          <div class="grid grid-cols-2 gap-3 mb-5">
+            {% for label, val, color in [
+              ("Credit","$4.80","text-green-400"),
+              ("Expiry","Today (0DTE)","text-white"),
+              ("Your Contracts","3 contracts","text-blue-400"),
+              ("Max Risk","$2,880 (2%)","text-yellow-400"),
+              ("Profit Target","$2.40 → close","text-green-400"),
+              ("Stop Loss","$9.60 → exit","text-red-400")
+            ] %}
+            <div class="rounded-lg p-3" style="background:#0d1829;border:1px solid #1e2d45">
+              <div class="text-xs text-slate-500 mb-1">{{ label }}</div>
+              <div class="font-semibold {{ color }} text-sm">{{ val }}</div>
+            </div>
+            {% endfor %}
+          </div>
+          <div class="rounded-lg p-3 text-xs text-slate-500" style="background:#0d1829;border:1px solid #166534">
+            <span class="text-green-400 font-semibold">Sized for your $144,000 account at 2% risk.</span>
+            A stop-loss on this trade would cost $2,880 — 2% of your capital. The other 98% is untouched.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Risk mitigation 3-point section -->
+    <div class="rounded-2xl p-8" style="background:#0d1829;border:1px solid #1e2d45">
+      <div class="text-center mb-8">
+        <h3 class="text-xl font-bold text-white mb-2">The real reason accounts blow up — and how we prevent it.</h3>
+        <p class="text-slate-500 text-sm max-w-2xl mx-auto">90% of retail options traders lose not because the strategy is wrong — but because they overtrade, oversize, and hold losing trades too long. Every feature below is designed to prevent exactly that.</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+        <div class="text-center">
+          <div class="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl" style="background:#0d2818">🎯</div>
+          <h4 class="font-bold text-white mb-2">Position sizing removes guesswork</h4>
+          <p class="text-slate-500 text-sm leading-relaxed">The alert tells you exactly how many contracts — based on your capital. No mental math. No temptation to double-size because "the setup looks perfect."</p>
+        </div>
+
+        <div class="text-center">
+          <div class="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl" style="background:#0d1829">⏱</div>
+          <h4 class="font-bold text-white mb-2">Hard stop loss ends emotional holding</h4>
+          <p class="text-slate-500 text-sm leading-relaxed">Every signal has a mechanical 2x stop loss. When it hits, you close. No "I'll wait a little longer." The rule exists precisely for the moments when it's hardest to follow it.</p>
+        </div>
+
+        <div class="text-center">
+          <div class="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl" style="background:#0d2818">📊</div>
+          <h4 class="font-bold text-white mb-2">Your personal log keeps you honest</h4>
+          <p class="text-slate-500 text-sm leading-relaxed">Your dashboard logs every signal against your account — wins and losses. You see your actual portfolio growth, not a curated highlight reel. Transparency with yourself is the edge most traders never develop.</p>
+        </div>
+
+      </div>
+      <div class="mt-8 pt-6 border-t border-dark-border text-center">
+        <p class="text-xs text-slate-600 leading-relaxed max-w-3xl mx-auto">
+          <strong class="text-slate-500">We do not connect to your brokerage.</strong> We never ask for account logins, credentials, or read access to your positions.
+          Your declared account size stays private in your profile. The sizing in every alert is a <em>recommendation</em> — you execute trades in your own account at your own discretion.
+          This is an educational signal service. <a href="/disclaimer" class="text-slate-500 hover:text-green-400">Full disclaimer →</a>
+        </p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
 <!-- TICKERS -->
 <section class="py-16 px-6">
   <div class="max-w-5xl mx-auto text-center">

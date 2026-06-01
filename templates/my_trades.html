@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+{% block title %}My Trade Log — CreditSpread.net{% endblock %}
+{% block content %}
+<div class="max-w-7xl mx-auto px-6 py-10">
+
+  <div class="flex items-center justify-between mb-8 flex-wrap gap-4">
+    <div>
+      <div class="text-slate-500 text-xs uppercase tracking-wider mb-1">
+        <a href="/dashboard" class="hover:text-green-400">← Dashboard</a>
+      </div>
+      <h1 class="text-2xl font-bold text-white">My Complete Trade Log</h1>
+      <p class="text-slate-500 text-sm mt-1">Every signal we sent — sized to your ${{ "{:,.0f}".format(user.account_size) }} account at {{ user.risk_pct }}% risk.</p>
+    </div>
+    <a href="/dashboard" class="btn-secondary text-sm">Back to Dashboard</a>
+  </div>
+
+  <!-- Summary stats -->
+  {% if member_stats %}
+  <div class="grid grid-cols-2 md:grid-cols-6 gap-4 mb-8">
+    {% for label, val, color in [
+      ("Total Signals", member_stats.total_trades, "text-white"),
+      ("Closed Trades", member_stats.closed_trades, "text-white"),
+      ("Winners", member_stats.wins, "text-green-400"),
+      ("Losses", member_stats.losses, "text-red-400"),
+      ("Win Rate", member_stats.win_rate|string+"%", "text-green-400"),
+      ("Your Total P&L", member_stats.total_pnl_fmt, "text-green-400" if member_stats.total_pnl >= 0 else "text-red-400")
+    ] %}
+    <div class="card p-4 text-center">
+      <div class="text-xl font-bold {{ color }}">{{ val }}</div>
+      <div class="text-xs text-slate-500 mt-1 uppercase tracking-wider">{{ label }}</div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- Portfolio growth bar -->
+  <div class="card p-6 mb-8">
+    <div class="flex items-center justify-between mb-2">
+      <span class="text-white font-semibold">Portfolio Equity Curve</span>
+      <span class="text-green-400 font-bold">{{ member_stats.total_pnl_fmt }} ({{ member_stats.growth_pct }}%)</span>
+    </div>
+    <div id="trades-equity-chart" class="flex items-end gap-0.5" style="height:80px"></div>
+    <div class="flex justify-between mt-2 text-xs text-slate-600">
+      <span>Started: ${{ "{:,.0f}".format(member_stats.account_start) }}</span>
+      <span>Current: ${{ "{:,.0f}".format(member_stats.account_now) }}</span>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Full trade table -->
+  <div class="card overflow-hidden">
+    <div class="px-6 py-4 border-b border-dark-border flex items-center justify-between">
+      <h3 class="font-semibold text-white">All Signals — {{ trades | length }} trades</h3>
+      <div class="text-xs text-slate-500">Sized to your account · P&L reflects your actual allocation</div>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead>
+          <tr style="background:#0d1829">
+            {% for h in ["#","Date & Time","Spread","Expiry","Credit","Contracts","Max Risk","ROR","VIX","Exit","Result","Your P&L","Acct %"] %}
+            <th class="px-3 py-3 text-left text-xs text-slate-500 uppercase tracking-wider whitespace-nowrap">{{ h }}</th>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for t in trades %}
+          <tr class="border-t border-dark-border hover:bg-dark-card text-xs">
+            <td class="px-3 py-3 text-slate-600">{{ t.trade_id }}</td>
+            <td class="px-3 py-3 text-slate-400 whitespace-nowrap">{{ t.date }}</td>
+            <td class="px-3 py-3 font-mono font-bold text-white whitespace-nowrap">{{ t.spread }}</td>
+            <td class="px-3 py-3 text-slate-400">{{ t.expiry }}</td>
+            <td class="px-3 py-3 text-green-400 font-semibold">${{ t.credit }}</td>
+            <td class="px-3 py-3 text-white font-bold">{{ t.contracts }}</td>
+            <td class="px-3 py-3 text-yellow-400">{{ t.max_risk }}</td>
+            <td class="px-3 py-3 text-blue-400">{{ t.ror }}%</td>
+            <td class="px-3 py-3 text-slate-400">{{ t.vix }}</td>
+            <td class="px-3 py-3 text-slate-500">{{ t.exit_reason or '—' }}</td>
+            <td class="px-3 py-3">
+              {% if t.status == 'OPEN' %}
+                <span class="badge-open px-2 py-0.5 rounded-full text-xs">OPEN</span>
+              {% elif t.pnl and t.pnl > 0 %}
+                <span class="badge-win px-2 py-0.5 rounded-full text-xs font-semibold">WIN</span>
+              {% elif t.pnl %}
+                <span class="badge-loss px-2 py-0.5 rounded-full text-xs font-semibold">LOSS</span>
+              {% else %}
+                <span class="text-slate-600">—</span>
+              {% endif %}
+            </td>
+            <td class="px-3 py-3 font-bold {% if t.pnl and t.pnl > 0 %}text-green-400{% elif t.pnl %}text-red-400{% else %}text-slate-500{% endif %}">
+              {% if t.pnl_fmt %}{{ '+' if t.pnl > 0 else '' }}{{ t.pnl_fmt }}{% else %}—{% endif %}
+            </td>
+            <td class="px-3 py-3 {% if t.pnl_pct and t.pnl_pct > 0 %}text-green-400{% elif t.pnl_pct %}text-red-400{% else %}text-slate-500{% endif %}">
+              {% if t.pnl_pct %}{{ '+' if t.pnl_pct > 0 else '' }}{{ "%.2f"|format(t.pnl_pct) }}%{% else %}—{% endif %}
+            </td>
+          </tr>
+          {% else %}
+          <tr><td colspan="13" class="px-5 py-16 text-center text-slate-500">No trades in your log yet.</td></tr>
+          {% endfor %}
+        </tbody>
+        {% if trades %}
+        <tfoot>
+          <tr style="background:rgba(34,197,94,0.05);border-top:2px solid #166534">
+            <td colspan="6" class="px-3 py-3 text-green-400 font-bold text-xs uppercase tracking-wider">Total</td>
+            <td class="px-3 py-3"></td>
+            <td class="px-3 py-3"></td>
+            <td class="px-3 py-3"></td>
+            <td class="px-3 py-3"></td>
+            <td class="px-3 py-3">
+              {% if member_stats %}
+              <span class="text-xs text-slate-400">{{ member_stats.wins }}W / {{ member_stats.losses }}L · {{ member_stats.win_rate }}%</span>
+              {% endif %}
+            </td>
+            <td class="px-3 py-3 font-bold {{ 'text-green-400' if member_stats and member_stats.total_pnl >= 0 else 'text-red-400' }}">
+              {% if member_stats %}{{ member_stats.total_pnl_fmt }}{% endif %}
+            </td>
+            <td class="px-3 py-3 font-bold {{ 'text-green-400' if member_stats and member_stats.growth_pct >= 0 else 'text-red-400' }}">
+              {% if member_stats %}+{{ member_stats.growth_pct }}%{% endif %}
+            </td>
+          </tr>
+        </tfoot>
+        {% endif %}
+      </table>
+    </div>
+  </div>
+
+  <!-- Risk mitigation note -->
+  <div class="mt-8 rounded-xl p-6" style="background:#1a0a0a;border:1px solid #7f1d1d">
+    <div class="flex items-start gap-4">
+      <div class="text-xl flex-shrink-0">⚠️</div>
+      <div>
+        <div class="text-red-400 font-bold text-sm mb-2">Risk Disclosure — Please Read</div>
+        <p class="text-slate-500 text-xs leading-relaxed">
+          The P&L figures in this log are calculated based on your declared account size and assume you followed every signal at the recommended contract size. Actual results in your brokerage account will vary based on your exact fill prices, commissions, and whether you followed each signal.
+          <strong class="text-slate-400">Past performance shown here does not guarantee future results.</strong>
+          Options trading involves significant risk of loss. The {{ user.risk_pct }}% risk-per-trade rule is a guideline — always verify position sizing with a financial professional. Never risk more than you can afford to lose.
+        </p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const equity = {{ member_stats.equity_curve | tojson if member_stats and member_stats.equity_curve else '[]' }};
+const el = document.getElementById('trades-equity-chart');
+if (el && equity.length) {
+  const maxAbs = Math.max(...equity.map(Math.abs), 1);
+  el.innerHTML = equity.map((v, i) => {
+    const h = Math.max(3, Math.abs(v) / maxAbs * 75);
+    return `<div class="flex-1 rounded-t" style="height:${h}px;background:${v>=0?'#22c55e':'#ef4444'};min-width:2px;max-width:12px" title="Trade ${i+1}: ${v>=0?'+':''}$${v.toLocaleString()}"></div>`;
+  }).join('');
+}
+</script>
+{% endblock %}
