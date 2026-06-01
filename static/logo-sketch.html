@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>creditspread.net — Geometric S Logo</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:#F0F2F5; font-family:'Space Grotesk',sans-serif; padding:48px; }
+  h2 { font-size:11px; letter-spacing:3px; text-transform:uppercase; color:#94A3B8; margin-bottom:28px; font-weight:500; }
+  .board { background:white; border-radius:20px; padding:56px; max-width:1100px; box-shadow:0 4px 40px rgba(0,0,0,0.07); }
+  .header { margin-bottom:56px; border-bottom:1px solid #F0F2F5; padding-bottom:32px; }
+  .header p { font-size:24px; font-weight:700; color:#0B1F3A; letter-spacing:-0.5px; }
+  .header span { font-size:13px; font-weight:400; color:#94A3B8; margin-top:4px; display:block; letter-spacing:1px; }
+
+  /* variant grid */
+  .grid { display:grid; grid-template-columns:repeat(4,1fr); gap:0; border:1px solid #E8ECF0; border-radius:16px; overflow:hidden; margin-bottom:48px; }
+  .cell { padding:36px 24px; display:flex; flex-direction:column; align-items:center; gap:14px; }
+  .cell.dark { background:#0B1F3A; }
+  .cell.light { background:#ffffff; border-left:1px solid #F0F2F5; }
+  .cell.dark2 { background:#0B1F3A; border-left:1px solid rgba(255,255,255,0.05); }
+  .cell.light2 { background:#F8FAFC; border-left:1px solid #F0F2F5; }
+  .cell-label { font-size:9px; letter-spacing:2px; text-transform:uppercase; }
+  .cell.dark .cell-label, .cell.dark2 .cell-label { color:#2D4A6A; }
+  .cell.light .cell-label, .cell.light2 .cell-label { color:#B0BCCC; }
+
+  /* wordmark row */
+  .wm { display:flex; align-items:center; gap:11px; }
+  .wm-text { font-size:15px; font-weight:700; letter-spacing:-0.3px; line-height:1; }
+  .wm-dot { font-size:12px; font-weight:400; }
+
+  /* size row */
+  .sizes { display:flex; gap:32px; align-items:flex-end; margin-bottom:48px; }
+  .size-item { display:flex; flex-direction:column; align-items:center; gap:10px; }
+  .size-bg { background:#0B1F3A; padding:14px; border-radius:10px; display:flex; align-items:center; justify-content:center; }
+  .size-label { font-size:10px; color:#94A3B8; letter-spacing:1px; }
+
+  /* color bar */
+  .colorbar { display:flex; gap:12px; margin-bottom:48px; }
+  .swatch { flex:1; height:64px; border-radius:10px; display:flex; align-items:flex-end; padding:8px 12px; }
+
+  /* recommendation -->
+  .rec { background:#F8FAFC; border:1px solid #E8ECF0; border-radius:12px; padding:24px; }
+</style>
+</head>
+<body>
+<div class="board">
+
+  <div class="header">
+    <p>creditspread.net — Geometric Block S Mark</p>
+    <span>Inspired by sketch · Two offset rectangular forms · Architectural · Institutional</span>
+  </div>
+
+  <h2>Icon Variants — Dark · Light · Wordmark Dark · Wordmark Light</h2>
+
+  <!-- ── VARIANT A: Outline only (sketch-faithful) ── -->
+  <div style="font-size:11px;color:#2563EB;font-weight:600;letter-spacing:1px;margin-bottom:12px;text-transform:uppercase">A — Pure Outline</div>
+  <div class="grid" style="margin-bottom:32px">
+    <div class="cell dark">
+      <svg width="52" height="64" viewBox="0 0 52 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Top block — right-aligned -->
+        <rect x="14" y="2" width="36" height="28" rx="3" stroke="white" stroke-width="3.5" fill="none"/>
+        <!-- Bottom block — left-aligned, shifted left -->
+        <rect x="2" y="34" width="36" height="28" rx="3" stroke="white" stroke-width="3.5" fill="none"/>
+      </svg>
+      <div class="cell-label">Icon · Dark</div>
+    </div>
+    <div class="cell light">
+      <svg width="52" height="64" viewBox="0 0 52 64" fill="none">
+        <rect x="14" y="2" width="36" height="28" rx="3" stroke="#0B1F3A" stroke-width="3.5" fill="none"/>
+        <rect x="2" y="34" width="36" height="28" rx="3" stroke="#0B1F3A" stroke-width="3.5" fill="none"/>
+      </svg>
+      <div class="cell-label">Icon · Light</div>
+    </div>
+    <div class="cell dark2">
+      <div class="wm">
+        <svg width="30" height="38" viewBox="0 0 52 64" fill="none">
+          <rect x="14" y="2" width="36" height="28" rx="3" stroke="white" stroke-width="4" fill="none"/>
+          <rect x="2" y="34" width="36" height="28" rx="3" stroke="white" stroke-width="4" fill="none"/>
+        </svg>
+        <div>
+          <div class="wm-text" style="color:white">creditspread</div>
+          <div class="wm-dot" style="color:#14B8A6;letter-spacing:1px">.net</div>
+        </div>
+      </div>
+      <div class="cell-label">Wordmark · Dark</div>
+    </div>
+    <div class="cell light2">
+      <div class="wm">
+        <svg width="30" height="38" viewBox="0 0 52 64" fill="none">
+          <rect x="14" y="2" width="36" height="28" rx="3" stroke="#0B1F3A" stroke-width="4" fill="none"/>
+          <rect x="2" y="34" width="36" height="28" rx="3" stroke="#0B1F3A" stroke-width="4" fill="none"/>
+        </svg>
+        <div>
+          <div class="wm-text" style="color:#0B1F3A">creditspread</div>
+          <div class="wm-dot" style="color:#14B8A6;letter-spacing:1px">.net</div>
+        </div>
+      </div>
+      <div class="cell-label">Wordmark · Light</div>
+    </div>
+  </div>
+
+  <!-- ── VARIANT B: Two-color blocks ── -->
+  <div style="font-size:11px;color:#14B8A6;font-weight:600;letter-spacing:1px;margin-bottom:12px;text-transform:uppercase">B — Two-color (Teal top · Blue bottom)</div>
+  <div class="grid" style="margin-bottom:32px">
+    <div class="cell dark">
+      <svg width="52" height="64" viewBox="0 0 52 64" fill="none">
+        <rect x="14" y="2" width="36" height="28" rx="3" stroke="#14B8A6" stroke-width="3.5" fill="none"/>
+        <rect x="2" y="34" width="36" height="28" rx="3" stroke="#2563EB" stroke-width="3.5" fill="none"/>
+      </svg>
+      <div class="cell-label">Icon · Dark</div>
+    </div>
+    <div class="cell light">
+      <svg width="52" height="64" viewBox="0 0 52 64" fill="none">
+        <rect x="14" y="2" width="36" height="28" rx="3" stroke="#14B8A6" stroke-width="3.5" fill="none"/>
+        <rect x="2" y="34" width="36" height="28" rx="3" stroke="#2563EB" stroke-width="3.5" fill="none"/>
+      </svg>
+      <div class="cell-label">Icon · Light</div>
+    </div>
+    <div class="cell dark2">
+      <div class="wm">
+        <svg width="30" height="38" viewBox="0 0 52 64" fill="none">
+          <rect x="14" y="2" width="36" height="28" rx="3" stroke="#14B8A6" stroke-width="4" fill="none"/>
+          <rect x="2" y="34" width="36" height="28" rx="3" stroke="#2563EB" stroke-width="4" fill="none"/>
+        </svg>
+        <div>
+          <div class="wm-text" style="color:white">creditspread</div>
+          <div class="wm-dot" style="color:#14B8A6;letter-spacing:1px">.net</div>
+        </div>
+      </div>
+      <div class="cell-label">Wordmark · Dark</div>
+    </div>
+    <div class="cell light2">
+      <div class="wm">
+        <svg width="30" height="38" viewBox="0 0 52 64" fill="none">
+          <rect x="14" y="2" width="36" height="28" rx="3" stroke="#14B8A6" stroke-width="4" fill="none"/>
+          <rect x="2" y="34" width="36" height="28" rx="3" stroke="#2563EB" stroke-width="4" fill="none"/>
+        </svg>
+        <div>
+          <div class="wm-text" style="color:#0B1F3A">creditspread</div>
+          <div class="wm-dot" style="color:#2563EB;letter-spacing:1px">.net</div>
+        </div>
+      </div>
+      <div class="cell-label">Wordmark · Light</div>
+    </div>
+  </div>
+
+  <!-- ── VARIANT C: Filled blocks with overlap connection ── -->
+  <div style="font-size:11px;color:#2563EB;font-weight:600;letter-spacing:1px;margin-bottom:12px;text-transform:uppercase">C — Bold Filled (premium solid weight)</div>
+  <div class="grid" style="margin-bottom:32px">
+    <div class="cell dark">
+      <svg width="52" height="64" viewBox="0 0 52 64" fill="none">
+        <!-- Top block filled teal -->
+        <rect x="14" y="2" width="36" height="28" rx="3" fill="#14B8A6" opacity="0.15"/>
+        <rect x="14" y="2" width="36" height="28" rx="3" stroke="#14B8A6" stroke-width="3"/>
+        <!-- Bottom block filled blue -->
+        <rect x="2" y="34" width="36" height="28" rx="3" fill="#2563EB" opacity="0.15"/>
+        <rect x="2" y="34" width="36" height="28" rx="3" stroke="#2563EB" stroke-width="3"/>
+        <!-- Connection dot in center -->
+        <circle cx="26" cy="33" r="3" fill="#14B8A6"/>
+      </svg>
+      <div class="cell-label">Icon · Dark</div>
+    </div>
+    <div class="cell light">
+      <svg width="52" height="64" viewBox="0 0 52 64" fill="none">
+        <rect x="14" y="2" width="36" height="28" rx="3" fill="#14B8A6" opacity="0.08"/>
+        <rect x="14" y="2" width="36" height="28" rx="3" stroke="#14B8A6" stroke-width="3"/>
+        <rect x="2" y="34" width="36" height="28" rx="3" fill="#2563EB" opacity="0.08"/>
+        <rect x="2" y="34" width="36" height="28" rx="3" stroke="#2563EB" stroke-width="3"/>
+        <circle cx="26" cy="33" r="3" fill="#2563EB"/>
+      </svg>
+      <div class="cell-label">Icon · Light</div>
+    </div>
+    <div class="cell dark2">
+      <div class="wm">
+        <svg width="30" height="38" viewBox="0 0 52 64" fill="none">
+          <rect x="14" y="2" width="36" height="28" rx="3" fill="#14B8A6" opacity="0.2"/>
+          <rect x="14" y="2" width="36" height="28" rx="3" stroke="#14B8A6" stroke-width="3.5"/>
+          <rect x="2" y="34" width="36" height="28" rx="3" fill="#2563EB" opacity="0.2"/>
+          <rect x="2" y="34" width="36" height="28" rx="3" stroke="#2563EB" stroke-width="3.5"/>
+          <circle cx="26" cy="33" r="3" fill="#14B8A6"/>
+        </svg>
+        <div>
+          <div class="wm-text" style="color:white">creditspread</div>
+          <div class="wm-dot" style="color:#14B8A6;letter-spacing:1px">.net</div>
+        </div>
+      </div>
+      <div class="cell-label">Wordmark · Dark</div>
+    </div>
+    <div class="cell light2">
+      <div class="wm">
+        <svg width="30" height="38" viewBox="0 0 52 64" fill="none">
+          <rect x="14" y="2" width="36" height="28" rx="3" fill="#14B8A6" opacity="0.08"/>
+          <rect x="14" y="2" width="36" height="28" rx="3" stroke="#14B8A6" stroke-width="3.5"/>
+          <rect x="2" y="34" width="36" height="28" rx="3" fill="#2563EB" opacity="0.08"/>
+          <rect x="2" y="34" width="36" height="28" rx="3" stroke="#2563EB" stroke-width="3.5"/>
+          <circle cx="26" cy="33" r="3" fill="#2563EB"/>
+        </svg>
+        <div>
+          <div class="wm-text" style="color:#0B1F3A">creditspread</div>
+          <div class="wm-dot" style="color:#2563EB;letter-spacing:1px">.net</div>
+        </div>
+      </div>
+      <div class="cell-label">Wordmark · Light</div>
+    </div>
+  </div>
+
+  <!-- ── VARIANT D: Sharp corners, no radius (most like sketch) ── -->
+  <div style="font-size:11px;color:#14B8A6;font-weight:600;letter-spacing:1px;margin-bottom:12px;text-transform:uppercase">D — Square corners (closest to sketch)</div>
+  <div class="grid" style="margin-bottom:48px">
+    <div class="cell dark">
+      <svg width="52" height="64" viewBox="0 0 52 64" fill="none">
+        <rect x="14" y="2" width="36" height="28" stroke="white" stroke-width="3.5" fill="none"/>
+        <rect x="2" y="34" width="36" height="28" stroke="white" stroke-width="3.5" fill="none"/>
+      </svg>
+      <div class="cell-label">Icon · Dark</div>
+    </div>
+    <div class="cell light">
+      <svg width="52" height="64" viewBox="0 0 52 64" fill="none">
+        <rect x="14" y="2" width="36" height="28" stroke="#0B1F3A" stroke-width="3.5" fill="none"/>
+        <rect x="2" y="34" width="36" height="28" stroke="#0B1F3A" stroke-width="3.5" fill="none"/>
+      </svg>
+      <div class="cell-label">Icon · Light</div>
+    </div>
+    <div class="cell dark2">
+      <div class="wm">
+        <svg width="30" height="38" viewBox="0 0 52 64" fill="none">
+          <rect x="14" y="2" width="36" height="28" stroke="#14B8A6" stroke-width="4" fill="none"/>
+          <rect x="2" y="34" width="36" height="28" stroke="#2563EB" stroke-width="4" fill="none"/>
+        </svg>
+        <div>
+          <div class="wm-text" style="color:white">creditspread</div>
+          <div class="wm-dot" style="color:#14B8A6;letter-spacing:1px">.net</div>
+        </div>
+      </div>
+      <div class="cell-label">Wordmark · Dark</div>
+    </div>
+    <div class="cell light2">
+      <div class="wm">
+        <svg width="30" height="38" viewBox="0 0 52 64" fill="none">
+          <rect x="14" y="2" width="36" height="28" stroke="#14B8A6" stroke-width="4" fill="none"/>
+          <rect x="2" y="34" width="36" height="28" stroke="#2563EB" stroke-width="4" fill="none"/>
+        </svg>
+        <div>
+          <div class="wm-text" style="color:#0B1F3A">creditspread</div>
+          <div class="wm-dot" style="color:#2563EB;letter-spacing:1px">.net</div>
+        </div>
+      </div>
+      <div class="cell-label">Wordmark · Light</div>
+    </div>
+  </div>
+
+  <!-- FAVICON SIZES -->
+  <h2>Favicon sizes — Variant B (two-color recommended)</h2>
+  <div class="sizes">
+    <div class="size-item">
+      <div class="size-bg">
+        <svg width="16" height="16" viewBox="0 0 52 64" fill="none">
+          <rect x="14" y="2" width="36" height="28" stroke="#14B8A6" stroke-width="5" fill="none"/>
+          <rect x="2" y="34" width="36" height="28" stroke="#2563EB" stroke-width="5" fill="none"/>
+        </svg>
+      </div>
+      <div class="size-label">16×16</div>
+    </div>
+    <div class="size-item">
+      <div class="size-bg">
+        <svg width="32" height="32" viewBox="0 0 52 64" fill="none">
+          <rect x="14" y="2" width="36" height="28" stroke="#14B8A6" stroke-width="4.5" fill="none"/>
+          <rect x="2" y="34" width="36" height="28" stroke="#2563EB" stroke-width="4.5" fill="none"/>
+        </svg>
+      </div>
+      <div class="size-label">32×32</div>
+    </div>
+    <div class="size-item">
+      <div class="size-bg">
+        <svg width="64" height="64" viewBox="0 0 52 64" fill="none">
+          <rect x="14" y="2" width="36" height="28" stroke="#14B8A6" stroke-width="4" fill="none"/>
+          <rect x="2" y="34" width="36" height="28" stroke="#2563EB" stroke-width="4" fill="none"/>
+        </svg>
+      </div>
+      <div class="size-label">64×64</div>
+    </div>
+    <div class="size-item">
+      <div class="size-bg" style="border-radius:22px">
+        <svg width="100" height="100" viewBox="0 0 52 64" fill="none">
+          <rect x="14" y="2" width="36" height="28" rx="2" stroke="#14B8A6" stroke-width="3.5" fill="none"/>
+          <rect x="2" y="34" width="36" height="28" rx="2" stroke="#2563EB" stroke-width="3.5" fill="none"/>
+        </svg>
+      </div>
+      <div class="size-label">App Icon</div>
+    </div>
+    <!-- Light favicons -->
+    <div class="size-item">
+      <div style="background:#F8FAFC;border:1px solid #E2E8F0;padding:14px;border-radius:10px">
+        <svg width="32" height="32" viewBox="0 0 52 64" fill="none">
+          <rect x="14" y="2" width="36" height="28" stroke="#14B8A6" stroke-width="4.5" fill="none"/>
+          <rect x="2" y="34" width="36" height="28" stroke="#2563EB" stroke-width="4.5" fill="none"/>
+        </svg>
+      </div>
+      <div class="size-label">32×32 Light</div>
+    </div>
+
+    <!-- Full wordmark horizontal -->
+    <div class="size-item" style="margin-left:32px">
+      <div style="background:#0B1F3A;padding:18px 28px;border-radius:10px;display:flex;align-items:center;gap:14px">
+        <svg width="28" height="34" viewBox="0 0 52 64" fill="none">
+          <rect x="14" y="2" width="36" height="28" stroke="#14B8A6" stroke-width="4" fill="none"/>
+          <rect x="2" y="34" width="36" height="28" stroke="#2563EB" stroke-width="4" fill="none"/>
+        </svg>
+        <div style="font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700;color:white;letter-spacing:-0.5px">creditspread<span style="color:#14B8A6;font-weight:400;font-size:15px">.net</span></div>
+      </div>
+      <div class="size-label">Full lockup · Dark bg</div>
+    </div>
+
+    <div class="size-item">
+      <div style="background:#F8FAFC;border:1px solid #E2E8F0;padding:18px 28px;border-radius:10px;display:flex;align-items:center;gap:14px">
+        <svg width="28" height="34" viewBox="0 0 52 64" fill="none">
+          <rect x="14" y="2" width="36" height="28" stroke="#14B8A6" stroke-width="4" fill="none"/>
+          <rect x="2" y="34" width="36" height="28" stroke="#2563EB" stroke-width="4" fill="none"/>
+        </svg>
+        <div style="font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700;color:#0B1F3A;letter-spacing:-0.5px">creditspread<span style="color:#2563EB;font-weight:400;font-size:15px">.net</span></div>
+      </div>
+      <div class="size-label">Full lockup · Light bg</div>
+    </div>
+
+  </div>
+
+  <!-- COLOR PALETTE -->
+  <h2>Color Palette</h2>
+  <div class="colorbar">
+    <div class="swatch" style="background:#0B1F3A"><span style="color:#2D4A6A;font-size:11px;font-weight:500">Navy #0B1F3A</span></div>
+    <div class="swatch" style="background:#2563EB"><span style="color:rgba(255,255,255,0.6);font-size:11px;font-weight:500">Electric Blue #2563EB</span></div>
+    <div class="swatch" style="background:#14B8A6"><span style="color:rgba(255,255,255,0.7);font-size:11px;font-weight:500">Teal #14B8A6</span></div>
+    <div class="swatch" style="background:#F8FAFC;border:1px solid #E2E8F0"><span style="color:#94A3B8;font-size:11px;font-weight:500">Off-White #F8FAFC</span></div>
+  </div>
+
+  <!-- RECOMMENDATION -->
+  <div class="rec">
+    <div style="font-size:10px;color:#14B8A6;letter-spacing:2px;text-transform:uppercase;font-weight:600;margin-bottom:8px">Pick one variant to implement on site</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:16px">
+      <div><div style="font-size:13px;font-weight:700;color:#0B1F3A;margin-bottom:4px">A — Pure Outline</div><div style="font-size:12px;color:#64748B">Most faithful to sketch. Clean, minimal, sketch-accurate.</div></div>
+      <div><div style="font-size:13px;font-weight:700;color:#14B8A6;margin-bottom:4px">B — Two-color ⭐</div><div style="font-size:12px;color:#64748B">Best balance. Teal top + blue bottom. Looks premium at all sizes.</div></div>
+      <div><div style="font-size:13px;font-weight:700;color:#0B1F3A;margin-bottom:4px">C — Filled+dot</div><div style="font-size:12px;color:#64748B">Most modern SaaS feel. The dot adds a live/signal metaphor.</div></div>
+      <div><div style="font-size:13px;font-weight:700;color:#0B1F3A;margin-bottom:4px">D — Square corners</div><div style="font-size:12px;color:#64748B">Most architectural. Closest to the raw sketch energy.</div></div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
