@@ -1,20 +1,14 @@
-<svg width="280" height="56" viewBox="0 0 280 56" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <linearGradient id="lg" x1="0" y1="6" x2="44" y2="50" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#22c55e"/>
-      <stop offset="100%" stop-color="#15803d"/>
-    </linearGradient>
-  </defs>
-  <!-- Icon -->
-  <rect x="0" y="6" width="44" height="44" rx="10" fill="url(#lg)"/>
-  <rect x="7" y="15" width="30" height="7" rx="3.5" fill="white"/>
-  <rect x="7" y="27" width="19" height="7" rx="3.5" fill="white" opacity="0.5"/>
-  <line x1="33" y1="23" x2="33" y2="27" stroke="white" stroke-width="2" stroke-linecap="round"/>
-  <polyline points="30.5,26 33,30 35.5,26" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+<svg width="220" height="48" viewBox="0 0 220 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- CS mark: C=green, upper block=green, lower block=blue -->
+  <svg x="0" y="2" width="36" height="44" viewBox="0 0 84 104">
+    <path d="M66,22 C66,10 56,4 44,4 L22,4 C10,4 4,12 4,24 L4,80 C4,92 10,100 22,100 L44,100 C56,100 66,92 66,80"
+          stroke="#22c55e" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="20" y="10" width="44" height="38" rx="9" fill="#22c55e"/>
+    <rect x="10" y="56" width="44" height="38" rx="9" fill="#3b82f6"/>
+  </svg>
   <!-- Wordmark -->
-  <text x="56" y="30" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-weight="700" font-size="22" fill="#ffffff">Credit</text>
-  <text x="122" y="30" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-weight="700" font-size="22" fill="#22c55e">Spread</text>
-  <text x="207" y="30" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-weight="300" font-size="22" fill="#475569">.net</text>
-  <!-- Tagline -->
-  <text x="56" y="46" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" fill="#334155" letter-spacing="2.5">WALL STREET PRECISION  ·  SPX  ·  QQQ</text>
+  <text x="44" y="28" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-weight="700" font-size="20" fill="#ffffff" letter-spacing="-0.3">Credit</text>
+  <text x="101" y="28" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-weight="700" font-size="20" fill="#22c55e" letter-spacing="-0.3">Spread</text>
+  <text x="179" y="28" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-weight="400" font-size="20" fill="#475569">.net</text>
+  <text x="44" y="42" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="8.5" fill="#1e2d45" letter-spacing="2.5">LIVE SPX · QQQ · CREDIT SPREADS</text>
 </svg>
