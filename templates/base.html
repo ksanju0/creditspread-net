@@ -5,10 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{% block title %}CreditSpread.net — High Probability Credit Spreads{% endblock %}</title>
 
-<!-- Favicon — CS mark, site theme colors: green #22c55e + blue #3b82f6 on dark #0a0f1e -->
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 84 104'%3E%3Cpath d='M66,22 C66,10 56,4 44,4 L22,4 C10,4 4,12 4,24 L4,80 C4,92 10,100 22,100 L44,100 C56,100 66,92 66,80' stroke='%2322c55e' stroke-width='7' fill='none' stroke-linecap='round'/%3E%3Crect x='20' y='10' width='44' height='38' rx='9' fill='%2322c55e'/%3E%3Crect x='10' y='56' width='44' height='38' rx='9' fill='%233b82f6'/%3E%3C/svg%3E">
+<!-- Favicon — CS mark with S letterform, site theme colors -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 84 104'%3E%3Cdefs%3E%3CclipPath id='t'%3E%3Crect x='0' y='0' width='84' height='52'/%3E%3C/clipPath%3E%3CclipPath id='b'%3E%3Crect x='0' y='52' width='84' height='52'/%3E%3C/clipPath%3E%3C/defs%3E%3Cpath d='M66,22 C66,10 56,4 44,4 L22,4 C10,4 4,12 4,24 L4,80 C4,92 10,100 22,100 L44,100 C56,100 66,92 66,80' stroke='%2322c55e' stroke-width='7' fill='none' stroke-linecap='round'/%3E%3Cpath d='M50,22 C22,22 22,50 42,50 C62,50 62,78 34,78' stroke='%2322c55e' stroke-width='20' fill='none' stroke-linecap='round' clip-path='url(%23t)'/%3E%3Cpath d='M50,22 C22,22 22,50 42,50 C62,50 62,78 34,78' stroke='%233b82f6' stroke-width='20' fill='none' stroke-linecap='round' clip-path='url(%23b)'/%3E%3C/svg%3E">
 <!-- Apple touch icon -->
-<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 84 104'%3E%3Crect width='84' height='104' rx='16' fill='%230a0f1e'/%3E%3Cpath d='M66,22 C66,10 56,4 44,4 L22,4 C10,4 4,12 4,24 L4,80 C4,92 10,100 22,100 L44,100 C56,100 66,92 66,80' stroke='%2322c55e' stroke-width='7' fill='none' stroke-linecap='round'/%3E%3Crect x='20' y='10' width='44' height='38' rx='9' fill='%2322c55e'/%3E%3Crect x='10' y='56' width='44' height='38' rx='9' fill='%233b82f6'/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 84 104'%3E%3Crect width='84' height='104' rx='16' fill='%230a0f1e'/%3E%3Cdefs%3E%3CclipPath id='t2'%3E%3Crect x='0' y='0' width='84' height='52'/%3E%3C/clipPath%3E%3CclipPath id='b2'%3E%3Crect x='0' y='52' width='84' height='52'/%3E%3C/clipPath%3E%3C/defs%3E%3Cpath d='M66,22 C66,10 56,4 44,4 L22,4 C10,4 4,12 4,24 L4,80 C4,92 10,100 22,100 L44,100 C56,100 66,92 66,80' stroke='%2322c55e' stroke-width='7' fill='none' stroke-linecap='round'/%3E%3Cpath d='M50,22 C22,22 22,50 42,50 C62,50 62,78 34,78' stroke='%2322c55e' stroke-width='20' fill='none' stroke-linecap='round' clip-path='url(%23t2)'/%3E%3Cpath d='M50,22 C22,22 22,50 42,50 C62,50 62,78 34,78' stroke='%233b82f6' stroke-width='20' fill='none' stroke-linecap='round' clip-path='url(%23b2)'/%3E%3C/svg%3E">
 <meta name="theme-color" content="#0a0f1e">
 <!-- Open Graph -->
 <meta property="og:title" content="CreditSpread.net — High Probability SPX &amp; QQQ Signals">
@@ -52,15 +52,21 @@ tailwind.config = {
 <nav class="border-b border-dark-border sticky top-0 z-50" style="background:rgba(10,15,30,0.95);backdrop-filter:blur(12px)">
   <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
     <a href="/" class="flex items-center gap-3">
-      <!-- CS mark: geometric C (green) with two filled blocks inside — upper green, lower blue -->
+      <!-- CS mark: C outline + S letterform split bicolor inside -->
       <svg width="30" height="38" viewBox="0 0 84 104" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <clipPath id="sTop"><rect x="0" y="0" width="84" height="52"/></clipPath>
+          <clipPath id="sBot"><rect x="0" y="52" width="84" height="52"/></clipPath>
+        </defs>
         <!-- C outline — site green -->
         <path d="M66,22 C66,10 56,4 44,4 L22,4 C10,4 4,12 4,24 L4,80 C4,92 10,100 22,100 L44,100 C56,100 66,92 66,80"
               stroke="#22c55e" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-        <!-- Upper S block — green (upper half) -->
-        <rect x="20" y="10" width="44" height="38" rx="9" fill="#22c55e"/>
-        <!-- Lower S block — blue (lower half) -->
-        <rect x="10" y="56" width="44" height="38" rx="9" fill="#3b82f6"/>
+        <!-- S — upper half green -->
+        <path d="M50,22 C22,22 22,50 42,50 C62,50 62,78 34,78"
+              stroke="#22c55e" stroke-width="20" fill="none" stroke-linecap="round" clip-path="url(#sTop)"/>
+        <!-- S — lower half blue -->
+        <path d="M50,22 C22,22 22,50 42,50 C62,50 62,78 34,78"
+              stroke="#3b82f6" stroke-width="20" fill="none" stroke-linecap="round" clip-path="url(#sBot)"/>
       </svg>
       <!-- Wordmark -->
       <span class="font-bold text-lg text-white leading-none">Credit<span class="text-green-400">Spread</span><span class="text-slate-500 font-normal">.net</span></span>
@@ -92,10 +98,16 @@ tailwind.config = {
         <!-- Footer logo -->
         <a href="/" class="flex items-center gap-2 mb-3">
           <svg width="22" height="28" viewBox="0 0 84 104" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <clipPath id="ftop"><rect x="0" y="0" width="84" height="52"/></clipPath>
+              <clipPath id="fbot"><rect x="0" y="52" width="84" height="52"/></clipPath>
+            </defs>
             <path d="M66,22 C66,10 56,4 44,4 L22,4 C10,4 4,12 4,24 L4,80 C4,92 10,100 22,100 L44,100 C56,100 66,92 66,80"
                   stroke="#22c55e" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-            <rect x="20" y="10" width="44" height="38" rx="9" fill="#22c55e"/>
-            <rect x="10" y="56" width="44" height="38" rx="9" fill="#3b82f6"/>
+            <path d="M50,22 C22,22 22,50 42,50 C62,50 62,78 34,78"
+                  stroke="#22c55e" stroke-width="20" fill="none" stroke-linecap="round" clip-path="url(#ftop)"/>
+            <path d="M50,22 C22,22 22,50 42,50 C62,50 62,78 34,78"
+                  stroke="#3b82f6" stroke-width="20" fill="none" stroke-linecap="round" clip-path="url(#fbot)"/>
           </svg>
           <span class="font-bold text-white">Credit<span class="text-green-400">Spread</span><span class="text-slate-500 font-normal">.net</span></span>
         </a>
