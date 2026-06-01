@@ -52,22 +52,22 @@ tailwind.config = {
 <nav class="border-b border-dark-border sticky top-0 z-50" style="background:rgba(10,15,30,0.95);backdrop-filter:blur(12px)">
   <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
     <a href="/" class="flex items-center gap-3">
-      <!-- Logo mark: two spread bars in a rounded square -->
-      <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect width="34" height="34" rx="8" fill="url(#navGrad)"/>
+      <!-- Logo mark — defs MUST come first so gradient resolves -->
+      <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
         <defs>
-          <linearGradient id="navGrad" x1="0" y1="0" x2="34" y2="34">
+          <linearGradient id="lg1" x1="0" y1="0" x2="36" y2="36" gradientUnits="userSpaceOnUse">
             <stop offset="0%" stop-color="#22c55e"/>
             <stop offset="100%" stop-color="#15803d"/>
           </linearGradient>
         </defs>
-        <!-- SELL bar (top, full width) -->
-        <rect x="6" y="9" width="22" height="5" rx="2.5" fill="white"/>
-        <!-- BUY bar (bottom, shorter — visual spread) -->
-        <rect x="6" y="20" width="14" height="5" rx="2.5" fill="white" opacity="0.5"/>
-        <!-- Arrow down between bars -->
-        <path d="M24 15.5 L24 19" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
-        <path d="M21.5 18 L24 21 L26.5 18" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.7"/>
+        <rect width="36" height="36" rx="8" fill="url(#lg1)"/>
+        <!-- SELL bar — full width, bright white -->
+        <rect x="6" y="9" width="24" height="6" rx="3" fill="white"/>
+        <!-- BUY bar — shorter, semi-transparent -->
+        <rect x="6" y="21" width="15" height="6" rx="3" fill="white" opacity="0.55"/>
+        <!-- Down arrow -->
+        <line x1="26" y1="16" x2="26" y2="20" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+        <polyline points="23.5,19 26,22.5 28.5,19" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
       </svg>
       <!-- Wordmark -->
       <span class="font-bold text-lg text-white leading-none">Credit<span class="text-green-400">Spread</span><span class="text-slate-500 font-normal">.net</span></span>
@@ -96,7 +96,23 @@ tailwind.config = {
   <div class="max-w-7xl mx-auto px-6">
     <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
       <div>
-        <div class="font-bold text-white mb-3">CreditSpread.net</div>
+        <!-- Footer logo -->
+        <a href="/" class="flex items-center gap-2 mb-3">
+          <svg width="28" height="28" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="lg2" x1="0" y1="0" x2="36" y2="36" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#22c55e"/>
+                <stop offset="100%" stop-color="#15803d"/>
+              </linearGradient>
+            </defs>
+            <rect width="36" height="36" rx="8" fill="url(#lg2)"/>
+            <rect x="6" y="9" width="24" height="6" rx="3" fill="white"/>
+            <rect x="6" y="21" width="15" height="6" rx="3" fill="white" opacity="0.55"/>
+            <line x1="26" y1="16" x2="26" y2="20" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+            <polyline points="23.5,19 26,22.5 28.5,19" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          </svg>
+          <span class="font-bold text-white">Credit<span class="text-green-400">Spread</span><span class="text-slate-500 font-normal">.net</span></span>
+        </a>
         <p class="text-sm text-slate-500 leading-relaxed">30 years of Wall Street expertise meets cutting-edge algorithms. Live trades. Full transparency.</p>
       </div>
       <div>
