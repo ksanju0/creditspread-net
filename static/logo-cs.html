@@ -2,351 +2,306 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>creditspread.net — CS Logo</title>
+<title>creditspread.net — CS Logo Final</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
-  body{background:#E8EDF2;font-family:'Space Grotesk',sans-serif;padding:48px}
-  .board{max-width:1200px;margin:0 auto;background:white;border-radius:24px;overflow:hidden;box-shadow:0 8px 60px rgba(0,0,0,0.1)}
-  .top-bar{background:#0B1F3A;padding:36px 56px;display:flex;align-items:center;justify-content:space-between}
-  .top-bar h1{font-size:22px;font-weight:700;color:white;letter-spacing:-0.5px}
-  .top-bar h1 span{color:#14B8A6}
-  .top-bar p{font-size:11px;color:#2D4A6A;letter-spacing:2px;text-transform:uppercase;margin-top:4px}
-  .sec{padding:48px 56px;border-bottom:1px solid #F1F5F9}
-  .sec:last-child{border-bottom:none}
-  .label{font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#94A3B8;margin-bottom:32px;display:flex;align-items:center;gap:12px}
-  .label::after{content:'';flex:1;height:1px;background:#F1F5F9}
-  /* 4-panel grid */
-  .panel-row{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;border:1px solid #E2E8F0;border-radius:16px;overflow:hidden;margin-bottom:24px}
-  .p{padding:40px 20px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;min-height:180px}
-  .p+.p{border-left:1px solid rgba(255,255,255,0.07)}
-  .p.dk{background:#0B1F3A}
-  .p.lg{background:#ffffff}
-  .p.lg+.p.lg,.p.dk+.p.dk{border-left-color:#F1F5F9}
-  .plabel{font-size:9px;letter-spacing:2px;text-transform:uppercase;font-weight:500}
-  .dk .plabel{color:#2D4A6A}
-  .lg .plabel{color:#B0BCCC}
-  .wm{display:flex;align-items:center;gap:12px}
-  .wmtxt{line-height:1.15}
-  .wmtxt .w1{font-size:15px;font-weight:700;letter-spacing:-0.3px}
-  .wmtxt .w2{font-size:11px;font-weight:400;letter-spacing:1.5px}
-  /* sizes row */
-  .sizes{display:flex;gap:28px;align-items:flex-end;flex-wrap:wrap}
-  .si{display:flex;flex-direction:column;align-items:center;gap:10px}
-  .si .bg-d{background:#0B1F3A;padding:14px;border-radius:12px;display:flex;align-items:center;justify-content:center}
-  .si .bg-l{background:#F8FAFC;border:1px solid #E2E8F0;padding:14px;border-radius:12px;display:flex;align-items:center;justify-content:center}
-  .si span{font-size:9px;color:#94A3B8;letter-spacing:1px;font-weight:500}
-  /* palette */
+  body{background:#E2E8F0;font-family:'Space Grotesk',sans-serif;padding:48px}
+  .board{max-width:1100px;margin:0 auto;background:white;border-radius:24px;overflow:hidden;box-shadow:0 8px 60px rgba(0,0,0,0.10)}
+  .topbar{background:#0B1F3A;padding:32px 52px;display:flex;align-items:center;justify-content:space-between}
+  .topbar h1{font-size:20px;font-weight:700;color:white;letter-spacing:-0.4px}
+  .topbar h1 span{color:#14B8A6}
+  .topbar p{font-size:10px;color:#2D4A6A;letter-spacing:2px;text-transform:uppercase;margin-top:4px}
+  .sec{padding:44px 52px;border-bottom:1px solid #F1F5F9}
+  .sec:last-child{border-bottom:none;background:#F8FAFC}
+  .lbl{font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#94A3B8;margin-bottom:28px;display:flex;align-items:center;gap:10px}
+  .lbl::after{content:'';flex:1;height:1px;background:#F1F5F9}
+
+  /* panel grid */
+  .pg{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;border:1px solid #E2E8F0;border-radius:16px;overflow:hidden;margin-bottom:20px}
+  .p{padding:36px 16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;min-height:190px}
+  .p+.p{border-left:1px solid rgba(0,0,0,0.06)}
+  .p.dk{background:#0B1F3A} .p.dk+.p.dk{border-left-color:rgba(255,255,255,0.05)}
+  .p.lg{background:#fff}
+  .p.lg2{background:#F8FAFC}
+  .pl{font-size:9px;letter-spacing:2px;text-transform:uppercase;font-weight:500}
+  .dk .pl{color:#2D4A6A} .lg .pl,.lg2 .pl{color:#B0BCCC}
+
+  /* wordmark */
+  .wm{display:flex;align-items:center;gap:11px}
+  .wt{line-height:1.2}
+  .wt .a{font-size:14px;font-weight:700;letter-spacing:-0.3px}
+  .wt .b{font-size:10px;font-weight:400;letter-spacing:1.5px;margin-top:1px}
+
+  /* sizes */
+  .szrow{display:flex;gap:24px;align-items:flex-end;flex-wrap:wrap}
+  .sz{display:flex;flex-direction:column;align-items:center;gap:10px}
+  .sz span{font-size:9px;color:#94A3B8;letter-spacing:1px;font-weight:500}
+  .bgd{background:#0B1F3A;padding:14px;border-radius:12px;display:flex;align-items:center;justify-content:center}
+  .bgl{background:#F8FAFC;border:1px solid #E2E8F0;padding:14px;border-radius:12px}
+
   .pal{display:flex;gap:10px}
-  .sw{flex:1;height:56px;border-radius:8px;display:flex;align-items:flex-end;padding:8px 10px}
-  .sw span{font-size:10px;font-weight:500}
-  /* rec box */
-  .rec{background:#F8FAFC;border:1px solid #E2E8F0;border-radius:12px;padding:24px 28px}
+  .sw{flex:1;height:52px;border-radius:8px;display:flex;align-items:flex-end;padding:8px 10px}
 </style>
 </head>
 <body>
 <div class="board">
 
-  <!-- HEADER -->
-  <div class="top-bar">
-    <div>
-      <h1>creditspread<span>.net</span></h1>
-      <p>CS Mark — C with S inside · Bicolor S · 2025</p>
-    </div>
-    <svg width="56" height="56" viewBox="0 0 80 80" fill="none">
-      <defs>
-        <clipPath id="hUpper"><rect x="0" y="0" width="80" height="40"/></clipPath>
-        <clipPath id="hLower"><rect x="0" y="40" width="80" height="40"/></clipPath>
-      </defs>
-      <path d="M62,22 C62,10 54,4 42,4 L24,4 C11,4 4,11 4,24 L4,56 C4,69 11,76 24,76 L42,76 C54,76 62,70 62,58"
-            stroke="white" stroke-width="5.5" fill="none" stroke-linecap="round"/>
-      <path d="M50,22 C22,22 22,40 42,40 M42,40 C62,40 62,58 34,58"
-            stroke="#14B8A6" stroke-width="7" fill="none" stroke-linecap="round" clip-path="url(#hUpper)"/>
-      <path d="M50,22 C22,22 22,40 42,40 M42,40 C62,40 62,58 34,58"
-            stroke="#2563EB" stroke-width="7" fill="none" stroke-linecap="round" clip-path="url(#hLower)"/>
-    </svg>
+<!-- HEADER with live logo -->
+<div class="topbar">
+  <div>
+    <h1>creditspread<span>.net</span></h1>
+    <p>CS Mark — C with filled S blocks · Final</p>
   </div>
+  <!-- preview at 52px -->
+  <svg width="52" height="64" viewBox="0 0 84 104" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M66,22 C66,10 56,4 44,4 L22,4 C10,4 4,12 4,24 L4,80 C4,92 10,100 22,100 L44,100 C56,100 66,92 66,80"
+          stroke="white" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="20" y="10" width="44" height="38" rx="9" fill="#14B8A6"/>
+    <rect x="10" y="56" width="44" height="38" rx="9" fill="#22C55E"/>
+  </svg>
+</div>
 
-  <!-- VARIANT A: Navy C, bicolor S -->
-  <div class="sec">
-    <div class="label">Variant A — Navy C · Teal upper S · Blue lower S</div>
-    <div class="panel-row">
+<!-- VARIANT A: Dark site version (recommended) -->
+<div class="sec">
+  <div class="lbl">Variant A — White C · Teal upper block · Green lower block · Recommended for your site</div>
+  <div class="pg">
 
-      <!-- Icon dark -->
-      <div class="p dk">
-        <svg width="64" height="64" viewBox="0 0 80 80" fill="none">
-          <defs>
-            <clipPath id="u1"><rect x="0" y="0" width="80" height="40"/></clipPath>
-            <clipPath id="l1"><rect x="0" y="40" width="80" height="40"/></clipPath>
-          </defs>
-          <!-- C: rounded rect, open right -->
-          <path d="M62,22 C62,10 54,4 42,4 L24,4 C11,4 4,11 4,24 L4,56 C4,69 11,76 24,76 L42,76 C54,76 62,70 62,58"
-                stroke="white" stroke-width="5.5" fill="none" stroke-linecap="round"/>
-          <!-- S upper (teal) -->
-          <path d="M50,22 C22,22 22,40 42,40 M42,40 C62,40 62,58 34,58"
-                stroke="#14B8A6" stroke-width="7.5" fill="none" stroke-linecap="round" clip-path="url(#u1)"/>
-          <!-- S lower (blue) -->
-          <path d="M50,22 C22,22 22,40 42,40 M42,40 C62,40 62,58 34,58"
-                stroke="#2563EB" stroke-width="7.5" fill="none" stroke-linecap="round" clip-path="url(#l1)"/>
+    <div class="p dk">
+      <svg width="68" height="84" viewBox="0 0 84 104" fill="none">
+        <!-- C outer shape: rounded rect, open right -->
+        <path d="M66,22 C66,10 56,4 44,4 L22,4 C10,4 4,12 4,24 L4,80 C4,92 10,100 22,100 L44,100 C56,100 66,92 66,80"
+              stroke="white" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- Upper S block — right-shifted, teal -->
+        <rect x="20" y="10" width="44" height="38" rx="9" fill="#14B8A6"/>
+        <!-- Lower S block — left-shifted, green -->
+        <rect x="10" y="56" width="44" height="38" rx="9" fill="#22C55E"/>
+      </svg>
+      <div class="pl">Icon · Dark</div>
+    </div>
+
+    <div class="p lg">
+      <svg width="68" height="84" viewBox="0 0 84 104" fill="none">
+        <path d="M66,22 C66,10 56,4 44,4 L22,4 C10,4 4,12 4,24 L4,80 C4,92 10,100 22,100 L44,100 C56,100 66,92 66,80"
+              stroke="#0B1F3A" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <rect x="20" y="10" width="44" height="38" rx="9" fill="#14B8A6"/>
+        <rect x="10" y="56" width="44" height="38" rx="9" fill="#22C55E"/>
+      </svg>
+      <div class="pl">Icon · Light</div>
+    </div>
+
+    <div class="p dk">
+      <div class="wm">
+        <svg width="36" height="44" viewBox="0 0 84 104" fill="none">
+          <path d="M66,22 C66,10 56,4 44,4 L22,4 C10,4 4,12 4,24 L4,80 C4,92 10,100 22,100 L44,100 C56,100 66,92 66,80"
+                stroke="white" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          <rect x="20" y="10" width="44" height="38" rx="9" fill="#14B8A6"/>
+          <rect x="10" y="56" width="44" height="38" rx="9" fill="#22C55E"/>
         </svg>
-        <div class="plabel">Icon · Dark</div>
+        <div class="wt">
+          <div class="a" style="color:white">creditspread</div>
+          <div class="b" style="color:#14B8A6">.net</div>
+        </div>
       </div>
+      <div class="pl">Wordmark · Dark</div>
+    </div>
 
-      <!-- Icon light -->
-      <div class="p lg">
-        <svg width="64" height="64" viewBox="0 0 80 80" fill="none">
-          <defs>
-            <clipPath id="u2"><rect x="0" y="0" width="80" height="40"/></clipPath>
-            <clipPath id="l2"><rect x="0" y="40" width="80" height="40"/></clipPath>
-          </defs>
-          <path d="M62,22 C62,10 54,4 42,4 L24,4 C11,4 4,11 4,24 L4,56 C4,69 11,76 24,76 L42,76 C54,76 62,70 62,58"
-                stroke="#0B1F3A" stroke-width="5.5" fill="none" stroke-linecap="round"/>
-          <path d="M50,22 C22,22 22,40 42,40 M42,40 C62,40 62,58 34,58"
-                stroke="#14B8A6" stroke-width="7.5" fill="none" stroke-linecap="round" clip-path="url(#u2)"/>
-          <path d="M50,22 C22,22 22,40 42,40 M42,40 C62,40 62,58 34,58"
-                stroke="#2563EB" stroke-width="7.5" fill="none" stroke-linecap="round" clip-path="url(#l2)"/>
+    <div class="p lg2">
+      <div class="wm">
+        <svg width="36" height="44" viewBox="0 0 84 104" fill="none">
+          <path d="M66,22 C66,10 56,4 44,4 L22,4 C10,4 4,12 4,24 L4,80 C4,92 10,100 22,100 L44,100 C56,100 66,92 66,80"
+                stroke="#0B1F3A" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          <rect x="20" y="10" width="44" height="38" rx="9" fill="#14B8A6"/>
+          <rect x="10" y="56" width="44" height="38" rx="9" fill="#22C55E"/>
         </svg>
-        <div class="plabel">Icon · Light</div>
-      </div>
-
-      <!-- Wordmark dark -->
-      <div class="p dk">
-        <div class="wm">
-          <svg width="38" height="38" viewBox="0 0 80 80" fill="none">
-            <defs>
-              <clipPath id="u3"><rect x="0" y="0" width="80" height="40"/></clipPath>
-              <clipPath id="l3"><rect x="0" y="40" width="80" height="40"/></clipPath>
-            </defs>
-            <path d="M62,22 C62,10 54,4 42,4 L24,4 C11,4 4,11 4,24 L4,56 C4,69 11,76 24,76 L42,76 C54,76 62,70 62,58"
-                  stroke="white" stroke-width="6" fill="none" stroke-linecap="round"/>
-            <path d="M50,22 C22,22 22,40 42,40 M42,40 C62,40 62,58 34,58"
-                  stroke="#14B8A6" stroke-width="8" fill="none" stroke-linecap="round" clip-path="url(#u3)"/>
-            <path d="M50,22 C22,22 22,40 42,40 M42,40 C62,40 62,58 34,58"
-                  stroke="#2563EB" stroke-width="8" fill="none" stroke-linecap="round" clip-path="url(#l3)"/>
-          </svg>
-          <div class="wmtxt">
-            <div class="w1" style="color:white">creditspread</div>
-            <div class="w2" style="color:#14B8A6">.net</div>
-          </div>
+        <div class="wt">
+          <div class="a" style="color:#0B1F3A">creditspread</div>
+          <div class="b" style="color:#22C55E">.net</div>
         </div>
-        <div class="plabel">Wordmark · Dark</div>
       </div>
-
-      <!-- Wordmark light -->
-      <div class="p lg">
-        <div class="wm">
-          <svg width="38" height="38" viewBox="0 0 80 80" fill="none">
-            <defs>
-              <clipPath id="u4"><rect x="0" y="0" width="80" height="40"/></clipPath>
-              <clipPath id="l4"><rect x="0" y="40" width="80" height="40"/></clipPath>
-            </defs>
-            <path d="M62,22 C62,10 54,4 42,4 L24,4 C11,4 4,11 4,24 L4,56 C4,69 11,76 24,76 L42,76 C54,76 62,70 62,58"
-                  stroke="#0B1F3A" stroke-width="6" fill="none" stroke-linecap="round"/>
-            <path d="M50,22 C22,22 22,40 42,40 M42,40 C62,40 62,58 34,58"
-                  stroke="#14B8A6" stroke-width="8" fill="none" stroke-linecap="round" clip-path="url(#u4)"/>
-            <path d="M50,22 C22,22 22,40 42,40 M42,40 C62,40 62,58 34,58"
-                  stroke="#2563EB" stroke-width="8" fill="none" stroke-linecap="round" clip-path="url(#l4)"/>
-          </svg>
-          <div class="wmtxt">
-            <div class="w1" style="color:#0B1F3A">creditspread</div>
-            <div class="w2" style="color:#2563EB">.net</div>
-          </div>
-        </div>
-        <div class="plabel">Wordmark · Light</div>
-      </div>
-
+      <div class="pl">Wordmark · Light</div>
     </div>
+
   </div>
+</div>
 
-  <!-- VARIANT B: Teal C, bicolor S (inverted) -->
-  <div class="sec">
-    <div class="label">Variant B — Teal C · White upper S · Blue lower S</div>
-    <div class="panel-row">
+<!-- VARIANT B: Navy C filled background -->
+<div class="sec">
+  <div class="lbl">Variant B — Navy filled C background · Teal & Green S blocks · Solid mark</div>
+  <div class="pg">
 
-      <div class="p dk">
-        <svg width="64" height="64" viewBox="0 0 80 80" fill="none">
-          <defs>
-            <clipPath id="u5"><rect x="0" y="0" width="80" height="40"/></clipPath>
-            <clipPath id="l5"><rect x="0" y="40" width="80" height="40"/></clipPath>
-          </defs>
-          <path d="M62,22 C62,10 54,4 42,4 L24,4 C11,4 4,11 4,24 L4,56 C4,69 11,76 24,76 L42,76 C54,76 62,70 62,58"
-                stroke="#14B8A6" stroke-width="5.5" fill="none" stroke-linecap="round"/>
-          <path d="M50,22 C22,22 22,40 42,40 M42,40 C62,40 62,58 34,58"
-                stroke="white" stroke-width="7.5" fill="none" stroke-linecap="round" clip-path="url(#u5)"/>
-          <path d="M50,22 C22,22 22,40 42,40 M42,40 C62,40 62,58 34,58"
-                stroke="#2563EB" stroke-width="7.5" fill="none" stroke-linecap="round" clip-path="url(#l5)"/>
+    <div class="p dk">
+      <svg width="68" height="84" viewBox="0 0 84 104" fill="none">
+        <!-- C as filled shape (navy bg) -->
+        <path d="M66,22 C66,10 56,4 44,4 L22,4 C10,4 4,12 4,24 L4,80 C4,92 10,100 22,100 L44,100 C56,100 66,92 66,80L66,72 C60,76 54,78 44,78 L22,78 C16,78 12,74 12,68 L12,36 C12,30 16,26 22,26 L44,26 C54,26 60,28 66,32 Z"
+              fill="#0B1F3A" stroke="white" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M66,22 C66,10 56,4 44,4 L22,4 C10,4 4,12 4,24 L4,80 C4,92 10,100 22,100 L44,100 C56,100 66,92 66,80"
+              stroke="white" stroke-width="5.5" fill="none" stroke-linecap="round"/>
+        <rect x="20" y="10" width="44" height="38" rx="9" fill="#14B8A6"/>
+        <rect x="10" y="56" width="44" height="38" rx="9" fill="#22C55E"/>
+      </svg>
+      <div class="pl">Icon · Dark</div>
+    </div>
+
+    <div class="p lg">
+      <svg width="68" height="84" viewBox="0 0 84 104" fill="none">
+        <path d="M66,22 C66,10 56,4 44,4 L22,4 C10,4 4,12 4,24 L4,80 C4,92 10,100 22,100 L44,100 C56,100 66,92 66,80"
+              stroke="#0B1F3A" stroke-width="5.5" fill="#F1F5F9" stroke-linecap="round"/>
+        <rect x="20" y="10" width="44" height="38" rx="9" fill="#14B8A6"/>
+        <rect x="10" y="56" width="44" height="38" rx="9" fill="#22C55E"/>
+      </svg>
+      <div class="pl">Icon · Light</div>
+    </div>
+
+    <div class="p dk">
+      <div class="wm">
+        <svg width="36" height="44" viewBox="0 0 84 104" fill="none">
+          <path d="M66,22 C66,10 56,4 44,4 L22,4 C10,4 4,12 4,24 L4,80 C4,92 10,100 22,100 L44,100 C56,100 66,92 66,80"
+                stroke="white" stroke-width="6" fill="none" stroke-linecap="round"/>
+          <rect x="20" y="10" width="44" height="38" rx="9" fill="#14B8A6"/>
+          <rect x="10" y="56" width="44" height="38" rx="9" fill="#22C55E"/>
         </svg>
-        <div class="plabel">Icon · Dark</div>
+        <div class="wt">
+          <div class="a" style="color:white">creditspread</div>
+          <div class="b" style="color:#14B8A6">.net</div>
+        </div>
       </div>
+      <div class="pl">Wordmark · Dark</div>
+    </div>
 
-      <div class="p lg">
-        <svg width="64" height="64" viewBox="0 0 80 80" fill="none">
-          <defs>
-            <clipPath id="u6"><rect x="0" y="0" width="80" height="40"/></clipPath>
-            <clipPath id="l6"><rect x="0" y="40" width="80" height="40"/></clipPath>
-          </defs>
-          <path d="M62,22 C62,10 54,4 42,4 L24,4 C11,4 4,11 4,24 L4,56 C4,69 11,76 24,76 L42,76 C54,76 62,70 62,58"
-                stroke="#14B8A6" stroke-width="5.5" fill="none" stroke-linecap="round"/>
-          <path d="M50,22 C22,22 22,40 42,40 M42,40 C62,40 62,58 34,58"
-                stroke="#0B1F3A" stroke-width="7.5" fill="none" stroke-linecap="round" clip-path="url(#u6)"/>
-          <path d="M50,22 C22,22 22,40 42,40 M42,40 C62,40 62,58 34,58"
-                stroke="#2563EB" stroke-width="7.5" fill="none" stroke-linecap="round" clip-path="url(#l6)"/>
+    <div class="p lg2">
+      <div class="wm">
+        <svg width="36" height="44" viewBox="0 0 84 104" fill="none">
+          <path d="M66,22 C66,10 56,4 44,4 L22,4 C10,4 4,12 4,24 L4,80 C4,92 10,100 22,100 L44,100 C56,100 66,92 66,80"
+                stroke="#0B1F3A" stroke-width="6" fill="none" stroke-linecap="round"/>
+          <rect x="20" y="10" width="44" height="38" rx="9" fill="#14B8A6"/>
+          <rect x="10" y="56" width="44" height="38" rx="9" fill="#22C55E"/>
         </svg>
-        <div class="plabel">Icon · Light</div>
-      </div>
-
-      <div class="p dk">
-        <div class="wm">
-          <svg width="38" height="38" viewBox="0 0 80 80" fill="none">
-            <defs>
-              <clipPath id="u7"><rect x="0" y="0" width="80" height="40"/></clipPath>
-              <clipPath id="l7"><rect x="0" y="40" width="80" height="40"/></clipPath>
-            </defs>
-            <path d="M62,22 C62,10 54,4 42,4 L24,4 C11,4 4,11 4,24 L4,56 C4,69 11,76 24,76 L42,76 C54,76 62,70 62,58"
-                  stroke="#14B8A6" stroke-width="6" fill="none" stroke-linecap="round"/>
-            <path d="M50,22 C22,22 22,40 42,40 M42,40 C62,40 62,58 34,58"
-                  stroke="white" stroke-width="8" fill="none" stroke-linecap="round" clip-path="url(#u7)"/>
-            <path d="M50,22 C22,22 22,40 42,40 M42,40 C62,40 62,58 34,58"
-                  stroke="#2563EB" stroke-width="8" fill="none" stroke-linecap="round" clip-path="url(#l7)"/>
-          </svg>
-          <div class="wmtxt">
-            <div class="w1" style="color:white">creditspread</div>
-            <div class="w2" style="color:#14B8A6">.net</div>
-          </div>
+        <div class="wt">
+          <div class="a" style="color:#0B1F3A">creditspread</div>
+          <div class="b" style="color:#22C55E">.net</div>
         </div>
-        <div class="plabel">Wordmark · Dark</div>
       </div>
-
-      <div class="p lg">
-        <div class="wm">
-          <svg width="38" height="38" viewBox="0 0 80 80" fill="none">
-            <defs>
-              <clipPath id="u8"><rect x="0" y="0" width="80" height="40"/></clipPath>
-              <clipPath id="l8"><rect x="0" y="40" width="80" height="40"/></clipPath>
-            </defs>
-            <path d="M62,22 C62,10 54,4 42,4 L24,4 C11,4 4,11 4,24 L4,56 C4,69 11,76 24,76 L42,76 C54,76 62,70 62,58"
-                  stroke="#14B8A6" stroke-width="6" fill="none" stroke-linecap="round"/>
-            <path d="M50,22 C22,22 22,40 42,40 M42,40 C62,40 62,58 34,58"
-                  stroke="#0B1F3A" stroke-width="8" fill="none" stroke-linecap="round" clip-path="url(#u8)"/>
-            <path d="M50,22 C22,22 22,40 42,40 M42,40 C62,40 62,58 34,58"
-                  stroke="#2563EB" stroke-width="8" fill="none" stroke-linecap="round" clip-path="url(#l8)"/>
-          </svg>
-          <div class="wmtxt">
-            <div class="w1" style="color:#0B1F3A">creditspread</div>
-            <div class="w2" style="color:#14B8A6">.net</div>
-          </div>
-        </div>
-        <div class="plabel">Wordmark · Light</div>
-      </div>
-
+      <div class="pl">Wordmark · Light</div>
     </div>
+
   </div>
+</div>
 
-  <!-- FAVICON SIZES -->
-  <div class="sec">
-    <div class="label">Favicon & App Icon — All Sizes</div>
-    <div class="sizes">
+<!-- ALL SIZES -->
+<div class="sec">
+  <div class="lbl">Favicon & All Sizes — Variant A</div>
+  <div class="szrow">
 
-      <div class="si">
-        <div class="bg-d">
-          <svg width="16" height="16" viewBox="0 0 80 80" fill="none">
-            <defs><clipPath id="fs1"><rect x="0" y="0" width="80" height="40"/></clipPath><clipPath id="fs2"><rect x="0" y="40" width="80" height="40"/></clipPath></defs>
-            <path d="M62,22 C62,10 54,4 42,4 L24,4 C11,4 4,11 4,24 L4,56 C4,69 11,76 24,76 L42,76 C54,76 62,70 62,58" stroke="white" stroke-width="7" fill="none" stroke-linecap="round"/>
-            <path d="M50,22 C22,22 22,40 42,40 M42,40 C62,40 62,58 34,58" stroke="#14B8A6" stroke-width="9" fill="none" stroke-linecap="round" clip-path="url(#fs1)"/>
-            <path d="M50,22 C22,22 22,40 42,40 M42,40 C62,40 62,58 34,58" stroke="#2563EB" stroke-width="9" fill="none" stroke-linecap="round" clip-path="url(#fs2)"/>
-          </svg>
-        </div>
-        <span>16×16</span>
+    <div class="sz">
+      <div class="bgd">
+        <svg width="16" height="16" viewBox="0 0 84 104" fill="none">
+          <path d="M66,22 C66,10 56,4 44,4 L22,4 C10,4 4,12 4,24 L4,80 C4,92 10,100 22,100 L44,100 C56,100 66,92 66,80" stroke="white" stroke-width="8" fill="none" stroke-linecap="round"/>
+          <rect x="20" y="10" width="44" height="38" rx="7" fill="#14B8A6"/>
+          <rect x="10" y="56" width="44" height="38" rx="7" fill="#22C55E"/>
+        </svg>
       </div>
-
-      <div class="si">
-        <div class="bg-d">
-          <svg width="32" height="32" viewBox="0 0 80 80" fill="none">
-            <defs><clipPath id="fs3"><rect x="0" y="0" width="80" height="40"/></clipPath><clipPath id="fs4"><rect x="0" y="40" width="80" height="40"/></clipPath></defs>
-            <path d="M62,22 C62,10 54,4 42,4 L24,4 C11,4 4,11 4,24 L4,56 C4,69 11,76 24,76 L42,76 C54,76 62,70 62,58" stroke="white" stroke-width="6.5" fill="none" stroke-linecap="round"/>
-            <path d="M50,22 C22,22 22,40 42,40 M42,40 C62,40 62,58 34,58" stroke="#14B8A6" stroke-width="8.5" fill="none" stroke-linecap="round" clip-path="url(#fs3)"/>
-            <path d="M50,22 C22,22 22,40 42,40 M42,40 C62,40 62,58 34,58" stroke="#2563EB" stroke-width="8.5" fill="none" stroke-linecap="round" clip-path="url(#fs4)"/>
-          </svg>
-        </div>
-        <span>32×32</span>
-      </div>
-
-      <div class="si">
-        <div class="bg-d">
-          <svg width="64" height="64" viewBox="0 0 80 80" fill="none">
-            <defs><clipPath id="fs5"><rect x="0" y="0" width="80" height="40"/></clipPath><clipPath id="fs6"><rect x="0" y="40" width="80" height="40"/></clipPath></defs>
-            <path d="M62,22 C62,10 54,4 42,4 L24,4 C11,4 4,11 4,24 L4,56 C4,69 11,76 24,76 L42,76 C54,76 62,70 62,58" stroke="white" stroke-width="6" fill="none" stroke-linecap="round"/>
-            <path d="M50,22 C22,22 22,40 42,40 M42,40 C62,40 62,58 34,58" stroke="#14B8A6" stroke-width="8" fill="none" stroke-linecap="round" clip-path="url(#fs5)"/>
-            <path d="M50,22 C22,22 22,40 42,40 M42,40 C62,40 62,58 34,58" stroke="#2563EB" stroke-width="8" fill="none" stroke-linecap="round" clip-path="url(#fs6)"/>
-          </svg>
-        </div>
-        <span>64×64</span>
-      </div>
-
-      <div class="si">
-        <div class="bg-d" style="border-radius:22px;padding:18px">
-          <svg width="100" height="100" viewBox="0 0 80 80" fill="none">
-            <defs><clipPath id="fs7"><rect x="0" y="0" width="80" height="40"/></clipPath><clipPath id="fs8"><rect x="0" y="40" width="80" height="40"/></clipPath></defs>
-            <path d="M62,22 C62,10 54,4 42,4 L24,4 C11,4 4,11 4,24 L4,56 C4,69 11,76 24,76 L42,76 C54,76 62,70 62,58" stroke="white" stroke-width="5.5" fill="none" stroke-linecap="round"/>
-            <path d="M50,22 C22,22 22,40 42,40 M42,40 C62,40 62,58 34,58" stroke="#14B8A6" stroke-width="7.5" fill="none" stroke-linecap="round" clip-path="url(#fs7)"/>
-            <path d="M50,22 C22,22 22,40 42,40 M42,40 C62,40 62,58 34,58" stroke="#2563EB" stroke-width="7.5" fill="none" stroke-linecap="round" clip-path="url(#fs8)"/>
-          </svg>
-        </div>
-        <span>App Icon 180×180</span>
-      </div>
-
-      <!-- Light bg version -->
-      <div class="si" style="margin-left:16px">
-        <div class="bg-l">
-          <svg width="32" height="32" viewBox="0 0 80 80" fill="none">
-            <defs><clipPath id="fs9"><rect x="0" y="0" width="80" height="40"/></clipPath><clipPath id="fs10"><rect x="0" y="40" width="80" height="40"/></clipPath></defs>
-            <path d="M62,22 C62,10 54,4 42,4 L24,4 C11,4 4,11 4,24 L4,56 C4,69 11,76 24,76 L42,76 C54,76 62,70 62,58" stroke="#0B1F3A" stroke-width="6.5" fill="none" stroke-linecap="round"/>
-            <path d="M50,22 C22,22 22,40 42,40 M42,40 C62,40 62,58 34,58" stroke="#14B8A6" stroke-width="8.5" fill="none" stroke-linecap="round" clip-path="url(#fs9)"/>
-            <path d="M50,22 C22,22 22,40 42,40 M42,40 C62,40 62,58 34,58" stroke="#2563EB" stroke-width="8.5" fill="none" stroke-linecap="round" clip-path="url(#fs10)"/>
-          </svg>
-        </div>
-        <span>32×32 Light</span>
-      </div>
-
-      <!-- Full horizontal lockup -->
-      <div class="si" style="margin-left:16px">
-        <div class="bg-d" style="padding:16px 28px;border-radius:12px;display:flex;align-items:center;gap:14px">
-          <svg width="36" height="36" viewBox="0 0 80 80" fill="none">
-            <defs><clipPath id="lk1"><rect x="0" y="0" width="80" height="40"/></clipPath><clipPath id="lk2"><rect x="0" y="40" width="80" height="40"/></clipPath></defs>
-            <path d="M62,22 C62,10 54,4 42,4 L24,4 C11,4 4,11 4,24 L4,56 C4,69 11,76 24,76 L42,76 C54,76 62,70 62,58" stroke="white" stroke-width="6" fill="none" stroke-linecap="round"/>
-            <path d="M50,22 C22,22 22,40 42,40 M42,40 C62,40 62,58 34,58" stroke="#14B8A6" stroke-width="8" fill="none" stroke-linecap="round" clip-path="url(#lk1)"/>
-            <path d="M50,22 C22,22 22,40 42,40 M42,40 C62,40 62,58 34,58" stroke="#2563EB" stroke-width="8" fill="none" stroke-linecap="round" clip-path="url(#lk2)"/>
-          </svg>
-          <div style="font-size:18px;font-weight:700;color:white;letter-spacing:-0.3px;font-family:'Space Grotesk',sans-serif">creditspread<span style="color:#14B8A6;font-weight:400;font-size:15px">.net</span></div>
-        </div>
-        <span>Full lockup dark</span>
-      </div>
-
+      <span>16×16</span>
     </div>
-  </div>
 
-  <!-- PALETTE -->
-  <div class="sec">
-    <div class="label">Color Palette</div>
-    <div class="pal">
-      <div class="sw" style="background:#0B1F3A"><span style="color:#2D4A6A">Navy #0B1F3A</span></div>
-      <div class="sw" style="background:#14B8A6"><span style="color:rgba(255,255,255,.75)">Teal #14B8A6 — S upper</span></div>
-      <div class="sw" style="background:#2563EB"><span style="color:rgba(255,255,255,.75)">Blue #2563EB — S lower</span></div>
-      <div class="sw" style="background:#F8FAFC;border:1px solid #E2E8F0"><span style="color:#94A3B8">White #FFFFFF</span></div>
-    </div>
-  </div>
-
-  <!-- REC -->
-  <div class="sec">
-    <div class="label">Implementation</div>
-    <div class="rec">
-      <div style="font-size:13px;font-weight:700;color:#0B1F3A;margin-bottom:8px">Ready to go live — tell me which variant (A or B) and I'll update the nav bar, favicon, and all pages instantly.</div>
-      <div style="font-size:12px;color:#64748B;line-height:1.7">
-        <strong style="color:#0B1F3A">Variant A</strong> — Navy C, teal/blue S. Professional, dark-first, institutional. Best on dark backgrounds (your site). <br>
-        <strong style="color:#0B1F3A">Variant B</strong> — Teal C, white/blue S. More fintech/SaaS energy. Strong on both light and dark.
+    <div class="sz">
+      <div class="bgd">
+        <svg width="32" height="32" viewBox="0 0 84 104" fill="none">
+          <path d="M66,22 C66,10 56,4 44,4 L22,4 C10,4 4,12 4,24 L4,80 C4,92 10,100 22,100 L44,100 C56,100 66,92 66,80" stroke="white" stroke-width="7" fill="none" stroke-linecap="round"/>
+          <rect x="20" y="10" width="44" height="38" rx="8" fill="#14B8A6"/>
+          <rect x="10" y="56" width="44" height="38" rx="8" fill="#22C55E"/>
+        </svg>
       </div>
+      <span>32×32</span>
     </div>
+
+    <div class="sz">
+      <div class="bgd">
+        <svg width="64" height="64" viewBox="0 0 84 104" fill="none">
+          <path d="M66,22 C66,10 56,4 44,4 L22,4 C10,4 4,12 4,24 L4,80 C4,92 10,100 22,100 L44,100 C56,100 66,92 66,80" stroke="white" stroke-width="6.5" fill="none" stroke-linecap="round"/>
+          <rect x="20" y="10" width="44" height="38" rx="9" fill="#14B8A6"/>
+          <rect x="10" y="56" width="44" height="38" rx="9" fill="#22C55E"/>
+        </svg>
+      </div>
+      <span>64×64</span>
+    </div>
+
+    <div class="sz">
+      <div class="bgd" style="border-radius:22px;padding:18px">
+        <svg width="100" height="100" viewBox="0 0 84 104" fill="none">
+          <path d="M66,22 C66,10 56,4 44,4 L22,4 C10,4 4,12 4,24 L4,80 C4,92 10,100 22,100 L44,100 C56,100 66,92 66,80" stroke="white" stroke-width="6" fill="none" stroke-linecap="round"/>
+          <rect x="20" y="10" width="44" height="38" rx="9" fill="#14B8A6"/>
+          <rect x="10" y="56" width="44" height="38" rx="9" fill="#22C55E"/>
+        </svg>
+      </div>
+      <span>App Icon</span>
+    </div>
+
+    <div class="sz">
+      <div class="bgl">
+        <svg width="32" height="32" viewBox="0 0 84 104" fill="none">
+          <path d="M66,22 C66,10 56,4 44,4 L22,4 C10,4 4,12 4,24 L4,80 C4,92 10,100 22,100 L44,100 C56,100 66,92 66,80" stroke="#0B1F3A" stroke-width="7" fill="none" stroke-linecap="round"/>
+          <rect x="20" y="10" width="44" height="38" rx="8" fill="#14B8A6"/>
+          <rect x="10" y="56" width="44" height="38" rx="8" fill="#22C55E"/>
+        </svg>
+      </div>
+      <span>32×32 Light</span>
+    </div>
+
+    <!-- Full horizontal lockup -->
+    <div class="sz" style="margin-left:16px">
+      <div class="bgd" style="padding:16px 28px;border-radius:12px;display:flex;align-items:center;gap:14px">
+        <svg width="38" height="46" viewBox="0 0 84 104" fill="none">
+          <path d="M66,22 C66,10 56,4 44,4 L22,4 C10,4 4,12 4,24 L4,80 C4,92 10,100 22,100 L44,100 C56,100 66,92 66,80" stroke="white" stroke-width="6.5" fill="none" stroke-linecap="round"/>
+          <rect x="20" y="10" width="44" height="38" rx="9" fill="#14B8A6"/>
+          <rect x="10" y="56" width="44" height="38" rx="9" fill="#22C55E"/>
+        </svg>
+        <div style="font-family:'Space Grotesk',sans-serif">
+          <div style="font-size:18px;font-weight:700;color:white;letter-spacing:-0.3px;line-height:1.1">creditspread</div>
+          <div style="font-size:12px;color:#14B8A6;letter-spacing:1.5px">.net</div>
+        </div>
+      </div>
+      <span>Full lockup</span>
+    </div>
+
+    <!-- Light lockup -->
+    <div class="sz">
+      <div style="background:white;border:1px solid #E2E8F0;padding:16px 28px;border-radius:12px;display:flex;align-items:center;gap:14px">
+        <svg width="38" height="46" viewBox="0 0 84 104" fill="none">
+          <path d="M66,22 C66,10 56,4 44,4 L22,4 C10,4 4,12 4,24 L4,80 C4,92 10,100 22,100 L44,100 C56,100 66,92 66,80" stroke="#0B1F3A" stroke-width="6.5" fill="none" stroke-linecap="round"/>
+          <rect x="20" y="10" width="44" height="38" rx="9" fill="#14B8A6"/>
+          <rect x="10" y="56" width="44" height="38" rx="9" fill="#22C55E"/>
+        </svg>
+        <div style="font-family:'Space Grotesk',sans-serif">
+          <div style="font-size:18px;font-weight:700;color:#0B1F3A;letter-spacing:-0.3px;line-height:1.1">creditspread</div>
+          <div style="font-size:12px;color:#22C55E;letter-spacing:1.5px">.net</div>
+        </div>
+      </div>
+      <span>Full lockup light</span>
+    </div>
+
   </div>
+</div>
+
+<!-- PALETTE -->
+<div class="sec">
+  <div class="lbl">Color Palette</div>
+  <div class="pal">
+    <div class="sw" style="background:#0B1F3A"><span style="font-size:10px;font-weight:600;color:#2D4A6A">Navy #0B1F3A — C outline</span></div>
+    <div class="sw" style="background:#14B8A6"><span style="font-size:10px;font-weight:600;color:rgba(255,255,255,.8)">Teal #14B8A6 — Upper S block</span></div>
+    <div class="sw" style="background:#22C55E"><span style="font-size:10px;font-weight:600;color:rgba(255,255,255,.8)">Green #22C55E — Lower S block</span></div>
+    <div class="sw" style="background:#F8FAFC;border:1px solid #E2E8F0"><span style="font-size:10px;font-weight:600;color:#94A3B8">Off-White · backgrounds</span></div>
+  </div>
+</div>
+
+<!-- ACTION -->
+<div class="sec">
+  <div class="lbl">Ready to implement</div>
+  <div style="background:white;border:1px solid #E2E8F0;border-radius:12px;padding:24px">
+    <p style="font-size:13px;color:#0B1F3A;font-weight:700;margin-bottom:6px">Say "implement A" or "implement B" and I'll update the nav bar, favicon, and all pages and push live to Render.</p>
+    <p style="font-size:12px;color:#64748B;line-height:1.7">Variant A = white C outline. Variant B = filled C background. Both use the same teal/green S blocks.</p>
+  </div>
+</div>
 
 </div>
 </body>
