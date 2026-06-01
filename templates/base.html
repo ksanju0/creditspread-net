@@ -4,6 +4,18 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{% block title %}CreditSpread.net — High Probability Credit Spreads{% endblock %}</title>
+
+<!-- Favicon — SVG (works in all modern browsers) -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='url(%23g)'/%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='32' y2='32'%3E%3Cstop offset='0%25' stop-color='%2322c55e'/%3E%3Cstop offset='100%25' stop-color='%2315803d'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect x='5' y='8' width='22' height='5' rx='2.5' fill='white'/%3E%3Crect x='5' y='19' width='14' height='5' rx='2.5' fill='white' opacity='.5'/%3E%3C/svg%3E">
+<!-- Apple touch icon -->
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='40' fill='%2316a34a'/%3E%3Crect x='28' y='45' width='124' height='28' rx='14' fill='white'/%3E%3Crect x='28' y='107' width='80' height='28' rx='14' fill='white' opacity='.5'/%3E%3C/svg%3E">
+<meta name="theme-color" content="#0a0f1e">
+<!-- Open Graph -->
+<meta property="og:title" content="CreditSpread.net — High Probability SPX &amp; QQQ Signals">
+<meta property="og:description" content="Live SPX &amp; QQQ credit spread alerts from 30-year Wall Street veterans. 88%+ win rate. 3-year track record. Fully automated.">
+<meta property="og:image" content="/static/og-image.png">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
 tailwind.config = {
@@ -39,11 +51,26 @@ tailwind.config = {
 <!-- NAV -->
 <nav class="border-b border-dark-border sticky top-0 z-50" style="background:rgba(10,15,30,0.95);backdrop-filter:blur(12px)">
   <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-    <a href="/" class="flex items-center gap-2">
-      <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:linear-gradient(135deg,#22c55e,#16a34a)">
-        <span class="text-white font-bold text-sm">S</span>
-      </div>
-      <span class="font-bold text-lg text-white">Credit<span class="text-green-400">Spread</span><span class="text-slate-400 font-normal">.net</span></span>
+    <a href="/" class="flex items-center gap-3">
+      <!-- Logo mark: two spread bars in a rounded square -->
+      <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="34" height="34" rx="8" fill="url(#navGrad)"/>
+        <defs>
+          <linearGradient id="navGrad" x1="0" y1="0" x2="34" y2="34">
+            <stop offset="0%" stop-color="#22c55e"/>
+            <stop offset="100%" stop-color="#15803d"/>
+          </linearGradient>
+        </defs>
+        <!-- SELL bar (top, full width) -->
+        <rect x="6" y="9" width="22" height="5" rx="2.5" fill="white"/>
+        <!-- BUY bar (bottom, shorter — visual spread) -->
+        <rect x="6" y="20" width="14" height="5" rx="2.5" fill="white" opacity="0.5"/>
+        <!-- Arrow down between bars -->
+        <path d="M24 15.5 L24 19" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+        <path d="M21.5 18 L24 21 L26.5 18" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.7"/>
+      </svg>
+      <!-- Wordmark -->
+      <span class="font-bold text-lg text-white leading-none">Credit<span class="text-green-400">Spread</span><span class="text-slate-500 font-normal">.net</span></span>
     </a>
     <div class="hidden md:flex items-center gap-8">
       <a href="/performance" class="nav-link text-sm">Performance</a>
