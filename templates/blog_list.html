@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}Options Trading Blog — SPX Credit Spreads, 0DTE Strategy | CreditSpread.net{% endblock %}
+{% block content %}
+<div class="max-w-5xl mx-auto px-6 py-16">
+
+  <div class="text-center mb-14">
+    <div class="text-green-400 text-xs font-bold uppercase tracking-widest mb-3">Education · Strategy · Insights</div>
+    <h1 class="text-4xl font-bold text-white mb-3">Options Trading Blog</h1>
+    <p class="text-slate-500 max-w-xl mx-auto">Deep dives on SPX credit spreads, 0DTE strategy, risk management, and the mechanics behind high-probability options trading.</p>
+  </div>
+
+  <!-- Featured post -->
+  <div class="card p-8 mb-8" style="border-color:#166534;background:linear-gradient(160deg,#0d2818,#0a1a12)">
+    <div class="flex items-center gap-3 mb-4">
+      <span class="px-3 py-1 rounded-full text-xs font-bold text-white" style="background:#16a34a">FEATURED</span>
+      <span class="text-slate-500 text-xs">{{ posts[0].date }} · {{ posts[0].read_time }}</span>
+    </div>
+    <h2 class="text-2xl font-bold text-white mb-3">
+      <a href="/blog/{{ posts[0].slug }}" class="hover:text-green-400 transition-colors">{{ posts[0].title }}</a>
+    </h2>
+    <p class="text-slate-400 leading-relaxed mb-5">{{ posts[0].excerpt }}</p>
+    <div class="flex items-center gap-4">
+      <a href="/blog/{{ posts[0].slug }}" class="btn-primary text-sm">Read Article →</a>
+      <div class="flex gap-2 flex-wrap">
+        {% for tag in posts[0].tags %}
+        <span class="px-2 py-1 rounded text-xs text-slate-500" style="background:#131d30;border:1px solid #1e2d45">{{ tag }}</span>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Post grid -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    {% for post in posts[1:] %}
+    <div class="card p-7 hover:border-green-800 transition-colors">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="text-slate-600 text-xs">{{ post.date }}</span>
+        <span class="text-slate-700">·</span>
+        <span class="text-slate-600 text-xs">{{ post.read_time }}</span>
+      </div>
+      <h2 class="text-lg font-bold text-white mb-3 leading-snug">
+        <a href="/blog/{{ post.slug }}" class="hover:text-green-400 transition-colors">{{ post.title }}</a>
+      </h2>
+      <p class="text-slate-500 text-sm leading-relaxed mb-4">{{ post.excerpt }}</p>
+      <div class="flex items-center justify-between">
+        <a href="/blog/{{ post.slug }}" class="text-green-400 text-xs font-semibold hover:underline">Read more →</a>
+        <div class="flex gap-2">
+          {% for tag in post.tags[:2] %}
+          <span class="px-2 py-1 rounded text-xs text-slate-600" style="background:#0d1829;border:1px solid #1e2d45">{{ tag }}</span>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- CTA -->
+  <div class="mt-16 card p-8 text-center glow">
+    <h3 class="text-xl font-bold text-white mb-2">Want to see these strategies in action?</h3>
+    <p class="text-slate-500 text-sm mb-6">Every article below is based on our live trading — 364 trades, timestamped, publicly auditable.</p>
+    <div class="flex gap-4 justify-center">
+      <a href="/performance" class="btn-secondary text-sm">View Live Track Record</a>
+      <a href="/pricing" class="btn-primary text-sm">Start 7-Day Free Trial</a>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

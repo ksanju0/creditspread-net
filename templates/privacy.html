@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Privacy Policy — CreditSpread.net{% endblock %}
+{% block content %}
+<div class="max-w-3xl mx-auto px-6 py-16">
+  <h1 class="text-3xl font-bold text-white mb-2">Privacy Policy</h1>
+  <p class="text-slate-500 text-sm mb-10">Last updated: January 1, 2025</p>
+  <div class="space-y-8 text-slate-400 leading-relaxed text-sm">
+
+    <div>
+      <h2 class="text-lg font-bold text-white mb-3">1. Information We Collect</h2>
+      <p>When you register for CreditSpread.net, we collect your name, email address, and phone number. We use your phone number solely to deliver trade alerts via SMS. Payment information is processed by Stripe and PayPal — we never store your card or bank details on our servers.</p>
+    </div>
+
+    <div>
+      <h2 class="text-lg font-bold text-white mb-3">2. How We Use Your Information</h2>
+      <p>We use your information exclusively to: deliver trade signal alerts via SMS and email, manage your account and subscription, send weekly performance recaps (if opted in), and communicate important service updates. We do not sell, rent, or share your personal information with third parties for marketing purposes.</p>
+    </div>
+
+    <div>
+      <h2 class="text-lg font-bold text-white mb-3">3. Data Security</h2>
+      <p>All data is transmitted over HTTPS with 256-bit SSL encryption. Passwords are hashed using bcrypt — we cannot see your password. Payment processing is handled by PCI-DSS compliant providers (Stripe, PayPal).</p>
+    </div>
+
+    <div>
+      <h2 class="text-lg font-bold text-white mb-3">4. Cookies</h2>
+      <p>We use session cookies to keep you logged in. We do not use tracking cookies or third-party advertising cookies. Analytics data is aggregate and anonymized.</p>
+    </div>
+
+    <div>
+      <h2 class="text-lg font-bold text-white mb-3">5. Your Rights</h2>
+      <p>You may request deletion of your account and all associated data at any time by emailing us. Upon cancellation, your data is retained for 90 days for billing dispute purposes, then permanently deleted.</p>
+    </div>
+
+    <div>
+      <h2 class="text-lg font-bold text-white mb-3">6. Contact</h2>
+      <p>Privacy questions: <a href="mailto:support@creditspread.net" class="text-green-400 hover:underline">support@creditspread.net</a></p>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

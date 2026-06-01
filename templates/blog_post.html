@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% block title %}{{ post.title }} | CreditSpread.net Blog{% endblock %}
+{% block content %}
+
+<!-- Schema.org Article markup for Google -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "{{ post.title }}",
+  "description": "{{ post.excerpt }}",
+  "datePublished": "{{ post.date }}",
+  "author": {"@type":"Organization","name":"CreditSpread.net"},
+  "publisher": {"@type":"Organization","name":"CreditSpread.net","url":"https://creditspread.net"}
+}
+</script>
+
+<div class="max-w-3xl mx-auto px-6 py-16">
+
+  <!-- Breadcrumb -->
+  <div class="flex items-center gap-2 text-xs text-slate-600 mb-8">
+    <a href="/" class="hover:text-green-400">Home</a>
+    <span>›</span>
+    <a href="/blog" class="hover:text-green-400">Blog</a>
+    <span>›</span>
+    <span class="text-slate-500">{{ post.title[:50] }}{% if post.title|length > 50 %}...{% endif %}</span>
+  </div>
+
+  <!-- Header -->
+  <div class="mb-10">
+    <div class="flex items-center gap-3 mb-4 flex-wrap">
+      {% for tag in post.tags %}
+      <span class="px-3 py-1 rounded-full text-xs font-semibold text-green-400" style="background:#0d2818;border:1px solid #166534">{{ tag }}</span>
+      {% endfor %}
+    </div>
+    <h1 class="text-3xl md:text-4xl font-bold text-white mb-4 leading-tight">{{ post.title }}</h1>
+    <p class="text-lg text-slate-400 mb-6 leading-relaxed">{{ post.excerpt }}</p>
+    <div class="flex items-center gap-4 py-4 border-t border-b border-dark-border">
+      <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white" style="background:linear-gradient(135deg,#22c55e,#16a34a)">CS</div>
+      <div>
+        <div class="text-white text-sm font-semibold">CreditSpread.net Research Team</div>
+        <div class="text-slate-600 text-xs">{{ post.date }} · {{ post.read_time }}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Article body -->
+  <div class="prose-custom">
+    {{ post.body | safe }}
+  </div>
+
+  <!-- Inline CTA mid-article -->
+  <div class="my-10 p-6 rounded-xl" style="background:#0d2818;border:1px solid #166534">
+    <p class="text-sm text-green-300 font-semibold mb-1">📊 See this strategy live</p>
+    <p class="text-xs text-slate-500 mb-3">Every trade in our 3-year track record is publicly auditable — entry time, strikes, credit, exit. No cherry-picking.</p>
+    <a href="/performance" class="text-green-400 text-xs font-bold hover:underline">View 364 live trades → creditspread.net/performance</a>
+  </div>
+
+  <!-- Tags & sharing -->
+  <div class="mt-12 pt-8 border-t border-dark-border">
+    <div class="flex items-center gap-3 flex-wrap mb-6">
+      <span class="text-xs text-slate-600 uppercase tracking-wider">Tags:</span>
+      {% for tag in post.tags %}
+      <span class="px-3 py-1 rounded text-xs text-slate-400" style="background:#131d30;border:1px solid #1e2d45">{{ tag }}</span>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Related posts -->
+  {% if related %}
+  <div class="mt-10">
+    <h3 class="text-lg font-bold text-white mb-5">Related Articles</h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {% for r in related %}
+      <a href="/blog/{{ r.slug }}" class="card p-5 hover:border-green-800 transition-colors block">
+        <div class="text-xs text-slate-600 mb-2">{{ r.read_time }}</div>
+        <div class="text-white font-semibold text-sm leading-snug hover:text-green-400 transition-colors">{{ r.title }}</div>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Bottom CTA -->
+  <div class="mt-12 card p-8 text-center glow">
+    <h3 class="text-xl font-bold text-white mb-2">High probability. 0 guesswork.</h3>
+    <p class="text-slate-500 text-sm mb-6">Join 847+ members receiving live SPX &amp; QQQ credit spread alerts. 7-day free trial — no card required until day 8.</p>
+    <a href="/pricing" class="btn-primary text-sm">Start Free Trial →</a>
+  </div>
+
+</div>
+
+<style>
+  .prose-custom { color:#94a3b8; line-height:1.85; }
+  .prose-custom h2 { font-size:1.5rem; font-weight:700; color:white; margin:2.5rem 0 1rem; padding-bottom:0.5rem; border-bottom:1px solid #1e2d45; }
+  .prose-custom h3 { font-size:1.2rem; font-weight:700; color:#e2e8f0; margin:2rem 0 0.75rem; }
+  .prose-custom p { margin-bottom:1.25rem; }
+  .prose-custom strong { color:#e2e8f0; font-weight:600; }
+  .prose-custom a { color:#22c55e; text-decoration:underline; }
+  .prose-custom a:hover { color:#4ade80; }
+  .prose-custom ul, .prose-custom ol { margin:1rem 0 1.25rem 1.5rem; }
+  .prose-custom li { margin-bottom:0.5rem; }
+  .prose-custom ul li { list-style-type:disc; }
+  .prose-custom ol li { list-style-type:decimal; }
+  .prose-custom blockquote { border-left:3px solid #22c55e; padding-left:1rem; margin:1.5rem 0; color:#64748b; font-style:italic; }
+  .prose-custom table { width:100%; border-collapse:collapse; margin:1.5rem 0; font-size:0.875rem; }
+  .prose-custom th { background:#0d1829; color:#94a3b8; padding:10px 14px; text-align:left; border:1px solid #1e2d45; font-weight:600; text-transform:uppercase; font-size:0.75rem; letter-spacing:0.05em; }
+  .prose-custom td { padding:10px 14px; border:1px solid #1e2d45; color:#94a3b8; }
+  .prose-custom tr:hover td { background:#0d1829; }
+  .prose-custom .highlight { background:#0d2818; border:1px solid #166534; border-radius:8px; padding:16px 20px; margin:1.5rem 0; color:#4ade80; }
+  .prose-custom .warning { background:#1a0a0a; border:1px solid #7f1d1d; border-radius:8px; padding:16px 20px; margin:1.5rem 0; color:#fca5a5; }
+</style>
+{% endblock %}

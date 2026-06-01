@@ -167,6 +167,27 @@ def how_it_works():
 def disclaimer():
     return render_template('disclaimer.html')
 
+@app.route('/privacy')
+def privacy():
+    return render_template('privacy.html')
+
+@app.route('/terms')
+def terms():
+    return render_template('terms.html')
+
+@app.route('/blog')
+def blog():
+    from blog_posts import get_all_posts
+    return render_template('blog_list.html', posts=get_all_posts())
+
+@app.route('/blog/<slug>')
+def blog_post(slug):
+    from blog_posts import get_post, get_related
+    post = get_post(slug)
+    if not post:
+        return redirect(url_for('blog'))
+    return render_template('blog_post.html', post=post, related=get_related(slug))
+
 # ── auth ──────────────────────────────────────────────────────────────────────
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -379,6 +400,14 @@ def api_stats():
         'avg_ror':      stats.avg_ror,
         'equity_curve': stats.equity_curve,
     })
+
+@app.route('/sitemap.xml')
+def sitemap():
+    return render_template('sitemap.xml'), 200, {'Content-Type': 'application/xml'}
+
+@app.route('/robots.txt')
+def robots():
+    return "User-agent: *\nAllow: /\nSitemap: https://creditspread.net/sitemap.xml\n", 200, {'Content-Type': 'text/plain'}
 
 @app.route('/api/health')
 def health():
