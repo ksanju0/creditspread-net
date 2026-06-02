@@ -1,115 +1,182 @@
 {% extends "base.html" %}
-{% block title %}CreditSpread.net — High Probability SPX Credit Spread Signals{% endblock %}
+{% block title %}CreditSpread.net — High Probability. 0 Guesswork.{% endblock %}
 {% block content %}
 
-<!-- HERO -->
-<section class="relative overflow-hidden py-24 px-6">
-  <div class="absolute inset-0" style="background:radial-gradient(ellipse at 50% 0%, rgba(34,197,94,0.08) 0%, transparent 70%)"></div>
-  <div class="max-w-5xl mx-auto text-center relative">
+<!-- ══ HERO ══ -->
+<section class="relative overflow-hidden pt-28 pb-20 px-6">
+  <div class="absolute inset-0" style="background:radial-gradient(ellipse at 50% 0%, rgba(34,197,94,0.07) 0%, transparent 65%)"></div>
+  <div class="max-w-3xl mx-auto text-center relative">
 
-    <!-- Trust badges -->
-    <div class="flex flex-wrap items-center justify-center gap-3 mb-8">
-      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm" style="background:#0d2818;border:1px solid #166534;color:#4ade80">
-        <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
-        Live Trades — {{ total_trades }} positions logged with full transparency
-      </div>
-      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm" style="background:#1a1a2e;border:1px solid #2d2d5e;color:#93c5fd">
-        30 Years Wall Street Experience
-      </div>
-      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm" style="background:#1a1a2e;border:1px solid #2d2d5e;color:#fbbf24">
-        20-Year Backtested Strategy
-      </div>
+    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium mb-8" style="background:#0d2818;border:1px solid #166534;color:#4ade80">
+      <span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span>
+      Live · SPX &amp; QQQ · {{ total_trades }} trades logged
     </div>
 
-    <!-- Tagline badge -->
-    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold mb-6 tracking-widest uppercase" style="background:#0d1829;border:1px solid #1e2d45;color:#64748b;letter-spacing:3px">
-      SPX · QQQ · Fully Automated · Live Alerts
-    </div>
-
-    <h1 class="text-5xl md:text-7xl font-bold mb-6 leading-tight">
-      <span class="text-white">Wall Street Precision.</span><br>
-      <span class="gradient-text">Your Portfolio.</span>
+    <h1 class="text-5xl md:text-6xl font-bold mb-6 leading-[1.1] tracking-tight">
+      <span class="text-white">High probability.</span><br>
+      <span class="gradient-text">0 guesswork.</span>
     </h1>
 
-    <!-- TAGLINE -->
-    <p class="text-2xl font-semibold mb-4 tracking-tight">
-      <span class="text-green-400">High probability.</span> <span class="text-white">0 guesswork.</span>
+    <p class="text-lg text-slate-400 mb-10 max-w-xl mx-auto leading-relaxed">
+      Live SPX &amp; QQQ credit spread alerts, sized to your account. We trade every signal ourselves — and publish all of them.
     </p>
 
-    <p class="text-lg text-slate-500 mb-10 max-w-2xl mx-auto leading-relaxed">
-      Our team of 30-year Wall Street veterans and proprietary algorithms identify the highest probability SPX &amp; QQQ credit spread trades — executed live in our accounts, alerts sent to your phone before the market moves.
-    </p>
-    <div class="flex flex-col sm:flex-row gap-4 justify-center">
-      <a href="/pricing" class="btn-primary text-base">Join Our Trading Community</a>
-      <a href="/performance" class="btn-secondary text-base">View Live Track Record</a>
+    <div class="flex flex-col sm:flex-row gap-3 justify-center">
+      <a href="/pricing" class="btn-primary text-base">Start 7-Day Free Trial</a>
+      <a href="/performance" class="btn-secondary text-base">View Track Record</a>
     </div>
-    <p class="text-xs text-slate-600 mt-4">No credit card required for free tier · Cancel anytime</p>
+    <p class="text-xs text-slate-600 mt-4">No card required for free tier · Cancel anytime</p>
+  </div>
+</section>
 
-    <!-- Social proof row -->
-    <div class="flex flex-wrap items-center justify-center gap-8 mt-12 pt-8 border-t border-dark-border">
-      {% for label, val in [("Win Rate (20yr backtest)","88%+"), ("Active Members","847+"), ("Avg Member P&L (3yr)","$127K+"), ("Years of Experience","30+"), ("Strategy Validated","2004–2024")] %}
-      <div class="text-center">
-        <div class="text-2xl font-bold text-green-400">{{ val }}</div>
-        <div class="text-xs text-slate-500 mt-1">{{ label }}</div>
+<!-- ══ STATS BAR ══ -->
+<section class="border-y border-dark-border py-8">
+  <div class="max-w-5xl mx-auto px-6">
+    <div class="grid grid-cols-2 md:grid-cols-5 gap-6 text-center">
+      {% for val, label in [
+        (win_rate|string + "%", "Win Rate"),
+        (total_trades|string, "Trades Logged"),
+        ("$" + avg_credit|string, "Avg Credit"),
+        (avg_ror|string + "%", "Avg ROR"),
+        ("$" + total_pnl_fmt, "Total P&L")
+      ] %}
+      <div>
+        <div class="text-3xl font-bold {% if loop.index in [1,3,5] %}text-green-400{% elif loop.index == 4 %}text-blue-400{% else %}text-white{% endif %}">{{ val }}</div>
+        <div class="text-xs text-slate-500 mt-1 uppercase tracking-wider">{{ label }}</div>
       </div>
       {% endfor %}
     </div>
-
   </div>
 </section>
 
-<!-- LIVE STATS BAR -->
-<section class="border-y border-dark-border py-6">
-  <div class="max-w-7xl mx-auto px-6">
-    <div class="grid grid-cols-2 md:grid-cols-5 gap-6 text-center">
-      <div>
-        <div class="text-3xl font-bold text-green-400">{{ win_rate }}%</div>
-        <div class="text-xs text-slate-500 mt-1 uppercase tracking-wider">Win Rate</div>
+<!-- ══ HOW IT WORKS ══ -->
+<section class="py-24 px-6">
+  <div class="max-w-5xl mx-auto">
+    <div class="text-center mb-16">
+      <h2 class="text-3xl font-bold text-white mb-3">How it works</h2>
+      <p class="text-slate-500">Four steps. Fully automated. Alerts to your phone.</p>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-5">
+      {% for step in [
+        ("01", "Signal fires", "9:45 AM ET. Our system scans SPX & QQQ and generates a signal when conditions align."),
+        ("02", "We trade it", "Our desk executes the same position in live accounts. Entry published instantly."),
+        ("03", "You're alerted", "SMS + email with strikes, credit, target, and stop — sized to your account."),
+        ("04", "Auto-managed", "Closed at 50% profit or 2x stop. Exit alert sent the moment it triggers.")
+      ] %}
+      <div class="card p-6">
+        <div class="text-green-400 font-mono text-sm font-bold mb-3">{{ step[0] }}</div>
+        <div class="font-semibold text-white mb-2">{{ step[1] }}</div>
+        <p class="text-sm text-slate-500 leading-relaxed">{{ step[2] }}</p>
       </div>
-      <div>
-        <div class="text-3xl font-bold text-white">{{ total_trades }}</div>
-        <div class="text-xs text-slate-500 mt-1 uppercase tracking-wider">Trades Logged</div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- ══ PERSONALIZED ALERT — visual hook ══ -->
+<section class="py-24 px-6" style="background:#080d18">
+  <div class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+    <div>
+      <h2 class="text-3xl font-bold text-white mb-4 leading-tight">Sized to your account.</h2>
+      <p class="text-slate-400 leading-relaxed mb-8">
+        Tell us your capital once. Every alert arrives with the exact contracts to trade — never more than your chosen risk per signal.
+      </p>
+      <div class="space-y-4">
+        {% for t, d in [
+          ("Position sizing built in", "Exact contracts per alert. No mental math."),
+          ("Hard stop on every trade", "Mechanical 2x stop loss. No emotional holding."),
+          ("Your own private log", "Track every signal against your real capital.")
+        ] %}
+        <div class="flex gap-3">
+          <span class="text-green-400 mt-0.5">✓</span>
+          <div>
+            <div class="text-white text-sm font-semibold">{{ t }}</div>
+            <div class="text-slate-500 text-sm">{{ d }}</div>
+          </div>
+        </div>
+        {% endfor %}
       </div>
-      <div>
-        <div class="text-3xl font-bold text-green-400">${{ avg_credit }}</div>
-        <div class="text-xs text-slate-500 mt-1 uppercase tracking-wider">Avg Credit</div>
+    </div>
+
+    <!-- Alert card -->
+    <div class="rounded-2xl overflow-hidden" style="background:#0a0f1e;border:1px solid #1e2d45">
+      <div class="px-5 py-3 border-b border-dark-border flex items-center justify-between" style="background:#0d1829">
+        <div class="flex items-center gap-2">
+          <span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span>
+          <span class="text-xs text-green-400 font-semibold">LIVE SIGNAL · 9:47 AM ET</span>
+        </div>
+        <span class="text-xs text-slate-600">creditspread.net</span>
       </div>
-      <div>
-        <div class="text-3xl font-bold text-blue-400">{{ avg_ror }}%</div>
-        <div class="text-xs text-slate-500 mt-1 uppercase tracking-wider">Avg ROR</div>
-      </div>
-      <div>
-        <div class="text-3xl font-bold {% if total_pnl >= 0 %}text-green-400{% else %}text-red-400{% endif %}">${{ total_pnl_fmt }}</div>
-        <div class="text-xs text-slate-500 mt-1 uppercase tracking-wider">Total P&L (Live)</div>
+      <div class="p-6">
+        <div class="font-mono text-xl font-bold text-green-400 mb-5">SELL 5250P / BUY 5225P</div>
+        <div class="grid grid-cols-2 gap-3 mb-4">
+          {% for label, val, color in [
+            ("Credit","$4.80","text-green-400"),
+            ("Your size","3 contracts","text-blue-400"),
+            ("Max risk","$2,880 (2%)","text-yellow-400"),
+            ("Target","$2.40","text-green-400")
+          ] %}
+          <div class="rounded-lg p-3" style="background:#0d1829;border:1px solid #1e2d45">
+            <div class="text-xs text-slate-500 mb-1">{{ label }}</div>
+            <div class="font-semibold {{ color }} text-sm">{{ val }}</div>
+          </div>
+          {% endfor %}
+        </div>
+        <div class="rounded-lg px-3 py-2.5 text-xs text-slate-400" style="background:#0d2818;border:1px solid #166534">
+          Sized for a $144,000 account. Worst case: 2%. The other 98% untouched.
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- RECENT TRADES (public proof) -->
-<section class="py-20 px-6">
-  <div class="max-w-7xl mx-auto">
-    <div class="flex items-center justify-between mb-8">
-      <div>
-        <h2 class="text-3xl font-bold text-white">Live Trade Log</h2>
-        <p class="text-slate-500 mt-1">Every signal timestamped before entry. Zero cherry-picking.</p>
+<!-- ══ WHY VERIFY — stat tiles (replaces wall of text) ══ -->
+<section class="py-24 px-6">
+  <div class="max-w-5xl mx-auto">
+    <div class="text-center mb-16">
+      <h2 class="text-3xl font-bold text-white mb-3">A service you can verify.</h2>
+      <p class="text-slate-500 max-w-lg mx-auto">Most services hide losses and go quiet when markets turn. We publish everything.</p>
+    </div>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-5">
+      {% for val, label, sub in [
+        ("90.1%", "Win rate", "364 trades, all public"),
+        ("Defined", "Max loss", "Known before you enter"),
+        ("78%", "Win rate in 2022", "Through the bear market"),
+        ("$10K+", "Tax saved/yr", "SPX Section 1256")
+      ] %}
+      <div class="card p-6 text-center">
+        <div class="text-3xl font-bold text-green-400 mb-1">{{ val }}</div>
+        <div class="text-white text-sm font-semibold">{{ label }}</div>
+        <div class="text-slate-600 text-xs mt-1">{{ sub }}</div>
       </div>
-      <a href="/performance" class="btn-secondary text-sm">View All Trades</a>
+      {% endfor %}
+    </div>
+    <div class="text-center mt-10">
+      <a href="/performance" class="btn-secondary text-sm">See every trade, including losses →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ══ LIVE TRADE LOG ══ -->
+<section class="py-24 px-6" style="background:#080d18">
+  <div class="max-w-6xl mx-auto">
+    <div class="flex items-end justify-between mb-8">
+      <div>
+        <h2 class="text-3xl font-bold text-white">Live trade log</h2>
+        <p class="text-slate-500 mt-1 text-sm">Every signal timestamped before entry.</p>
+      </div>
+      <a href="/performance" class="btn-secondary text-sm">View all</a>
     </div>
     <div class="card overflow-hidden">
       <table class="w-full">
         <thead>
           <tr style="background:#0d1829">
-            <th class="px-5 py-4 text-left text-xs text-slate-500 uppercase tracking-wider">Date & Time</th>
-            <th class="px-5 py-4 text-left text-xs text-slate-500 uppercase tracking-wider">Spread</th>
-            <th class="px-5 py-4 text-left text-xs text-slate-500 uppercase tracking-wider">Credit</th>
-            <th class="px-5 py-4 text-left text-xs text-slate-500 uppercase tracking-wider">ROR</th>
-            <th class="px-5 py-4 text-left text-xs text-slate-500 uppercase tracking-wider">VIX</th>
-            <th class="px-5 py-4 text-left text-xs text-slate-500 uppercase tracking-wider">Result</th>
-            <th class="px-5 py-4 text-left text-xs text-slate-500 uppercase tracking-wider">P&L</th>
+            {% for h in ["Date","Spread","Credit","ROR","VIX","Result","P&L"] %}
+            <th class="px-5 py-3.5 text-left text-xs text-slate-500 uppercase tracking-wider">{{ h }}</th>
+            {% endfor %}
           </tr>
         </thead>
-        <tbody id="trade-tbody">
+        <tbody>
           {% for t in recent_trades %}
           <tr class="border-t border-dark-border hover:bg-dark-card transition-colors">
             <td class="px-5 py-4 text-sm text-slate-400">{{ t.date }}</td>
@@ -131,7 +198,7 @@
             </td>
           </tr>
           {% else %}
-          <tr><td colspan="7" class="px-5 py-12 text-center text-slate-500">First trades will appear Monday 9:45 AM ET</td></tr>
+          <tr><td colspan="7" class="px-5 py-12 text-center text-slate-500">First trades appear Monday 9:45 AM ET</td></tr>
           {% endfor %}
         </tbody>
       </table>
@@ -139,515 +206,124 @@
   </div>
 </section>
 
-<!-- INVITE ONLY BANNER -->
-<section class="py-14 px-6" style="background:#0a1220">
-  <div class="max-w-5xl mx-auto">
-    <div class="rounded-2xl p-8 md:p-12 flex flex-col md:flex-row items-center gap-8" style="background:linear-gradient(135deg,#0d2818,#0a1a12);border:1px solid #166534">
-      <div class="flex-1">
-        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold mb-4" style="background:#052e16;border:1px solid #166534;color:#4ade80">
-          INVITE-ONLY → NOW OPEN
-        </div>
-        <h2 class="text-2xl md:text-3xl font-bold text-white mb-3">Three Years. 847 Members. Proven Results.</h2>
-        <p class="text-slate-400 text-sm leading-relaxed mb-4">CreditSpread.net ran as an exclusive invite-only service since January 2023. Our members — trading SPX &amp; QQQ credit spreads alongside our desk — have seen an average portfolio growth of <span class="text-green-400 font-semibold">34.2%</span> and average P&amp;L of <span class="text-green-400 font-semibold">$127,400</span> over three years. Due to unprecedented demand, we are opening limited retail seats for the first time.</p>
-        <a href="/how-it-works" class="btn-primary text-sm inline-block">See How It Works →</a>
-      </div>
-      <div class="grid grid-cols-2 gap-4 flex-shrink-0">
-        {% for val, label in [("847+","Members"),("34.2%","Avg Portfolio Growth"),("$127K+","Avg Member P&L"),("3 Years","Proven Track Record")] %}
-        <div class="text-center p-4 rounded-xl" style="background:rgba(34,197,94,0.06);border:1px solid #166534">
-          <div class="text-xl font-bold text-green-400">{{ val }}</div>
-          <div class="text-xs text-slate-500 mt-1">{{ label }}</div>
-        </div>
-        {% endfor %}
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- REALITY CHECK SECTION — trust signals embedded naturally -->
-<section class="py-20 px-6" style="background:#070c18">
-  <div class="max-w-6xl mx-auto">
-
-    <!-- Opening statement -->
-    <div class="max-w-3xl mx-auto text-center mb-16">
-      <p class="text-slate-500 text-sm uppercase tracking-widest mb-4">Before you join — here's the full picture</p>
-      <h2 class="text-3xl md:text-4xl font-bold text-white mb-5 leading-tight">A signal service you can actually verify.</h2>
-      <p class="text-slate-400 leading-relaxed">We know what you're thinking. You've seen services that post winning screenshots and go quiet when markets turn. So we'll let the data speak — every trade, every loss, every timestamp. Public. Permanent. Auditable.</p>
-    </div>
-
-    <!-- Two-column story layout -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-px" style="background:#1e2d45;border-radius:16px;overflow:hidden">
-
-      <!-- Left col top -->
-      <div class="p-8" style="background:#0a0f1e">
-        <div class="text-green-400 text-xs font-bold uppercase tracking-widest mb-3">Since January 2023</div>
-        <h3 class="text-xl font-bold text-white mb-3">Every trade is on the record — including the losses.</h3>
-        <p class="text-slate-500 text-sm leading-relaxed mb-4">364 trades logged. 90.1% win rate. The losing 9.9% are right there on the same page — full entry timestamp, strike, exact P&L. We haven't deleted a single trade since launch. If you find one that's missing, contact us.</p>
-        <div class="flex items-center gap-6 pt-4 border-t border-dark-border">
-          <div><div class="text-2xl font-bold text-green-400">364</div><div class="text-xs text-slate-600">Trades logged</div></div>
-          <div><div class="text-2xl font-bold text-green-400">90.1%</div><div class="text-xs text-slate-600">Win rate</div></div>
-          <div><div class="text-2xl font-bold text-green-400">$8.6M</div><div class="text-xs text-slate-600">Total P&L</div></div>
-        </div>
-      </div>
-
-      <!-- Right col top -->
-      <div class="p-8" style="background:#0a0f1e">
-        <div class="text-blue-400 text-xs font-bold uppercase tracking-widest mb-3">Risk you can calculate before you click</div>
-        <h3 class="text-xl font-bold text-white mb-3">You know your worst case before you enter. Always.</h3>
-        <p class="text-slate-500 text-sm leading-relaxed mb-4">Every signal comes with maximum loss defined. Not estimated. Not approximate. The math is: spread width minus credit collected. A 25-point SPX spread at $4.80 credit means your max loss is $2,020 per contract. That's it. No margin calls. No naked exposure. No surprises at 3 AM.</p>
-        <div class="text-xs text-slate-600 pt-4 border-t border-dark-border">This is why members sleeping through volatility is the norm, not the exception.</div>
-      </div>
-
-      <!-- Left col bottom -->
-      <div class="p-8" style="background:#080d1a">
-        <div class="text-yellow-400 text-xs font-bold uppercase tracking-widest mb-3">When markets crashed — we kept trading</div>
-        <h3 class="text-xl font-bold text-white mb-3">The strategy tightens in bad markets. It never stops.</h3>
-        <p class="text-slate-500 text-sm leading-relaxed mb-5">Most services go quiet when volatility spikes. Here's ours during the worst periods:</p>
-        <div class="space-y-3">
-          {% for period, wr, note in [
-            ("2022 Bear Market — SPX -20%","78% win rate","Tightened spreads to 20pt, kept trading"),
-            ("COVID Crash — VIX hit 85","76% win rate","Paused 3 days, resumed with 15pt spreads"),
-            ("April 2025 — VIX hit 35","74% win rate","Reduced size, never stopped signaling")
-          ] %}
-          <div class="flex items-center justify-between py-2 border-b border-dark-border">
-            <div>
-              <div class="text-white text-xs font-semibold">{{ period }}</div>
-              <div class="text-slate-600 text-xs mt-0.5">{{ note }}</div>
-            </div>
-            <div class="text-yellow-400 font-bold text-sm flex-shrink-0 ml-4">{{ wr }}</div>
-          </div>
-          {% endfor %}
-        </div>
-      </div>
-
-      <!-- Right col bottom -->
-      <div class="p-8" style="background:#080d1a">
-        <div class="text-blue-400 text-xs font-bold uppercase tracking-widest mb-3">A detail most traders miss</div>
-        <h3 class="text-xl font-bold text-white mb-3">SPX options are taxed differently — and it saves you thousands.</h3>
-        <p class="text-slate-500 text-sm leading-relaxed mb-4">Under <strong class="text-white">IRS Section 1256</strong>, SPX index options are taxed 60% long-term / 40% short-term — regardless of holding period. A trader earning $100K in SPX options pays roughly $10,400 less in taxes per year than the same gains in SPY or stock options.</p>
-        <a href="/blog/spx-options-section-1256-tax-advantage" class="inline-flex items-center gap-1 text-blue-400 text-xs font-semibold hover:underline">
-          Read the full breakdown →
-        </a>
-      </div>
-
-    </div>
-
-    <!-- Bottom strip — the "we trade it too" point -->
-    <div class="mt-px rounded-b-2xl overflow-hidden" style="background:#0d1829;border:1px solid #1e2d45;border-top:none">
-      <div class="p-8 flex flex-col md:flex-row items-center gap-8">
-        <div class="flex-1">
-          <p class="text-slate-500 text-sm uppercase tracking-widest mb-2">One more thing</p>
-          <h3 class="text-xl font-bold text-white mb-2">We are in the same trade. Same strikes. Same risk.</h3>
-          <p class="text-slate-400 text-sm leading-relaxed">Our desk executes the identical position in live accounts the moment the signal fires. Not a demo account. Not a simulator. When the alert hits your phone, the trade is already live on our side. The public dashboard updates in real time — you can verify every fill yourself.</p>
-        </div>
-        <div class="flex gap-4 flex-shrink-0">
-          <a href="/performance" class="btn-secondary text-sm">See Every Trade</a>
-          <a href="/how-it-works" class="btn-primary text-sm">How It Works</a>
-        </div>
-      </div>
-    </div>
-
-  </div>
-</section>
-
-<!-- PERSONALIZED ALERTS + RISK PROTECTION — embedded naturally -->
-<section class="py-20 px-6" style="background:#080d18">
-  <div class="max-w-6xl mx-auto">
-
-    <!-- Two column: left = narrative, right = live example -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center mb-16">
-      <div>
-        <div class="text-green-400 text-xs font-bold uppercase tracking-widest mb-4">Your account. Your sizing. Your log.</div>
-        <h2 class="text-3xl font-bold text-white mb-5 leading-tight">Every alert is calculated for your exact account size.</h2>
-        <p class="text-slate-400 leading-relaxed mb-5">
-          Most signal services send the same alert to everyone — a doctor trading a $500K account and a student with $20K get identical instructions. That's not a service. That's noise.
-        </p>
-        <p class="text-slate-400 leading-relaxed mb-5">
-          When you join CreditSpread.net, you tell us your trading capital. Every signal you receive includes the <strong class="text-white">exact number of contracts</strong> scaled to your account at your chosen risk percentage — typically 2% max loss per trade.
-        </p>
-        <p class="text-slate-400 leading-relaxed">
-          Your dashboard tracks every alert against your capital — entry, exit, P&L, portfolio growth. You see exactly how the strategy performs on <em>your</em> money, not a theoretical account.
-        </p>
-      </div>
-
-      <!-- Alert card mockup -->
-      <div class="rounded-2xl overflow-hidden" style="background:#0a0f1e;border:1px solid #1e2d45">
-        <div class="px-5 py-3 border-b border-dark-border flex items-center justify-between" style="background:#080d18">
-          <div class="flex items-center gap-2">
-            <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
-            <span class="text-xs text-green-400 font-semibold">LIVE SIGNAL — 9:47 AM ET</span>
-          </div>
-          <span class="text-xs text-slate-600">creditspread.net</span>
-        </div>
-        <div class="p-6">
-          <div class="text-white font-bold text-lg mb-1">SPX Bull Put Spread</div>
-          <div class="font-mono text-2xl font-bold text-green-400 mb-4">SELL 5250P / BUY 5225P</div>
-          <div class="grid grid-cols-2 gap-3 mb-5">
-            {% for label, val, color in [
-              ("Credit","$4.80","text-green-400"),
-              ("Expiry","Today (0DTE)","text-white"),
-              ("Your Contracts","3 contracts","text-blue-400"),
-              ("Max Risk","$2,880 (2%)","text-yellow-400"),
-              ("Profit Target","$2.40 → close","text-green-400"),
-              ("Stop Loss","$9.60 → exit","text-red-400")
-            ] %}
-            <div class="rounded-lg p-3" style="background:#0d1829;border:1px solid #1e2d45">
-              <div class="text-xs text-slate-500 mb-1">{{ label }}</div>
-              <div class="font-semibold {{ color }} text-sm">{{ val }}</div>
-            </div>
-            {% endfor %}
-          </div>
-          <div class="rounded-lg p-3 text-xs text-slate-500" style="background:#0d1829;border:1px solid #166534">
-            <span class="text-green-400 font-semibold">Sized for your $144,000 account at 2% risk.</span>
-            A stop-loss on this trade would cost $2,880 — 2% of your capital. The other 98% is untouched.
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Risk mitigation 3-point section -->
-    <div class="rounded-2xl p-8" style="background:#0d1829;border:1px solid #1e2d45">
-      <div class="text-center mb-8">
-        <h3 class="text-xl font-bold text-white mb-2">The real reason accounts blow up — and how we prevent it.</h3>
-        <p class="text-slate-500 text-sm max-w-2xl mx-auto">90% of retail options traders lose not because the strategy is wrong — but because they overtrade, oversize, and hold losing trades too long. Every feature below is designed to prevent exactly that.</p>
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-
-        <div class="text-center">
-          <div class="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl" style="background:#0d2818">🎯</div>
-          <h4 class="font-bold text-white mb-2">Position sizing removes guesswork</h4>
-          <p class="text-slate-500 text-sm leading-relaxed">The alert tells you exactly how many contracts — based on your capital. No mental math. No temptation to double-size because "the setup looks perfect."</p>
-        </div>
-
-        <div class="text-center">
-          <div class="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl" style="background:#0d1829">⏱</div>
-          <h4 class="font-bold text-white mb-2">Hard stop loss ends emotional holding</h4>
-          <p class="text-slate-500 text-sm leading-relaxed">Every signal has a mechanical 2x stop loss. When it hits, you close. No "I'll wait a little longer." The rule exists precisely for the moments when it's hardest to follow it.</p>
-        </div>
-
-        <div class="text-center">
-          <div class="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl" style="background:#0d2818">📊</div>
-          <h4 class="font-bold text-white mb-2">Your personal log keeps you honest</h4>
-          <p class="text-slate-500 text-sm leading-relaxed">Your dashboard logs every signal against your account — wins and losses. You see your actual portfolio growth, not a curated highlight reel. Transparency with yourself is the edge most traders never develop.</p>
-        </div>
-
-      </div>
-      <div class="mt-8 pt-6 border-t border-dark-border text-center">
-        <p class="text-xs text-slate-600 leading-relaxed max-w-3xl mx-auto">
-          <strong class="text-slate-500">We do not connect to your brokerage.</strong> We never ask for account logins, credentials, or read access to your positions.
-          Your declared account size stays private in your profile. The sizing in every alert is a <em>recommendation</em> — you execute trades in your own account at your own discretion.
-          This is an educational signal service. <a href="/disclaimer" class="text-slate-500 hover:text-green-400">Full disclaimer →</a>
-        </p>
-      </div>
-    </div>
-
-  </div>
-</section>
-
-<!-- TICKERS -->
-<section class="py-16 px-6">
-  <div class="max-w-5xl mx-auto text-center">
-    <h2 class="text-3xl font-bold text-white mb-3">We Trade the Most Liquid Markets</h2>
-    <p class="text-slate-500 mb-10">Retail alerts focus on two tickers — the safest, highest-probability options in existence.</p>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
-      <div class="p-6 text-left rounded-xl" style="background:linear-gradient(160deg,#0d2818,#0a1a12);border:1px solid #166534">
-        <div class="text-2xl font-bold text-green-400 mb-1">SPX</div>
-        <div class="text-white font-semibold mb-2">S&P 500 Index Options</div>
-        <p class="text-xs text-slate-500 leading-relaxed">Cash-settled · 0DTE &amp; weekly · Section 1256 tax treatment · Tightest spreads in options markets · Primary daily signal</p>
-      </div>
-      <div class="p-6 text-left rounded-xl" style="background:#0d1829;border:1px solid #1e3a5f">
-        <div class="text-2xl font-bold text-blue-400 mb-1">QQQ</div>
-        <div class="text-white font-semibold mb-2">Nasdaq-100 ETF Options</div>
-        <p class="text-xs text-slate-500 leading-relaxed">Most liquid ETF options · High IV premium · Daily expirations · Excellent credit collection · Secondary signal on select days</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- HOW IT WORKS -->
-<section class="py-20 px-6" style="background:rgba(34,197,94,0.02)">
-  <div class="max-w-5xl mx-auto text-center">
-    <h2 class="text-3xl font-bold text-white mb-4">How It Works</h2>
-    <p class="text-slate-500 mb-14">High probability. 0 guesswork. Alerts to your phone the moment each trade fires.</p>
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-      {% for step in [
-        ("01", "Signal Fires", "9:45 AM ET — VIX, delta, and IV filters scan SPX & QQQ chains. Signal auto-generated when conditions align."),
-        ("02", "Trade Executed", "Our desk executes the identical trade in live accounts. Entry price and timestamp published instantly."),
-        ("03", "You Get Alerted", "SMS + email to your phone with strikes, credit, expiry, profit target, and stop loss level. Timestamped proof of entry."),
-        ("04", "Auto-Managed", "Position monitored every 5 min. Closed at 50% profit target or 2x stop loss. Exit alert sent immediately.")
-      ] %}
-      <div class="card p-6 text-left">
-        <div class="text-green-400 font-mono text-sm font-bold mb-3">{{ step[0] }}</div>
-        <div class="font-bold text-white mb-2">{{ step[1] }}</div>
-        <p class="text-sm text-slate-500 leading-relaxed">{{ step[2] }}</p>
-      </div>
-      {% endfor %}
-    </div>
-    <div class="mt-8">
-      <a href="/how-it-works" class="btn-secondary text-sm">Full Breakdown — How It Works →</a>
-    </div>
-  </div>
-</section>
-
-<!-- PRICING PREVIEW -->
+<!-- ══ TICKERS ══ -->
 <section class="py-20 px-6">
-  <div class="max-w-3xl mx-auto text-center">
-    <h2 class="text-3xl font-bold text-white mb-4">Simple Pricing</h2>
-    <p class="text-slate-500 mb-14">Watch the trades free. Get live alerts when you're ready.</p>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-left">
+  <div class="max-w-3xl mx-auto">
+    <div class="text-center mb-10">
+      <h2 class="text-3xl font-bold text-white mb-3">The two most liquid markets</h2>
+      <p class="text-slate-500 text-sm">We focus retail alerts on the safest, highest-probability options.</p>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+      <div class="p-6 rounded-xl" style="background:linear-gradient(160deg,#0d2818,#0a1a12);border:1px solid #166534">
+        <div class="text-2xl font-bold text-green-400 mb-1">SPX</div>
+        <div class="text-white font-semibold mb-3 text-sm">S&amp;P 500 Index Options</div>
+        <p class="text-xs text-slate-500 leading-relaxed">Cash-settled · 0DTE &amp; weekly · Section 1256 tax treatment · Primary daily signal</p>
+      </div>
+      <div class="p-6 rounded-xl" style="background:#0d1829;border:1px solid #1e3a5f">
+        <div class="text-2xl font-bold text-blue-400 mb-1">QQQ</div>
+        <div class="text-white font-semibold mb-3 text-sm">Nasdaq-100 ETF Options</div>
+        <p class="text-xs text-slate-500 leading-relaxed">Most liquid ETF options · High IV premium · Daily expirations · Secondary signal</p>
+      </div>
+    </div>
+  </div>
+</section>
 
+<!-- ══ PRICING ══ -->
+<section class="py-24 px-6" style="background:#080d18">
+  <div class="max-w-3xl mx-auto">
+    <div class="text-center mb-12">
+      <h2 class="text-3xl font-bold text-white mb-3">Simple pricing</h2>
+      <p class="text-slate-500 text-sm">Watch free. Get live alerts when you're ready.</p>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       <div class="card p-8">
         <div class="text-slate-400 font-semibold text-sm uppercase tracking-wider mb-2">Free</div>
         <div class="text-4xl font-bold text-white mb-1">$0</div>
         <div class="text-slate-500 text-sm mb-6">forever</div>
-        <ul class="space-y-2 mb-8">
+        <ul class="space-y-2.5 mb-8">
           {% for f in ["1 delayed signal/week","Full public trade log","3-year performance history"] %}
           <li class="flex items-center gap-2 text-sm text-slate-400"><span class="text-green-400">✓</span>{{ f }}</li>
           {% endfor %}
         </ul>
         <a href="/register" class="btn-secondary w-full block text-center text-sm">Create Free Account</a>
       </div>
-
-      <div class="relative p-8 text-left glow" style="background:linear-gradient(160deg,#0d2818,#0a1a12);border:1px solid #166534;border-radius:12px">
-        <div class="absolute -top-4 left-1/2 -translate-x-1/2 px-5 py-1.5 rounded-full text-xs font-bold text-white whitespace-nowrap" style="background:linear-gradient(135deg,#22c55e,#16a34a)">FULL ACCESS</div>
+      <div class="relative p-8 glow" style="background:linear-gradient(160deg,#0d2818,#0a1a12);border:1px solid #166534;border-radius:12px">
+        <div class="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-xs font-bold text-white" style="background:linear-gradient(135deg,#22c55e,#16a34a)">FULL ACCESS</div>
         <div class="text-green-400 font-semibold text-sm uppercase tracking-wider mb-2">Member</div>
-        <div class="text-4xl font-bold text-white mb-1">$179</div>
-        <div class="text-slate-500 text-sm mb-6">per month · 7-day free trial</div>
-        <ul class="space-y-2 mb-8">
-          {% for f in ["Real-time SMS alert every signal","Instant email — entry & exit","Live entry price & timestamp","Fully automated — zero effort"] %}
+        <div class="text-4xl font-bold text-white mb-1">$179<span class="text-lg text-slate-500 font-normal">/mo</span></div>
+        <div class="text-slate-500 text-sm mb-6">7-day free trial</div>
+        <ul class="space-y-2.5 mb-8">
+          {% for f in ["Real-time SMS + email alerts","Sized to your account","Live entry & exit prices","Your private trade log"] %}
           <li class="flex items-center gap-2 text-sm text-slate-300"><span class="text-green-400">✓</span>{{ f }}</li>
           {% endfor %}
         </ul>
-        <a href="/pricing" class="btn-primary w-full block text-center text-sm">Start 7-Day Free Trial</a>
+        <a href="/pricing" class="btn-primary w-full block text-center text-sm">Start Free Trial</a>
       </div>
-
     </div>
   </div>
 </section>
 
-<!-- TESTIMONIALS -->
-<section class="py-24 px-6" style="background:rgba(34,197,94,0.02)">
-  <div class="max-w-6xl mx-auto">
+<!-- ══ TESTIMONIALS — 3 tight + rating ══ -->
+<section class="py-24 px-6">
+  <div class="max-w-5xl mx-auto">
     <div class="text-center mb-14">
-      <div class="text-green-400 text-xs font-bold uppercase tracking-widest mb-3">Member Experiences</div>
-      <h2 class="text-3xl font-bold text-white mb-3">What Our Members Say</h2>
-      <p class="text-slate-500">847 members. 3 years. These are real results from real accounts.</p>
-    </div>
-
-    <!-- Row 1 — featured large testimonial -->
-    <div class="card p-8 mb-6 glow" style="border-color:#166534">
-      <div class="flex flex-col md:flex-row gap-8 items-start">
-        <div class="flex-shrink-0 text-center">
-          <div class="w-16 h-16 rounded-full flex items-center justify-center mx-auto text-2xl font-bold text-white mb-2" style="background:linear-gradient(135deg,#22c55e,#16a34a)">MR</div>
-          <div class="text-white font-semibold text-sm">Michael R.</div>
-          <div class="text-slate-500 text-xs mt-0.5">Retired Portfolio Manager</div>
-          <div class="text-slate-600 text-xs">Austin, TX</div>
-          <div class="flex justify-center gap-0.5 mt-2">
-            {% for _ in range(5) %}<span class="text-yellow-400 text-sm">★</span>{% endfor %}
-          </div>
-        </div>
-        <div class="flex-1">
-          <div class="text-green-400 text-3xl font-serif mb-3">"</div>
-          <p class="text-slate-300 text-base leading-relaxed mb-4">I spent 22 years on a fixed income desk at a bulge bracket firm and I'll be honest — I was skeptical. But the methodology here is textbook institutional. The 0.10 delta selection, the 50% profit target, the 2x stop — this is exactly how professionals manage premium selling. I've been a member since February 2023. My account is up 41% over 28 months. The alerts hit my phone before I've even had my coffee and the trade is done by noon. Nothing to manage, nothing to second-guess.</p>
-          <div class="flex items-center gap-3 pt-3 border-t border-dark-border">
-            <span class="text-xs text-slate-600">Member since Feb 2023</span>
-            <span class="text-slate-700">·</span>
-            <span class="text-green-400 text-xs font-semibold">+41% portfolio growth</span>
-            <span class="text-slate-700">·</span>
-            <span class="text-xs text-slate-600">Verified Member</span>
-          </div>
-        </div>
+      <h2 class="text-3xl font-bold text-white mb-3">Trusted by 847 members</h2>
+      <div class="flex items-center justify-center gap-2">
+        <div class="flex gap-0.5">{% for _ in range(5) %}<span class="text-yellow-400">★</span>{% endfor %}</div>
+        <span class="text-slate-500 text-sm">4.9 average · 312 reviews</span>
       </div>
     </div>
-
-    <!-- Row 2 — 3 cards -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-      {% for initials, name, title, city, since, growth, stars, quote in [
-        ("SK","Sarah K.","Software Engineer","Seattle, WA","Apr 2023","+29%",5,"I have zero background in finance. The alerts are so clear — ticker, strikes, credit, profit target — I just enter the trade, set my stops, and walk away. Made more in 8 months than I did in 3 years of stock picking. The timestamps prove every signal came before the move. Total transparency."),
-        ("DT","David T.","Real Estate Investor","Miami, FL","Jan 2023","+38%",5,"Been mirroring these trades in my IRA since day one. The consistency is what gets me — week after week, the system just works. Had 4 losing trades in 18 months and every single one was stopped out cleanly at the 2x level. No blowups. Risk is actually managed."),
-        ("LC","Linda C.","Family Office Manager","Greenwich, CT","Jul 2023","+22%",5,"I manage capital for three families and we allocate 8% of each portfolio to this strategy. The automated alerts mean I'm not babysitting positions. The track record is public and auditable — I can verify every trade independently on the dashboard. That's rare in this industry.")
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+      {% for initials, name, title, growth, quote in [
+        ("MR","Michael R.","Ex-Portfolio Manager","+41%","Textbook institutional methodology. Alerts hit before my coffee, trade's done by noon. Nothing to second-guess."),
+        ("SK","Sarah K.","Software Engineer","+29%","Zero finance background. The alerts are so clear I just enter, set stops, and walk away. Total transparency."),
+        ("LC","Linda C.","Family Office","+22%","We allocate across three family portfolios. Every trade is public and auditable. That's rare in this industry.")
       ] %}
       <div class="card p-6">
         <div class="flex items-center gap-3 mb-4">
-          <div class="w-11 h-11 rounded-full flex items-center justify-center font-bold text-sm text-white flex-shrink-0" style="background:linear-gradient(135deg,#1e3a5f,#1d4ed8)">{{ initials }}</div>
+          <div class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-xs text-white flex-shrink-0" style="background:linear-gradient(135deg,#22c55e,#16a34a)">{{ initials }}</div>
           <div>
             <div class="text-white font-semibold text-sm">{{ name }}</div>
-            <div class="text-slate-500 text-xs">{{ title }} · {{ city }}</div>
+            <div class="text-slate-500 text-xs">{{ title }}</div>
           </div>
+          <div class="ml-auto text-green-400 font-bold text-sm">{{ growth }}</div>
         </div>
-        <div class="flex gap-0.5 mb-3">
-          {% for _ in range(stars) %}<span class="text-yellow-400 text-xs">★</span>{% endfor %}
-        </div>
-        <p class="text-slate-400 text-sm leading-relaxed mb-4">"{{ quote }}"</p>
-        <div class="flex items-center gap-2 pt-3 border-t border-dark-border flex-wrap">
-          <span class="text-xs text-slate-600">Since {{ since }}</span>
-          <span class="text-slate-700">·</span>
-          <span class="text-green-400 text-xs font-semibold">{{ growth }}</span>
-        </div>
+        <p class="text-slate-400 text-sm leading-relaxed">"{{ quote }}"</p>
       </div>
       {% endfor %}
-    </div>
-
-    <!-- Row 3 — 2 wider cards + 1 stat card -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      {% for initials, name, title, city, since, growth, quote in [
-        ("JM","James M.","Day Trader","Chicago, IL","Mar 2023","+33%","I trade actively on my own but I use CreditSpread.net as my income engine running in the background. The SPX signals fire early morning, I'm in and out by 11 AM, and my afternoon is free for my own setups. The automation is the key — no dashboards to watch, no decisions to make."),
-        ("AP","Anita P.","Physician","Houston, TX","Sep 2023","+18%","I have 70-hour work weeks. I needed something I could set and forget. I get the SMS, I enter the trade on my phone between patients, and I get the exit SMS a few hours later. In 14 months I've spent maybe 20 minutes total 'managing' this strategy. The results speak for themselves.")
-      ] %}
-      <div class="card p-6">
-        <div class="flex items-center gap-3 mb-4">
-          <div class="w-11 h-11 rounded-full flex items-center justify-center font-bold text-sm text-white flex-shrink-0" style="background:linear-gradient(135deg,#2d1a4a,#7c3aed)">{{ initials }}</div>
-          <div>
-            <div class="text-white font-semibold text-sm">{{ name }}</div>
-            <div class="text-slate-500 text-xs">{{ title }} · {{ city }}</div>
-          </div>
-        </div>
-        <div class="flex gap-0.5 mb-3">{% for _ in range(5) %}<span class="text-yellow-400 text-xs">★</span>{% endfor %}</div>
-        <p class="text-slate-400 text-sm leading-relaxed mb-4">"{{ quote }}"</p>
-        <div class="flex items-center gap-2 pt-3 border-t border-dark-border">
-          <span class="text-xs text-slate-600">Since {{ since }}</span>
-          <span class="text-slate-700">·</span>
-          <span class="text-green-400 text-xs font-semibold">{{ growth }}</span>
-        </div>
-      </div>
-      {% endfor %}
-
-      <!-- Aggregate rating card -->
-      <div class="card p-6 flex flex-col justify-between" style="background:linear-gradient(160deg,#0d2818,#0a1a12);border-color:#166534">
-        <div>
-          <div class="text-5xl font-bold text-green-400 mb-1">4.9</div>
-          <div class="flex gap-1 mb-2">{% for _ in range(5) %}<span class="text-yellow-400">★</span>{% endfor %}</div>
-          <div class="text-slate-400 text-sm mb-6">Average member rating<br>based on 312 reviews</div>
-        </div>
-        <div class="space-y-2">
-          {% for label, pct, w in [("5 stars","91%","91%"),("4 stars","7%","7%"),("3 stars","2%","2%")] %}
-          <div class="flex items-center gap-2 text-xs">
-            <span class="text-slate-500 w-12">{{ label }}</span>
-            <div class="flex-1 rounded-full h-1.5" style="background:#1e2d45">
-              <div class="h-1.5 rounded-full bg-green-400" style="width:{{ w }}"></div>
-            </div>
-            <span class="text-slate-500 w-6">{{ pct }}</span>
-          </div>
-          {% endfor %}
-        </div>
-        <div class="mt-6 pt-4 border-t border-dark-border">
-          <div class="text-xs text-slate-600">847 verified members · Jan 2023 – present</div>
-        </div>
-      </div>
     </div>
   </div>
 </section>
 
-<!-- TRUST BADGES -->
-<section class="py-16 px-6 border-t border-dark-border">
-  <div class="max-w-6xl mx-auto">
-    <p class="text-center text-xs text-slate-600 uppercase tracking-widest mb-10">Trusted infrastructure · Enterprise-grade security</p>
+<!-- ══ FINAL CTA (merged guarantee + capture) ══ -->
+<section class="py-24 px-6" style="background:#080d18">
+  <div class="max-w-xl mx-auto text-center">
+    <h2 class="text-3xl font-bold text-white mb-3">Start free. Risk nothing.</h2>
+    <p class="text-slate-400 mb-8 leading-relaxed">Full member access for 7 days. Live SPX &amp; QQQ alerts to your phone. Cancel before day 8 and you're never charged.</p>
+    <form action="/lead-capture" method="POST" class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+      <input type="hidden" name="source" value="homepage">
+      <input type="email" name="email" placeholder="your@email.com" required
+             class="flex-1 px-4 py-3 rounded-lg text-sm text-white" style="background:#0a0f1e;border:1px solid #1e2d45;outline:none">
+      <a href="/pricing" class="btn-primary text-sm whitespace-nowrap text-center">Start Free Trial</a>
+    </form>
+    <p class="text-xs text-slate-600 mt-4">No card required · Cancel anytime</p>
 
-    <!-- Row 1: security badges -->
-    <div class="flex flex-wrap items-center justify-center gap-5 mb-10">
-
-      {% for icon, label, sub in [
-        ("🔒","256-bit SSL Encryption","All data encrypted in transit"),
-        ("🛡","SOC 2 Infrastructure","Hosted on Render / AWS"),
-        ("💳","PCI-DSS Compliant","Payments via Stripe + PayPal"),
-        ("🔐","Zero Password Storage","Passwords hashed with bcrypt"),
-        ("📵","No Data Selling","Member data never shared or sold")
-      ] %}
-      <div class="flex items-center gap-3 px-5 py-3 rounded-xl" style="background:#131d30;border:1px solid #1e2d45">
-        <span class="text-xl">{{ icon }}</span>
-        <div>
-          <div class="text-white text-xs font-semibold">{{ label }}</div>
-          <div class="text-slate-600 text-xs">{{ sub }}</div>
-        </div>
-      </div>
-      {% endfor %}
-
-    </div>
-
-    <!-- Row 2: partner / tech logos as text badges -->
-    <div class="flex flex-wrap items-center justify-center gap-4 mb-10">
-      <span class="text-xs text-slate-600 uppercase tracking-wider mr-2">Powered by:</span>
-      {% for name, color in [
-        ("Stripe","#635bff"),("PayPal","#009cde"),("Tradier","#22c55e"),
-        ("Interactive Brokers","#d97706"),("Render","#46e3b7"),("Let's Encrypt","#f97316")
-      ] %}
-      <div class="px-4 py-2 rounded-lg text-xs font-semibold" style="background:#131d30;border:1px solid #1e2d45;color:{{ color }}">{{ name }}</div>
-      {% endfor %}
-    </div>
-
-    <!-- Row 3: credibility stats bar -->
-    <div class="grid grid-cols-2 md:grid-cols-5 gap-4 text-center py-8 px-6 rounded-2xl" style="background:#0d1829;border:1px solid #1e2d45">
-      {% for val, label in [
-        ("3+ Years","In Operation"),
-        ("847+","Verified Members"),
-        ("364+","Live Trades Logged"),
-        ("99.9%","System Uptime"),
-        ("< 3 sec","Alert Delivery Time")
-      ] %}
-      <div>
-        <div class="text-xl font-bold text-white">{{ val }}</div>
-        <div class="text-xs text-slate-500 mt-1">{{ label }}</div>
-      </div>
-      {% endfor %}
-    </div>
-
-    <!-- Row 4: as seen on / media mentions style -->
-    <div class="mt-10">
-      <p class="text-center text-xs text-slate-600 uppercase tracking-widest mb-6">Strategy discussed in</p>
-      <div class="flex flex-wrap items-center justify-center gap-8">
-        {% for name in ["Reddit r/thetagang","Reddit r/options","TastyTrade Community","Elite Trader Forums","StockTwits","SeekingAlpha"] %}
-        <span class="text-slate-600 text-sm font-semibold hover:text-slate-400 transition-colors">{{ name }}</span>
-        {% endfor %}
-      </div>
-    </div>
-
-  </div>
-</section>
-
-<!-- RISK-FREE GUARANTEE BANNER -->
-<section class="py-12 px-6">
-  <div class="max-w-4xl mx-auto">
-    <div class="rounded-2xl p-8 flex flex-col md:flex-row items-center gap-8 text-center md:text-left" style="background:linear-gradient(135deg,#0d2818,#0a1a12);border:1px solid #166534">
-      <div class="flex-shrink-0">
-        <div class="w-20 h-20 rounded-full flex items-center justify-center mx-auto" style="background:rgba(34,197,94,0.1);border:2px solid #22c55e">
-          <span class="text-3xl">🛡</span>
-        </div>
-      </div>
-      <div class="flex-1">
-        <h3 class="text-xl font-bold text-white mb-2">7-Day Free Trial — Zero Risk</h3>
-        <p class="text-slate-400 text-sm leading-relaxed">Get full member access for 7 days. Receive live SMS and email alerts on every SPX and QQQ signal. Watch the trades fire in real time. If you're not satisfied before day 8, cancel with one click — you will not be charged a single dollar.</p>
-      </div>
-      <div class="flex-shrink-0">
-        <a href="/pricing" class="btn-primary text-sm whitespace-nowrap">Start Free Trial</a>
-      </div>
+    <!-- Compact trust strip -->
+    <div class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 mt-12 pt-8 border-t border-dark-border text-xs text-slate-600">
+      <span>🔒 256-bit SSL</span>
+      <span>💳 Stripe &amp; PayPal</span>
+      <span>🛡 Bank-grade security</span>
+      <span>⚡ &lt;3 sec alerts</span>
+      <span>3+ years live</span>
     </div>
   </div>
 </section>
 
-<!-- EMAIL CAPTURE -->
-<section class="py-20 px-6">
-  <div class="max-w-2xl mx-auto text-center">
-    <div class="card p-10 glow">
-      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold mb-4" style="background:#052e16;border:1px solid #166534;color:#4ade80">
-        LIMITED SEATS — NOW OPEN TO RETAIL TRADERS
-      </div>
-      <h2 class="text-2xl font-bold text-white mb-3">Join 847+ Members Getting Live Alerts</h2>
-      <p class="text-slate-500 mb-6">Enter your email to claim your free seat and see live SPX &amp; QQQ trade alerts before paying a cent.</p>
-      <form action="/lead-capture" method="POST" class="flex flex-col sm:flex-row gap-3">
-        <input type="hidden" name="source" value="homepage">
-        <input type="email" name="email" placeholder="your@email.com" required
-               class="flex-1 px-4 py-3 rounded-lg text-sm text-white" style="background:#0d1829;border:1px solid #1e2d45;outline:none">
-        <button type="submit" class="btn-primary text-sm whitespace-nowrap">Claim Free Seat →</button>
-      </form>
-      <p class="text-xs text-slate-600 mt-3">No spam. Unsubscribe anytime. Email &amp; phone required for live alerts.</p>
-    </div>
-  </div>
-</section>
-
-<!-- FOOTER DISCLAIMER -->
+<!-- ══ DISCLAIMER ══ -->
 <section class="py-8 px-6 border-t border-dark-border">
-  <div class="max-w-4xl mx-auto text-center">
+  <div class="max-w-3xl mx-auto text-center">
     <p class="text-xs text-slate-600 leading-relaxed">
-      <span class="text-slate-500 font-semibold">Educational Purposes Only.</span> CreditSpread.net is not a registered investment advisor. All signals, alerts, and trade data are provided for educational and informational purposes only and do not constitute financial or investment advice. Options trading involves significant risk of loss — you can lose your entire investment. The high win rates and P&amp;L figures shown represent historical results and past performance does not guarantee future results. Individual results vary. Always consult a licensed financial professional before trading. Never trade with money you cannot afford to lose entirely.
+      <span class="text-slate-500 font-semibold">Educational purposes only.</span> Not a registered investment advisor. Options trading involves significant risk of loss. Past performance does not guarantee future results. <a href="/disclaimer" class="text-slate-500 hover:text-green-400">Full disclaimer →</a>
     </p>
   </div>
 </section>
