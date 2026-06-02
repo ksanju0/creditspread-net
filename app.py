@@ -659,14 +659,54 @@ def health():
 
 # ── admin ─────────────────────────────────────────────────────────────────────
 
+def challenge_ok(email):
+    return email == os.getenv('ADMIN_EMAIL', 'clist2013@gmail.com')
+
 @app.route('/admin')
 @login_required
 def admin():
-    if current_user.email != os.getenv('ADMIN_EMAIL', 'clist2013@gmail.com'):
+    if not challenge_ok(current_user.email):
         return redirect(url_for('member_dashboard'))
     users = User.query.order_by(User.created_at.desc()).all()
     leads = Lead.query.order_by(Lead.created_at.desc()).limit(50).all()
-    return render_template('admin.html', users=users, leads=leads)
+    return render_template('admin.html', users=users, leads=leads,
+                           admin_email=os.getenv('ADMIN_EMAIL', 'clist2013@gmail.com'))
+
+@app.route('/admin/delete-member/<int:user_id>', methods=['POST'])
+@login_required
+def admin_delete_member(user_id):
+    if not challenge_ok(current_user.email):
+        return redirect(url_for('member_dashboard'))
+    target = db.session.get(User, user_id)
+    if not target:
+        flash('Member not found.', 'error')
+        return redirect(url_for('admin'))
+    # Safety guards
+    if target.email == os.getenv('ADMIN_EMAIL', 'clist2013@gmail.com'):
+        flash('You cannot delete the admin account.', 'error')
+        return redirect(url_for('admin'))
+    if target.id == current_user.id:
+        flash('You cannot delete your own account.', 'error')
+        return redirect(url_for('admin'))
+    email = target.email
+    # Remove their personal trade log first (FK), then the user
+    MemberTrade.query.filter_by(user_id=target.id).delete()
+    db.session.delete(target)
+    db.session.commit()
+    flash(f'Member {email} and their trade log were removed.', 'success')
+    return redirect(url_for('admin'))
+
+@app.route('/admin/delete-lead/<int:lead_id>', methods=['POST'])
+@login_required
+def admin_delete_lead(lead_id):
+    if not challenge_ok(current_user.email):
+        return redirect(url_for('member_dashboard'))
+    lead = db.session.get(Lead, lead_id)
+    if lead:
+        db.session.delete(lead)
+        db.session.commit()
+        flash('Lead removed.', 'success')
+    return redirect(url_for('admin'))
 
 if __name__ == '__main__':
     with app.app_context():

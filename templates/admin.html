@@ -11,14 +11,19 @@
     <span class="badge-live">ADMIN</span>
   </div>
 
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for cat, msg in messages %}
+    <div class="mb-6 px-5 py-3 rounded-lg text-sm {% if cat=='error' %}bg-red-900 text-red-300 border border-red-800{% else %}bg-green-900 text-green-300 border border-green-800{% endif %}">{{ msg }}</div>
+    {% endfor %}
+  {% endwith %}
+
   <!-- Revenue stats -->
   <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-    {% set pro_count   = users|selectattr('plan','eq','pro')|list|length %}
-    {% set elite_count = users|selectattr('plan','eq','elite')|list|length %}
-    {% set free_count  = users|selectattr('plan','eq','free')|list|length %}
-    {% set mrr = pro_count * 97 + elite_count * 197 %}
+    {% set member_count = users|selectattr('sub_status','eq','active')|list|length %}
+    {% set free_count   = users|length - member_count %}
+    {% set mrr = member_count * 179 %}
     <div class="card p-5 text-center">
-      <div class="text-2xl font-bold text-green-400">${{ mrr }}</div>
+      <div class="text-2xl font-bold text-green-400">${{ "{:,}".format(mrr) }}</div>
       <div class="text-xs text-slate-500 mt-1 uppercase tracking-wider">MRR</div>
     </div>
     <div class="card p-5 text-center">
@@ -26,7 +31,7 @@
       <div class="text-xs text-slate-500 mt-1 uppercase tracking-wider">Total Members</div>
     </div>
     <div class="card p-5 text-center">
-      <div class="text-2xl font-bold text-blue-400">{{ pro_count + elite_count }}</div>
+      <div class="text-2xl font-bold text-blue-400">{{ member_count }}</div>
       <div class="text-xs text-slate-500 mt-1 uppercase tracking-wider">Paid Subscribers</div>
     </div>
     <div class="card p-5 text-center">
@@ -44,7 +49,7 @@
       <table class="w-full">
         <thead>
           <tr style="background:#0d1829">
-            {% for h in ["ID","Name","Email","Plan","Status","Joined","Last Login","Referral"] %}
+            {% for h in ["ID","Name","Email","Plan","Status","Joined","Last Login","Referral","Action"] %}
             <th class="px-4 py-3 text-left text-xs text-slate-500 uppercase tracking-wider">{{ h }}</th>
             {% endfor %}
           </tr>
@@ -70,6 +75,17 @@
             <td class="px-4 py-3 text-xs text-slate-500">{{ u.created_at.strftime('%Y-%m-%d') if u.created_at else '—' }}</td>
             <td class="px-4 py-3 text-xs text-slate-500">{{ u.last_login.strftime('%Y-%m-%d') if u.last_login else '—' }}</td>
             <td class="px-4 py-3 text-xs text-slate-500 font-mono">{{ u.referral_code or '—' }}</td>
+            <td class="px-4 py-3">
+              {% if u.email == admin_email %}
+                <span class="text-xs text-slate-600">admin</span>
+              {% else %}
+                <form method="POST" action="/admin/delete-member/{{ u.id }}"
+                      onsubmit="return confirm('Remove {{ u.email }} and their trade log? This cannot be undone.');">
+                  <button type="submit" class="px-3 py-1 rounded text-xs font-semibold transition-colors"
+                          style="background:#2d1a1a;color:#f87171;border:1px solid #7f1d1d">Remove</button>
+                </form>
+              {% endif %}
+            </td>
           </tr>
           {% endfor %}
         </tbody>
@@ -86,7 +102,7 @@
       <table class="w-full">
         <thead>
           <tr style="background:#0d1829">
-            {% for h in ["Email","Name","Source","Joined","Converted"] %}
+            {% for h in ["Email","Name","Source","Joined","Converted","Action"] %}
             <th class="px-4 py-3 text-left text-xs text-slate-500 uppercase tracking-wider">{{ h }}</th>
             {% endfor %}
           </tr>
@@ -100,6 +116,13 @@
             <td class="px-4 py-3 text-xs text-slate-500">{{ l.created_at.strftime('%Y-%m-%d') if l.created_at else '—' }}</td>
             <td class="px-4 py-3 text-xs {{ 'text-green-400' if l.converted else 'text-slate-600' }}">
               {{ 'Yes' if l.converted else 'No' }}
+            </td>
+            <td class="px-4 py-3">
+              <form method="POST" action="/admin/delete-lead/{{ l.id }}"
+                    onsubmit="return confirm('Remove lead {{ l.email }}?');">
+                <button type="submit" class="px-3 py-1 rounded text-xs font-semibold transition-colors"
+                        style="background:#2d1a1a;color:#f87171;border:1px solid #7f1d1d">Remove</button>
+              </form>
             </td>
           </tr>
           {% endfor %}
