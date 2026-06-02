@@ -28,6 +28,43 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
 
+def run_migrations():
+    """
+    Lightweight auto-migration. SQLAlchemy create_all() won't ALTER existing
+    tables, so we add any missing columns/tables here. Safe to run on every boot.
+    """
+    import sqlite3
+    db_path = MEMBERS_DB
+    try:
+        conn = sqlite3.connect(db_path)
+        cur  = conn.cursor()
+
+        # Ensure tables exist (no-op if already there)
+        with app.app_context():
+            db.create_all()
+
+        # Add any missing columns to users
+        cur.execute("PRAGMA table_info(users)")
+        existing_cols = {row[1] for row in cur.fetchall()}
+        new_cols = {
+            'account_size':        'FLOAT',
+            'account_pledge_date': 'DATETIME',
+            'risk_pct':            'FLOAT DEFAULT 2.0',
+            'phone':               'VARCHAR(20)',
+            'telegram_chat_id':    'VARCHAR(40)',
+        }
+        for col, coltype in new_cols.items():
+            if col not in existing_cols:
+                cur.execute(f"ALTER TABLE users ADD COLUMN {col} {coltype}")
+                print(f"[migration] Added users.{col}")
+
+        conn.commit()
+        conn.close()
+    except Exception as e:
+        print(f"[migration] error: {e}")
+
+run_migrations()
+
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 login_manager.login_message = 'Please log in to access your dashboard'

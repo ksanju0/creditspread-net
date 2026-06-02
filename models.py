@@ -24,6 +24,7 @@ class User(UserMixin, db.Model):
     account_pledge_date    = db.Column(db.DateTime, nullable=True)  # when they set it
     risk_pct               = db.Column(db.Float,   default=2.0)     # % of account per trade
     phone                  = db.Column(db.String(20), nullable=True)
+    telegram_chat_id       = db.Column(db.String(40), nullable=True)
     # ── Relationships ─────────────────────────────────────────────────────────
     member_trades = db.relationship('MemberTrade', backref='user', lazy=True)
 
