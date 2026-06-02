@@ -19,6 +19,8 @@ class User(UserMixin, db.Model):
     last_login             = db.Column(db.DateTime)
     referral_code          = db.Column(db.String(20))
     referred_by            = db.Column(db.String(20))
+    free_months            = db.Column(db.Integer, default=0)   # earned via referrals
+    referral_count         = db.Column(db.Integer, default=0)   # successful conversions
     # ── Personalized alert fields ─────────────────────────────────────────────
     account_size           = db.Column(db.Float,   nullable=True)   # pledged trading capital
     account_pledge_date    = db.Column(db.DateTime, nullable=True)  # when they set it

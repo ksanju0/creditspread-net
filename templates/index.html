@@ -41,7 +41,7 @@
         ("$" + total_pnl_fmt, "Total P&L")
       ] %}
       <div>
-        <div class="text-3xl font-bold {% if loop.index in [1,3,5] %}text-green-400{% elif loop.index == 4 %}text-blue-400{% else %}text-white{% endif %}">{{ val }}</div>
+        <div class="countup text-3xl font-bold {% if loop.index in [1,3,5] %}text-green-400{% elif loop.index == 4 %}text-blue-400{% else %}text-white{% endif %}" data-target="{{ val }}">{{ val }}</div>
         <div class="text-xs text-slate-500 mt-1 uppercase tracking-wider">{{ label }}</div>
       </div>
       {% endfor %}
@@ -69,6 +69,102 @@
         <p class="text-sm text-slate-500 leading-relaxed">{{ step[2] }}</p>
       </div>
       {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- ══ TODAY'S SIGNAL — locked teaser ══ -->
+<section class="py-20 px-6" style="background:#080d18">
+  <div class="max-w-xl mx-auto">
+    <div class="text-center mb-8">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold mb-3" style="background:#0d2818;border:1px solid #166534;color:#4ade80">
+        <span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span> Most recent signal
+      </div>
+      <h2 class="text-2xl font-bold text-white">Today's live signal</h2>
+    </div>
+
+    <div class="rounded-2xl overflow-hidden relative" style="background:#0a0f1e;border:1px solid #1e2d45">
+      <div class="px-5 py-3 border-b border-dark-border flex items-center justify-between" style="background:#0d1829">
+        <span class="text-xs text-green-400 font-semibold">SPX BULL PUT SPREAD</span>
+        {% if recent_trades and recent_trades[0] %}
+        <span class="text-xs text-slate-500">{{ recent_trades[0].date }}</span>
+        {% endif %}
+      </div>
+      <div class="p-6 relative">
+        {% if current_user.is_authenticated and current_user.plan == 'member' and recent_trades and recent_trades[0] %}
+          <!-- Member: full signal -->
+          {% set t = recent_trades[0] %}
+          <div class="font-mono text-2xl font-bold text-green-400 mb-5">SELL {{ t.short_strike }}P / BUY {{ t.long_strike }}P</div>
+          <div class="grid grid-cols-3 gap-3">
+            <div class="rounded-lg p-3" style="background:#0d1829;border:1px solid #1e2d45"><div class="text-xs text-slate-500 mb-1">Credit</div><div class="text-green-400 font-semibold">${{ t.net_credit }}</div></div>
+            <div class="rounded-lg p-3" style="background:#0d1829;border:1px solid #1e2d45"><div class="text-xs text-slate-500 mb-1">ROR</div><div class="text-blue-400 font-semibold">{{ t.ror_pct }}%</div></div>
+            <div class="rounded-lg p-3" style="background:#0d1829;border:1px solid #1e2d45"><div class="text-xs text-slate-500 mb-1">VIX</div><div class="text-white font-semibold">{{ t.vix }}</div></div>
+          </div>
+        {% else %}
+          <!-- Locked for free/anon -->
+          <div class="font-mono text-2xl font-bold text-green-400 mb-5" style="filter:blur(9px);user-select:none">SELL 5250P / BUY 5225P</div>
+          <div class="grid grid-cols-3 gap-3" style="filter:blur(9px);user-select:none">
+            <div class="rounded-lg p-3" style="background:#0d1829"><div class="text-xs text-slate-500 mb-1">Credit</div><div class="text-green-400 font-semibold">$4.80</div></div>
+            <div class="rounded-lg p-3" style="background:#0d1829"><div class="text-xs text-slate-500 mb-1">ROR</div><div class="text-blue-400 font-semibold">23.8%</div></div>
+            <div class="rounded-lg p-3" style="background:#0d1829"><div class="text-xs text-slate-500 mb-1">VIX</div><div class="text-white font-semibold">14.8</div></div>
+          </div>
+          <!-- Unlock overlay -->
+          <div class="absolute inset-0 flex flex-col items-center justify-center gap-3" style="background:rgba(10,15,30,0.55);backdrop-filter:blur(2px)">
+            <div class="text-3xl">🔒</div>
+            <div class="text-white font-semibold text-sm">Unlock today's signal</div>
+            <a href="/pricing" class="btn-primary text-sm">Start 7-Day Free Trial →</a>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+    {% if not (current_user.is_authenticated and current_user.plan == 'member') %}
+    <p class="text-center text-xs text-slate-600 mt-4">Members see every signal live — sized to their account — the moment it fires.</p>
+    {% endif %}
+  </div>
+</section>
+
+<!-- ══ ROI CALCULATOR ══ -->
+<section class="py-24 px-6">
+  <div class="max-w-3xl mx-auto">
+    <div class="text-center mb-12">
+      <h2 class="text-3xl font-bold text-white mb-3">What could your account do?</h2>
+      <p class="text-slate-500 text-sm">Move the slider. See the projection based on our 3-year live track record.</p>
+    </div>
+
+    <div class="card p-8">
+      <div class="mb-8">
+        <div class="flex items-center justify-between mb-3">
+          <label class="text-sm text-slate-400">Your account size</label>
+          <span id="roi-acct-label" class="text-xl font-bold text-white">$50,000</span>
+        </div>
+        <input id="roi-acct" type="range" min="10000" max="500000" step="5000" value="50000"
+               class="w-full accent-green-500" style="accent-color:#22c55e">
+        <div class="flex justify-between text-xs text-slate-600 mt-1"><span>$10K</span><span>$500K</span></div>
+      </div>
+
+      <div class="mb-8">
+        <div class="flex items-center justify-between mb-3">
+          <label class="text-sm text-slate-400">Risk per trade</label>
+          <span id="roi-risk-label" class="text-xl font-bold text-white">2%</span>
+        </div>
+        <input id="roi-risk" type="range" min="1" max="5" step="1" value="2"
+               class="w-full" style="accent-color:#22c55e">
+        <div class="flex justify-between text-xs text-slate-600 mt-1"><span>1% Safe</span><span>5% Aggressive</span></div>
+      </div>
+
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 pt-6 border-t border-dark-border text-center">
+        <div><div id="roi-contracts" class="text-2xl font-bold text-blue-400">1</div><div class="text-xs text-slate-500 mt-1">Contracts / signal</div></div>
+        <div><div id="roi-monthly" class="text-2xl font-bold text-green-400">$0</div><div class="text-xs text-slate-500 mt-1">Est. monthly</div></div>
+        <div><div id="roi-annual" class="text-2xl font-bold text-green-400">$0</div><div class="text-xs text-slate-500 mt-1">Est. annual</div></div>
+        <div><div id="roi-growth" class="text-2xl font-bold text-green-400">0%</div><div class="text-xs text-slate-500 mt-1">Annual growth</div></div>
+      </div>
+
+      <div class="mt-6 text-center">
+        <a href="/pricing" class="btn-primary text-sm">Start Earning — Free 7-Day Trial</a>
+      </div>
+      <p class="text-xs text-slate-600 text-center mt-4 leading-relaxed">
+        Projection assumes ~13 signals/month, 90% win rate, $4.67 avg credit, 50% profit target, 2x stop — our actual 3-year averages. Illustrative only. Past performance does not guarantee future results.
+      </p>
     </div>
   </div>
 </section>
@@ -327,5 +423,35 @@
     </p>
   </div>
 </section>
+
+<script>
+// ── ROI Calculator ──────────────────────────────────────────────────────────
+(function(){
+  var acct = document.getElementById('roi-acct');
+  var risk = document.getElementById('roi-risk');
+  if(!acct) return;
+  var AVG_CREDIT=4.67, WIN=0.90, PROFIT_TGT=0.50, STOP_MULT=2, SIGNALS_MO=13;
+  function fmt(n){ return '$'+Math.round(n).toLocaleString('en-US'); }
+  function calc(){
+    var A=+acct.value, R=+risk.value/100;
+    var stopCost=AVG_CREDIT*STOP_MULT*100;
+    var contracts=Math.max(1, Math.floor((A*R)/stopCost));
+    var winAmt = AVG_CREDIT*PROFIT_TGT*100*contracts;
+    var lossAmt= AVG_CREDIT*STOP_MULT*100*contracts;
+    var perTrade = WIN*winAmt - (1-WIN)*lossAmt;
+    var monthly = perTrade*SIGNALS_MO;
+    var annual  = monthly*12;
+    document.getElementById('roi-acct-label').textContent = fmt(A);
+    document.getElementById('roi-risk-label').textContent = risk.value+'%';
+    document.getElementById('roi-contracts').textContent = contracts;
+    document.getElementById('roi-monthly').textContent = fmt(monthly);
+    document.getElementById('roi-annual').textContent = fmt(annual);
+    document.getElementById('roi-growth').textContent = Math.round(annual/A*100)+'%';
+  }
+  acct.addEventListener('input', calc);
+  risk.addEventListener('input', calc);
+  calc();
+})();
+</script>
 
 {% endblock %}

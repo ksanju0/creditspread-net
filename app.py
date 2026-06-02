@@ -55,6 +55,8 @@ def run_migrations():
         'risk_pct':            'FLOAT DEFAULT 2.0',
         'phone':               'VARCHAR(20)',
         'telegram_chat_id':    'VARCHAR(40)',
+        'free_months':         'INTEGER DEFAULT 0',
+        'referral_count':      'INTEGER DEFAULT 0',
     }
     try:
         with app.app_context():
@@ -529,6 +531,17 @@ def checkout(plan):
         flash(f'Checkout error: {str(e)}', 'error')
         return redirect(url_for('pricing'))
 
+def credit_referrer(new_member):
+    """When a referred user converts to paid, give their referrer +1 free month."""
+    code = (new_member.referred_by or '').strip()
+    if not code:
+        return
+    referrer = User.query.filter_by(referral_code=code).first()
+    if referrer and referrer.id != new_member.id:
+        referrer.free_months   = (referrer.free_months or 0) + 1
+        referrer.referral_count = (referrer.referral_count or 0) + 1
+        db.session.commit()
+
 @app.route('/checkout/success')
 @login_required
 def checkout_success():
@@ -536,12 +549,15 @@ def checkout_success():
     if session_id and stripe.api_key:
         try:
             sess = stripe.checkout.Session.retrieve(session_id)
-            plan = sess.metadata.get('plan', 'pro')
+            plan = sess.metadata.get('plan', 'member')
+            was_free = current_user.sub_status != 'active'
             current_user.plan = plan
             current_user.stripe_customer_id = sess.customer
             current_user.stripe_subscription_id = sess.subscription
             current_user.sub_status = 'active'
             db.session.commit()
+            if was_free:
+                credit_referrer(current_user)
             flash(f'Welcome to CreditSpread.net {plan.title()}! Your subscription is active.', 'success')
         except Exception:
             pass
@@ -565,10 +581,13 @@ def paypal_success():
                 headers={'Authorization': f'Bearer {access_token}'}, timeout=10)
             sub_data = sub_resp.json()
             if sub_data.get('status') in ('ACTIVE', 'APPROVAL_PENDING'):
+                was_free = current_user.sub_status != 'active'
                 current_user.plan = plan
                 current_user.stripe_subscription_id = subscription_id  # reuse field for PayPal sub ID
                 current_user.sub_status = 'active'
                 db.session.commit()
+                if was_free:
+                    credit_referrer(current_user)
                 flash(f'Welcome to CreditSpread.net {plan.title()}! PayPal subscription active.', 'success')
         except Exception as e:
             flash(f'PayPal verification error: {str(e)}', 'error')

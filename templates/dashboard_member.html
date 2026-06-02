@@ -31,6 +31,49 @@
     {% endfor %}
   {% endwith %}
 
+  <!-- ══ REFERRAL CARD ══ -->
+  <div class="card p-6 mb-8" style="background:linear-gradient(135deg,#0d1829,#0a1220);border-color:#1e3a5f">
+    <div class="flex flex-col md:flex-row items-start md:items-center gap-6">
+      <div class="flex-1">
+        <div class="flex items-center gap-2 mb-2">
+          <span class="text-lg">🎁</span>
+          <h3 class="font-bold text-white">Give a month, get a month</h3>
+        </div>
+        <p class="text-slate-500 text-sm leading-relaxed mb-4">
+          Share your link. When a friend becomes a member, you both get a free month. No limit — refer 12 friends, get a full year free.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-2">
+          <input id="ref-link" type="text" readonly
+                 value="https://creditspread.net/register?ref={{ current_user.referral_code }}"
+                 class="flex-1 px-4 py-2.5 rounded-lg text-sm text-slate-300 font-mono"
+                 style="background:#0a0f1e;border:1px solid #1e2d45;outline:none">
+          <button onclick="copyRef()" id="ref-btn" class="btn-primary text-sm whitespace-nowrap">Copy Link</button>
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-4 flex-shrink-0">
+        <div class="text-center px-5 py-3 rounded-xl" style="background:#0a0f1e;border:1px solid #1e3a5f">
+          <div class="text-2xl font-bold text-blue-400">{{ current_user.referral_count or 0 }}</div>
+          <div class="text-xs text-slate-600 mt-1">Friends joined</div>
+        </div>
+        <div class="text-center px-5 py-3 rounded-xl" style="background:#0d2818;border:1px solid #166534">
+          <div class="text-2xl font-bold text-green-400">{{ current_user.free_months or 0 }}</div>
+          <div class="text-xs text-slate-600 mt-1">Free months</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+  function copyRef(){
+    var el = document.getElementById('ref-link');
+    el.select(); el.setSelectionRange(0,99999);
+    navigator.clipboard.writeText(el.value).then(function(){
+      var b = document.getElementById('ref-btn');
+      b.textContent = 'Copied ✓';
+      setTimeout(function(){ b.textContent = 'Copy Link'; }, 2000);
+    });
+  }
+  </script>
+
   <!-- ══ ACCOUNT SETUP (if not yet configured) ══ -->
   {% if not current_user.account_size %}
   <div class="mb-10 rounded-2xl overflow-hidden" style="background:linear-gradient(135deg,#0d2818,#0a1a12);border:2px solid #166534">

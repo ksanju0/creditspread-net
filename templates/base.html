@@ -17,6 +17,7 @@
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script>
 tailwind.config = {
   theme: {
@@ -133,6 +134,23 @@ tailwind.config = {
 })();
 </script>
 
+<!-- LIVE STATUS BAR -->
+<div id="status-bar" class="border-b border-dark-border text-xs" style="background:#080d18">
+  <div class="max-w-7xl mx-auto px-5 md:px-6 py-2 flex items-center justify-center md:justify-between gap-x-5 gap-y-1 flex-wrap">
+    <div class="flex items-center gap-2">
+      <span id="mkt-dot" class="w-1.5 h-1.5 rounded-full bg-slate-600"></span>
+      <span id="mkt-status" class="text-slate-400 font-medium">Checking market…</span>
+    </div>
+    <div class="hidden sm:flex items-center gap-5 text-slate-500">
+      <span id="mkt-next"></span>
+      <span class="text-slate-700">·</span>
+      <span>Scanning <span class="text-green-400">SPX</span> &amp; <span class="text-blue-400">QQQ</span></span>
+      <span class="text-slate-700">·</span>
+      <span id="mkt-clock" class="font-mono"></span>
+    </div>
+  </div>
+</div>
+
 {% block content %}{% endblock %}
 
 <!-- FOOTER -->
@@ -191,6 +209,69 @@ tailwind.config = {
     </div>
   </div>
 </footer>
+
+<script>
+// ── Live market status bar (ET-based) ──────────────────────────────────────
+(function(){
+  function update(){
+    var now = new Date();
+    // Convert to US Eastern
+    var et = new Date(now.toLocaleString('en-US', {timeZone:'America/New_York'}));
+    var day = et.getDay(), h = et.getHours(), m = et.getMinutes();
+    var mins = h*60 + m;
+    var open = 9*60+30, close = 16*60;
+    var isWeekday = day >= 1 && day <= 5;
+    var dot = document.getElementById('mkt-dot');
+    var status = document.getElementById('mkt-status');
+    var next = document.getElementById('mkt-next');
+    var clock = document.getElementById('mkt-clock');
+    if (clock) clock.textContent = et.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',hour12:false}) + ' ET';
+    if (!dot) return;
+    if (isWeekday && mins >= open && mins < close) {
+      dot.className = 'w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse';
+      status.innerHTML = '<span class="text-green-400 font-semibold">Market open</span> · scanning for signals';
+      var firstWin = 9*60+45, secondWin = 14*60;
+      if (mins < firstWin)        next && (next.textContent = 'Next entry window: 9:45 AM ET');
+      else if (mins < secondWin)  next && (next.textContent = 'Entry window active until 11:00 AM ET');
+      else                        next && (next.textContent = 'Afternoon window: 2:00–3:00 PM ET');
+    } else {
+      dot.className = 'w-1.5 h-1.5 rounded-full bg-slate-500';
+      status.innerHTML = '<span class="text-slate-400 font-semibold">Market closed</span> · next session 9:30 AM ET';
+      next && (next.textContent = isWeekday ? '' : 'Markets reopen Monday');
+    }
+  }
+  update(); setInterval(update, 30000);
+})();
+
+// ── Count-up animation for any .countup element ────────────────────────────
+(function(){
+  function animate(el){
+    var raw = el.getAttribute('data-target');
+    var target = parseFloat(raw.replace(/[^0-9.\-]/g,''));
+    if (isNaN(target)) { el.textContent = raw; return; }
+    var prefix = (raw.match(/^[^0-9.\-]+/)||[''])[0];
+    var suffix = (raw.match(/[^0-9.\-]+$/)||[''])[0];
+    var decimals = (raw.split('.')[1]||'').replace(/[^0-9]/g,'').length;
+    var start = null, dur = 1100;
+    function step(ts){
+      if(!start) start = ts;
+      var p = Math.min((ts-start)/dur, 1);
+      var eased = 1 - Math.pow(1-p, 3);
+      var val = target * eased;
+      el.textContent = prefix + val.toLocaleString('en-US',{minimumFractionDigits:decimals,maximumFractionDigits:decimals}) + suffix;
+      if(p<1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+  var seen = new WeakSet();
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting && !seen.has(e.target)){ seen.add(e.target); animate(e.target); }
+    });
+  }, {threshold:0.4});
+  document.querySelectorAll('.countup').forEach(function(el){ io.observe(el); });
+})();
+</script>
 
 </body>
 </html>
