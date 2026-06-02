@@ -672,7 +672,7 @@ def sitemap():
 def robots():
     return "User-agent: *\nAllow: /\nSitemap: https://creditspread.net/sitemap.xml\n", 200, {'Content-Type': 'text/plain'}
 
-APP_VERSION = 'v2-roi-mobile-charts'  # bump to confirm deploys
+APP_VERSION = 'v3-py312-fix'  # bump to confirm deploys
 
 @app.route('/api/health')
 def health():
