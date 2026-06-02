@@ -1,19 +1,28 @@
+databases:
+  - name: creditspread-db
+    plan: free            # free Postgres: 1GB, persists across restarts/deploys
+    databaseName: creditspread
+    user: creditspread
+
 services:
   - type: web
     name: creditspread-net
     runtime: python
+    plan: free
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn app:app --bind 0.0.0.0:$PORT --workers 2 --timeout 60
     envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: creditspread-db
+          property: connectionString
       - key: SECRET_KEY
         generateValue: true
       - key: ADMIN_EMAIL
         value: clist2013@gmail.com
       - key: STRIPE_SECRET_KEY
         value: sk_test_placeholder
-      - key: STRIPE_PRO_PRICE_ID
-        value: price_pro_placeholder
-      - key: STRIPE_ELITE_PRICE_ID
-        value: price_elite_placeholder
+      - key: STRIPE_MEMBER_PRICE_ID
+        value: price_member_placeholder
       - key: STRIPE_WEBHOOK_SECRET
         value: whsec_placeholder

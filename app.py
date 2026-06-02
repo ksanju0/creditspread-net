@@ -23,43 +23,58 @@ from models import db, User, Lead, SocialPost, MemberTrade
 app = Flask(__name__)
 CORS(app)
 app.secret_key = os.getenv('SECRET_KEY', 'creditspread-secret-2026-change-me')
-app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{MEMBERS_DB}'
+
+# ── Database URI ──────────────────────────────────────────────────────────────
+# Production (Render): DATABASE_URL points at managed Postgres (persists forever).
+# Local dev: falls back to SQLite file.
+DATABASE_URL = os.getenv('DATABASE_URL', '')
+if DATABASE_URL:
+    # Render/Heroku give "postgres://..." but SQLAlchemy needs "postgresql://"
+    if DATABASE_URL.startswith('postgres://'):
+        DATABASE_URL = DATABASE_URL.replace('postgres://', 'postgresql://', 1)
+    app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
+    USING_POSTGRES = True
+else:
+    app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{MEMBERS_DB}'
+    USING_POSTGRES = False
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_pre_ping': True}
 
 db.init_app(app)
 
 def run_migrations():
     """
-    Lightweight auto-migration. SQLAlchemy create_all() won't ALTER existing
-    tables, so we add any missing columns/tables here. Safe to run on every boot.
+    Auto-migration. create_all() makes new tables but won't ALTER existing ones,
+    so we add any missing columns. Works for both Postgres (prod) and SQLite (dev).
+    Safe to run on every boot.
     """
-    import sqlite3
-    db_path = MEMBERS_DB
+    new_cols = {
+        'account_size':        'FLOAT',
+        'account_pledge_date': 'TIMESTAMP',
+        'risk_pct':            'FLOAT DEFAULT 2.0',
+        'phone':               'VARCHAR(20)',
+        'telegram_chat_id':    'VARCHAR(40)',
+    }
     try:
-        conn = sqlite3.connect(db_path)
-        cur  = conn.cursor()
-
-        # Ensure tables exist (no-op if already there)
         with app.app_context():
+            # Create any tables that don't exist yet (with full new schema)
             db.create_all()
 
-        # Add any missing columns to users
-        cur.execute("PRAGMA table_info(users)")
-        existing_cols = {row[1] for row in cur.fetchall()}
-        new_cols = {
-            'account_size':        'FLOAT',
-            'account_pledge_date': 'DATETIME',
-            'risk_pct':            'FLOAT DEFAULT 2.0',
-            'phone':               'VARCHAR(20)',
-            'telegram_chat_id':    'VARCHAR(40)',
-        }
-        for col, coltype in new_cols.items():
-            if col not in existing_cols:
-                cur.execute(f"ALTER TABLE users ADD COLUMN {col} {coltype}")
-                print(f"[migration] Added users.{col}")
+            # Discover existing columns on users
+            from sqlalchemy import inspect, text
+            insp = inspect(db.engine)
+            existing_cols = {c['name'] for c in insp.get_columns('users')}
 
-        conn.commit()
-        conn.close()
+            for col, coltype in new_cols.items():
+                if col not in existing_cols:
+                    # Postgres TIMESTAMP vs SQLite DATETIME — both accept these keywords
+                    ddl = coltype
+                    if not USING_POSTGRES and 'TIMESTAMP' in ddl:
+                        ddl = ddl.replace('TIMESTAMP', 'DATETIME')
+                    db.session.execute(text(f'ALTER TABLE users ADD COLUMN {col} {ddl}'))
+                    db.session.commit()
+                    print(f"[migration] Added users.{col}")
     except Exception as e:
         print(f"[migration] error: {e}")
 
