@@ -672,7 +672,7 @@ def sitemap():
 def robots():
     return "User-agent: *\nAllow: /\nSitemap: https://creditspread.net/sitemap.xml\n", 200, {'Content-Type': 'text/plain'}
 
-APP_VERSION = 'v6-badges'  # bump to confirm deploys
+APP_VERSION = 'v7-mytrades-fix'  # bump to confirm deploys
 
 @app.route('/api/health')
 def health():

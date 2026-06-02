@@ -9,10 +9,23 @@
         <a href="/dashboard" class="hover:text-green-400">← Dashboard</a>
       </div>
       <h1 class="text-2xl font-bold text-white">My Complete Trade Log</h1>
+      {% if user.account_size %}
       <p class="text-slate-500 text-sm mt-1">Every signal we sent — sized to your ${{ "{:,.0f}".format(user.account_size) }} account at {{ user.risk_pct }}% risk.</p>
+      {% else %}
+      <p class="text-slate-500 text-sm mt-1">Set your account size on the dashboard to see signals sized to your capital.</p>
+      {% endif %}
     </div>
     <a href="/dashboard" class="btn-secondary text-sm">Back to Dashboard</a>
   </div>
+
+  {% if not user.account_size %}
+  <!-- No account set yet -->
+  <div class="card p-10 text-center">
+    <h2 class="text-lg font-bold text-white mb-2">No trades tracked yet</h2>
+    <p class="text-slate-500 text-sm mb-6">Activate your account size on the dashboard and every signal will be logged here — sized to your capital, with your personal P&amp;L.</p>
+    <a href="/dashboard" class="btn-primary text-sm">Set Up My Account →</a>
+  </div>
+  {% else %}
 
   <!-- Summary stats -->
   {% if member_stats %}
@@ -136,6 +149,7 @@
       </div>
     </div>
   </div>
+  {% endif %}
 
 </div>
 
