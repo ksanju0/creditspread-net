@@ -1,5 +1,7 @@
 {% extends "base.html" %}
-{% block title %}Pricing — CreditSpread.net{% endblock %}
+{% block title %}Pricing — SPX Credit Spread Signal Service | CreditSpread.net{% endblock %}
+{% block meta_description %}Free delayed signals or full real-time SPX & QQQ credit spread alerts for $179/mo. 7-day free trial, cancel anytime, sized to your account. See plans and FAQ.{% endblock %}
+{% block og_title %}CreditSpread.net Pricing — Free & Member Plans{% endblock %}
 {% block content %}
 
 <section class="py-20 px-6">
@@ -86,16 +88,17 @@
 
     <!-- FAQ -->
     <div class="mt-20 text-left max-w-2xl mx-auto">
-      <h2 class="text-2xl font-bold text-white text-center mb-10">Questions</h2>
-      <div class="space-y-4">
-        {% for q, a in [
+      <h2 class="text-2xl font-bold text-white text-center mb-10">Frequently Asked Questions</h2>
+      {% set faqs = [
           ("What do I actually receive as a member?", "Two things — an SMS to your phone and an email to your inbox the moment each trade fires. Each alert contains: ticker (SPX or QQQ), spread strikes, credit collected, entry timestamp, profit target, and stop loss. A second alert goes out when the trade closes. That's it. Fully automated."),
           ("Do I need to do anything after joining?", "No. Enter your email and phone number during signup. After that the system runs completely on its own. You receive alerts, you decide whether to mirror the trade yourself. We handle everything else."),
           ("What's the 7-day free trial?", "You get full member access for 7 days at no charge. If you cancel before day 8, you owe nothing. After day 8 your card or PayPal is billed $179 for the first month."),
           ("Can I cancel?", "Yes, instantly from your dashboard. One click. No calls, no forms. You keep access through the end of your billing period. No prorated refunds are issued for partial months."),
           ("What broker do I need?", "None — to receive alerts. To mirror trades yourself you need any broker that supports SPX or QQQ options (IBKR, Tastytrade, TD Ameritrade, Schwab all work). Minimum recommended account size: $25,000."),
           ("Is this financial advice?", "No. CreditSpread.net is an educational signal service. We are not registered investment advisors. All content is for educational purposes only. Options trading involves significant risk of loss. Always consult a licensed financial professional.")
-        ] %}
+      ] %}
+      <div class="space-y-4">
+        {% for q, a in faqs %}
         <div class="card p-6">
           <div class="font-semibold text-white mb-2">{{ q }}</div>
           <div class="text-sm text-slate-500 leading-relaxed">{{ a }}</div>
@@ -106,6 +109,19 @@
 
   </div>
 </section>
+
+<!-- FAQ structured data (Google rich results) -->
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"FAQPage",
+  "mainEntity":[
+    {% for q, a in faqs %}
+    {"@type":"Question","name":{{ q|tojson }},"acceptedAnswer":{"@type":"Answer","text":{{ a|tojson }}}}{{ "," if not loop.last }}
+    {% endfor %}
+  ]
+}
+</script>
 
 {% if paypal_client_id and paypal_client_id != 'paypal_client_id_placeholder' %}
 <script src="https://www.paypal.com/sdk/js?client-id={{ paypal_client_id }}&vault=true&intent=subscription"></script>

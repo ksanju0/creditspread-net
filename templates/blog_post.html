@@ -1,17 +1,38 @@
 {% extends "base.html" %}
-{% block title %}{{ post.title }} | CreditSpread.net Blog{% endblock %}
+{% block title %}{{ post.seo_title or post.title }} | CreditSpread.net{% endblock %}
+{% block meta_description %}{{ post.meta_description or post.excerpt }}{% endblock %}
+{% block meta_keywords %}{{ post.tags | join(', ') }}, SPX credit spreads, options trading{% endblock %}
+{% block og_title %}{{ post.title }}{% endblock %}
+{% block og_description %}{{ post.meta_description or post.excerpt }}{% endblock %}
+{% block og_type %}article{% endblock %}
+{% block canonical %}/blog/{{ post.slug }}{% endblock %}
 {% block content %}
 
 <!-- Schema.org Article markup for Google -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "Article",
+  "@type": "BlogPosting",
   "headline": "{{ post.title }}",
-  "description": "{{ post.excerpt }}",
-  "datePublished": "{{ post.date }}",
-  "author": {"@type":"Organization","name":"CreditSpread.net"},
-  "publisher": {"@type":"Organization","name":"CreditSpread.net","url":"https://creditspread.net"}
+  "description": "{{ post.meta_description or post.excerpt }}",
+  "datePublished": "{{ post.iso_date or post.date }}",
+  "dateModified": "{{ post.iso_date or post.date }}",
+  "author": {"@type":"Organization","name":"CreditSpread.net","url":"https://creditspread.net"},
+  "publisher": {"@type":"Organization","name":"CreditSpread.net","url":"https://creditspread.net","logo":{"@type":"ImageObject","url":"https://creditspread.net/static/logo.svg"}},
+  "mainEntityOfPage":{"@type":"WebPage","@id":"https://creditspread.net/blog/{{ post.slug }}"},
+  "keywords":"{{ post.tags | join(', ') }}"
+}
+</script>
+<!-- Breadcrumb structured data -->
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"BreadcrumbList",
+  "itemListElement":[
+    {"@type":"ListItem","position":1,"name":"Home","item":"https://creditspread.net/"},
+    {"@type":"ListItem","position":2,"name":"Blog","item":"https://creditspread.net/blog"},
+    {"@type":"ListItem","position":3,"name":"{{ post.title }}","item":"https://creditspread.net/blog/{{ post.slug }}"}
+  ]
 }
 </script>
 

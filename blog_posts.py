@@ -7,8 +7,11 @@ POSTS = [
   {
     "slug": "spx-bull-put-credit-spread-complete-guide",
     "title": "SPX Bull Put Credit Spread: The Complete Guide for Retail Traders (2025)",
+    "seo_title": "SPX Bull Put Credit Spread Guide (2025) — Strikes, Risk & Win Rate",
+    "meta_description": "Complete 2025 guide to the SPX bull put credit spread: how it works, 0.10-delta strike selection, the 50%/2x management rule, tax advantages, and a real 88%+ win-rate track record.",
     "excerpt": "A bull put credit spread on SPX is one of the highest-probability options strategies available to retail traders. This guide covers exactly how it works, how we select strikes, manage risk, and why 88%+ of our trades close profitably.",
     "date": "March 12, 2025",
+    "iso_date": "2025-03-12",
     "read_time": "12 min read",
     "tags": ["SPX", "Credit Spreads", "Options Strategy", "Bull Put Spread"],
     "body": """
@@ -128,8 +131,11 @@ POSTS = [
   {
     "slug": "spx-options-section-1256-tax-advantage",
     "title": "SPX Options Tax Advantage: How Section 1256 Saves Traders Thousands Every Year",
+    "seo_title": "SPX Options Tax: How Section 1256 Saves Traders Thousands (60/40 Rule)",
+    "meta_description": "SPX index options qualify for IRS Section 1256 treatment — taxed 60% long-term / 40% short-term regardless of holding period. Learn how the 60/40 rule can save you $10,000+ per year vs SPY.",
     "excerpt": "Most retail options traders overpay taxes by 30–40% because they trade SPY or stock options instead of SPX. Section 1256 of the IRS tax code gives SPX traders a massive structural advantage that most traders have never heard of.",
     "date": "February 28, 2025",
+    "iso_date": "2025-02-28",
     "read_time": "8 min read",
     "tags": ["Tax Strategy", "SPX Options", "Section 1256", "Options Trading"],
     "body": """
@@ -212,8 +218,11 @@ POSTS = [
   {
     "slug": "0dte-options-strategy-complete-guide-2025",
     "title": "0DTE Options Strategy: The Complete 2025 Guide — What Works, What Doesn't",
+    "seo_title": "0DTE Options Strategy 2025 — The Complete Guide for SPX Traders",
+    "meta_description": "A complete 2025 guide to 0DTE options strategy: why theta favors sellers, why most retail buyers lose, and how defined-risk SPX credit spreads safely capture same-day premium decay.",
     "excerpt": "0DTE options (zero days to expiration) have exploded in popularity. In 2024, 0DTE options accounted for over 50% of SPX daily volume. This guide explains how to trade them systematically, the real risks, and why credit spreads are the safest 0DTE approach.",
     "date": "January 15, 2025",
+    "iso_date": "2025-01-15",
     "read_time": "10 min read",
     "tags": ["0DTE", "Options Strategy", "SPX", "Day Trading Options"],
     "body": """
@@ -316,8 +325,11 @@ POSTS = [
   {
     "slug": "how-to-pick-the-right-credit-spread-strikes",
     "title": "How to Pick the Right Credit Spread Strikes: Delta, VIX, and the 90% Probability Rule",
+    "seo_title": "Credit Spread Strike Selection — Delta, VIX & the 90% Rule",
+    "meta_description": "How to pick credit spread strikes the systematic way: why 0.10 delta means a 90% probability of profit, how to size spread width by VIX, and the entry checklist behind an 88%+ win rate.",
     "excerpt": "Strike selection is the single most important decision in any credit spread trade. Get it wrong and you're collecting pennies in front of a steamroller. Get it right and you're running a statistical edge that compounds over hundreds of trades.",
     "date": "December 5, 2024",
+    "iso_date": "2024-12-05",
     "read_time": "9 min read",
     "tags": ["Strike Selection", "Delta", "VIX", "Credit Spreads", "Risk Management"],
     "body": """
@@ -414,8 +426,11 @@ POSTS = [
   {
     "slug": "why-most-options-traders-fail-and-how-to-fix-it",
     "title": "Why 90% of Retail Options Traders Lose — And the 3 Rules That Put You in the Other 10%",
+    "seo_title": "Why Most Options Traders Lose — 3 Rules to Be Profitable",
+    "meta_description": "70–90% of retail options traders lose money for predictable reasons: buying premium, no mechanical exits, and oversizing. Learn the 3 rules that flip the odds in your favor.",
     "excerpt": "Studies consistently show that 70–90% of retail options traders lose money. The reasons aren't random bad luck — they're predictable, systematic mistakes that a clear framework can eliminate. Here's the honest breakdown.",
     "date": "November 18, 2024",
+    "iso_date": "2024-11-18",
     "read_time": "7 min read",
     "tags": ["Options Trading", "Risk Management", "Trading Psychology", "Retail Trading"],
     "body": """
