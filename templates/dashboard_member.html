@@ -36,7 +36,7 @@
     <div class="flex flex-col md:flex-row items-start md:items-center gap-6">
       <div class="flex-1">
         <div class="flex items-center gap-2 mb-2">
-          <span class="text-lg">🎁</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M5 12v8a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-8M12 8v13M12 8S10.5 3 7.5 4.5 12 8 12 8zM12 8s1.5-5 4.5-3.5S12 8 12 8z"/></svg>
           <h3 class="font-bold text-white">Give a month, get a month</h3>
         </div>
         <p class="text-slate-500 text-sm leading-relaxed mb-4">
@@ -80,7 +80,9 @@
     <div class="p-8">
 
       <div class="flex items-start gap-5 mb-8">
-        <div class="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style="background:#052e16;font-size:1.5rem">🛡</div>
+        <div class="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style="background:#052e16">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 4.5-3 7.5-8 9-5-1.5-8-4.5-8-9V6z"/></svg>
+        </div>
         <div>
           <h2 class="text-xl font-bold text-white mb-2">Activate your personalized alert profile</h2>
           <p class="text-slate-400 text-sm leading-relaxed max-w-2xl">
@@ -89,13 +91,18 @@
             so you never risk more than your chosen percentage on any single trade.
           </p>
           <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-3">
-            {% for icon, point in [
-              ("🔒","No brokerage login. No credentials. Ever."),
-              ("📊","Contracts auto-sized to your risk tolerance."),
-              ("🛡","Defined max loss on every trade, calculated for you.")
+            {% set si = {
+              'lock':'<rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
+              'chart':'<path d="M3 3v18h18"/><rect x="7" y="12" width="3" height="5"/><rect x="12" y="8" width="3" height="9"/><rect x="17" y="5" width="3" height="12"/>',
+              'shield':'<path d="M12 3l8 3v6c0 4.5-3 7.5-8 9-5-1.5-8-4.5-8-9V6z"/>'
+            } %}
+            {% for key, point in [
+              ('lock','No brokerage login. No credentials. Ever.'),
+              ('chart','Contracts auto-sized to your risk tolerance.'),
+              ('shield','Defined max loss on every trade, calculated for you.')
             ] %}
             <div class="flex items-center gap-2 text-xs text-slate-500">
-              <span>{{ icon }}</span> {{ point }}
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0">{{ si[key]|safe }}</svg> {{ point }}
             </div>
             {% endfor %}
           </div>
