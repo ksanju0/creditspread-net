@@ -113,7 +113,8 @@
   <!-- Equity curve -->
   <div class="card p-6 mb-8">
     <h2 class="font-semibold text-white mb-4">Cumulative P&L Curve</h2>
-    <div id="equity-chart" class="flex items-end gap-1" style="height:160px"></div>
+    <div style="height:240px"><canvas id="equity-chart"></canvas></div>
+    <div id="equity-empty" class="hidden text-slate-500 text-sm text-center py-12">Equity curve appears after the first closed trade</div>
   </div>
 
   <!-- Full trade log -->
@@ -168,21 +169,74 @@
 </div>
 
 <script>
-async function drawChart() {
-  const r = await fetch('/api/stats');
-  const s = await r.json();
-  const el = document.getElementById('equity-chart');
-  if (!s.equity_curve || !s.equity_curve.length) {
-    el.innerHTML = '<div class="text-slate-500 text-sm m-auto">Equity curve appears after first closed trade</div>';
-    return;
-  }
-  const vals = s.equity_curve;
-  const maxAbs = Math.max(...vals.map(Math.abs), 1);
-  el.innerHTML = vals.map((v, i) => {
-    const h = Math.max(4, Math.abs(v) / maxAbs * 140);
-    return `<div class="flex-1 rounded-t" style="height:${h}px;background:${v>=0?'#22c55e':'#f87171'};min-width:4px" title="Trade ${i+1}: $${v}"></div>`;
-  }).join('');
+function fmtMoney(v){ return (v<0?'-$':'$') + Math.abs(v).toLocaleString('en-US'); }
+
+function renderEquityLine(canvasId, vals){
+  const canvas = document.getElementById(canvasId);
+  if(!canvas || !vals || !vals.length) return null;
+  const ctx = canvas.getContext('2d');
+  const grad = ctx.createLinearGradient(0,0,0,canvas.parentNode.offsetHeight||240);
+  grad.addColorStop(0,'rgba(34,197,94,0.28)');
+  grad.addColorStop(1,'rgba(34,197,94,0.00)');
+  return new Chart(ctx, {
+    type:'line',
+    data:{
+      labels: vals.map((_,i)=>i+1),
+      datasets:[{
+        data: vals,
+        borderColor:'#22c55e',
+        borderWidth:2,
+        fill:true,
+        backgroundColor:grad,
+        tension:0.25,
+        pointRadius:0,
+        pointHoverRadius:5,
+        pointHoverBackgroundColor:'#22c55e',
+        pointHoverBorderColor:'#fff',
+        pointHoverBorderWidth:2,
+      }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      animation:{ duration:1200, easing:'easeOutCubic' },
+      interaction:{ mode:'index', intersect:false },
+      plugins:{
+        legend:{ display:false },
+        tooltip:{
+          backgroundColor:'#0d1829', borderColor:'#1e2d45', borderWidth:1,
+          titleColor:'#94a3b8', bodyColor:'#e2e8f0', padding:10, displayColors:false,
+          callbacks:{
+            title: items => 'Trade #'+items[0].label,
+            label: item => 'Cumulative P&L: ' + fmtMoney(item.raw)
+          }
+        }
+      },
+      scales:{
+        x:{ display:false, grid:{display:false} },
+        y:{
+          grid:{ color:'rgba(30,45,69,0.5)' },
+          ticks:{ color:'#475569', font:{size:11}, callback:v=>fmtMoney(v) },
+          border:{ display:false }
+        }
+      }
+    }
+  });
 }
-drawChart();
+
+(async function(){
+  try{
+    const r = await fetch('/api/stats');
+    const s = await r.json();
+    if(!s.equity_curve || !s.equity_curve.length){
+      document.getElementById('equity-chart').style.display='none';
+      document.getElementById('equity-empty').classList.remove('hidden');
+      return;
+    }
+    renderEquityLine('equity-chart', s.equity_curve);
+  }catch(e){
+    document.getElementById('equity-chart').style.display='none';
+    document.getElementById('equity-empty').classList.remove('hidden');
+  }
+})();
 </script>
 {% endblock %}

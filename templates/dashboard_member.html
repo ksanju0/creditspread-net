@@ -199,7 +199,7 @@
         <div class="text-xs text-slate-600">Total profit on your capital</div>
       </div>
     </div>
-    <div id="member-equity-chart" class="flex items-end gap-0.5" style="height:100px"></div>
+    <div style="height:200px"><canvas id="member-equity-chart"></canvas></div>
   </div>
   {% endif %}
 
@@ -314,11 +314,28 @@
 const equity = {{ member_stats.equity_curve | tojson if member_stats and member_stats.equity_curve else '[]' }};
 const chartEl = document.getElementById('member-equity-chart');
 if (chartEl && equity.length) {
-  const maxAbs = Math.max(...equity.map(Math.abs), 1);
-  chartEl.innerHTML = equity.map((v, i) => {
-    const h = Math.max(4, Math.abs(v) / maxAbs * 95);
-    return `<div class="flex-1 rounded-t transition-all" style="height:${h}px;background:${v>=0?'#22c55e':'#ef4444'};min-width:2px;max-width:14px;cursor:pointer" title="Trade ${i+1}: ${v>=0?'+':''}$${v.toLocaleString()}"></div>`;
-  }).join('');
+  const ctx = chartEl.getContext('2d');
+  const grad = ctx.createLinearGradient(0,0,0,200);
+  grad.addColorStop(0,'rgba(34,197,94,0.30)');
+  grad.addColorStop(1,'rgba(34,197,94,0.00)');
+  new Chart(ctx, {
+    type:'line',
+    data:{ labels: equity.map((_,i)=>i+1),
+      datasets:[{ data:equity, borderColor:'#22c55e', borderWidth:2, fill:true,
+        backgroundColor:grad, tension:0.25, pointRadius:0, pointHoverRadius:5,
+        pointHoverBackgroundColor:'#22c55e', pointHoverBorderColor:'#fff', pointHoverBorderWidth:2 }]},
+    options:{ responsive:true, maintainAspectRatio:false,
+      animation:{ duration:1200, easing:'easeOutCubic' },
+      interaction:{ mode:'index', intersect:false },
+      plugins:{ legend:{display:false},
+        tooltip:{ backgroundColor:'#0d1829', borderColor:'#1e2d45', borderWidth:1,
+          titleColor:'#94a3b8', bodyColor:'#e2e8f0', padding:10, displayColors:false,
+          callbacks:{ title:i=>'Trade #'+i[0].label,
+            label:i=>'Your P&L: '+(i.raw<0?'-$':'$')+Math.abs(i.raw).toLocaleString('en-US') } } },
+      scales:{ x:{ display:false, grid:{display:false} },
+        y:{ grid:{color:'rgba(30,45,69,0.5)'}, border:{display:false},
+          ticks:{ color:'#475569', font:{size:11}, callback:v=>(v<0?'-$':'$')+Math.abs(v).toLocaleString('en-US') } } } }
+  });
 }
 </script>
 {% endblock %}

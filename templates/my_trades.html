@@ -38,7 +38,7 @@
       <span class="text-white font-semibold">Portfolio Equity Curve</span>
       <span class="text-green-400 font-bold">{{ member_stats.total_pnl_fmt }} ({{ member_stats.growth_pct }}%)</span>
     </div>
-    <div id="trades-equity-chart" class="flex items-end gap-0.5" style="height:80px"></div>
+    <div style="height:160px"><canvas id="trades-equity-chart"></canvas></div>
     <div class="flex justify-between mt-2 text-xs text-slate-600">
       <span>Started: ${{ "{:,.0f}".format(member_stats.account_start) }}</span>
       <span>Current: ${{ "{:,.0f}".format(member_stats.account_now) }}</span>
@@ -143,11 +143,29 @@
 const equity = {{ member_stats.equity_curve | tojson if member_stats and member_stats.equity_curve else '[]' }};
 const el = document.getElementById('trades-equity-chart');
 if (el && equity.length) {
-  const maxAbs = Math.max(...equity.map(Math.abs), 1);
-  el.innerHTML = equity.map((v, i) => {
-    const h = Math.max(3, Math.abs(v) / maxAbs * 75);
-    return `<div class="flex-1 rounded-t" style="height:${h}px;background:${v>=0?'#22c55e':'#ef4444'};min-width:2px;max-width:12px" title="Trade ${i+1}: ${v>=0?'+':''}$${v.toLocaleString()}"></div>`;
-  }).join('');
+  const ctx = el.getContext('2d');
+  const grad = ctx.createLinearGradient(0,0,0,160);
+  grad.addColorStop(0,'rgba(34,197,94,0.28)');
+  grad.addColorStop(1,'rgba(34,197,94,0.00)');
+  new Chart(ctx, {
+    type:'line',
+    data:{ labels: equity.map((_,i)=>i+1),
+      datasets:[{ data:equity, borderColor:'#22c55e', borderWidth:2, fill:true,
+        backgroundColor:grad, tension:0.25, pointRadius:0, pointHoverRadius:4,
+        pointHoverBackgroundColor:'#22c55e', pointHoverBorderColor:'#fff', pointHoverBorderWidth:2 }]},
+    options:{ responsive:true, maintainAspectRatio:false,
+      animation:{ duration:1000, easing:'easeOutCubic' },
+      interaction:{ mode:'index', intersect:false },
+      plugins:{ legend:{display:false},
+        tooltip:{ backgroundColor:'#0d1829', borderColor:'#1e2d45', borderWidth:1,
+          titleColor:'#94a3b8', bodyColor:'#e2e8f0', padding:9, displayColors:false,
+          callbacks:{ title:i=>'Trade #'+i[0].label,
+            label:i=>'P&L: '+(i.raw<0?'-$':'$')+Math.abs(i.raw).toLocaleString('en-US') } } },
+      scales:{ x:{ display:false, grid:{display:false} },
+        y:{ grid:{color:'rgba(30,45,69,0.4)'}, border:{display:false},
+          ticks:{ color:'#475569', font:{size:10}, maxTicksLimit:4,
+            callback:v=>(v<0?'-$':'$')+Math.abs(v).toLocaleString('en-US') } } } }
+  });
 }
 </script>
 {% endblock %}
