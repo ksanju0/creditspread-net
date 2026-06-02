@@ -99,7 +99,7 @@
     {% for label, val, color in [
       ("Total Trades", stats.total_trades, "text-white"),
       ("Win Rate",     stats.win_rate|string + "%", "text-green-400"),
-      ("Total P&L",    "$" + stats.total_pnl_fmt, "text-green-400"),
+      ("P&L Since Jan 2023",    "$" + stats.total_pnl_fmt, "text-green-400"),
       ("Avg Credit",   "$" + stats.avg_credit|string, "text-blue-400"),
       ("Avg ROR",      stats.avg_ror|string + "%", "text-blue-400")
     ] %}
