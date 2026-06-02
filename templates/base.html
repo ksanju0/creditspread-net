@@ -9,6 +9,8 @@
 <link rel="canonical" href="https://creditspread.net{% block canonical %}{{ request.path }}{% endblock %}">
 <meta name="robots" content="index, follow, max-image-preview:large">
 <meta name="author" content="CreditSpread.net">
+{% if google_site_verification %}<meta name="google-site-verification" content="{{ google_site_verification }}">{% endif %}
+{% if bing_site_verification %}<meta name="msvalidate.01" content="{{ bing_site_verification }}">{% endif %}
 <meta property="og:site_name" content="CreditSpread.net">
 <meta property="og:url" content="https://creditspread.net{{ request.path }}">
 <meta name="twitter:site" content="@CreditSpreadNet">

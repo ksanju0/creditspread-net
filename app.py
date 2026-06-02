@@ -102,6 +102,14 @@ PAYPAL_API_BASE       = 'https://api-m.paypal.com'
 def load_user(user_id):
     return db.session.get(User, int(user_id))
 
+# Inject site-verification codes (set as Render env vars — no code change needed)
+@app.context_processor
+def inject_site_verification():
+    return {
+        'google_site_verification': os.getenv('GOOGLE_SITE_VERIFICATION', ''),
+        'bing_site_verification':   os.getenv('BING_SITE_VERIFICATION', ''),
+    }
+
 # ── helpers ───────────────────────────────────────────────────────────────────
 
 def fmt_pnl(val):
@@ -672,7 +680,7 @@ def sitemap():
 def robots():
     return "User-agent: *\nAllow: /\nSitemap: https://creditspread.net/sitemap.xml\n", 200, {'Content-Type': 'text/plain'}
 
-APP_VERSION = 'v9-seo'  # bump to confirm deploys
+APP_VERSION = 'v10-verify'  # bump to confirm deploys
 
 @app.route('/api/health')
 def health():
