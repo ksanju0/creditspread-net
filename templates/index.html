@@ -406,28 +406,6 @@
       <a href="/pricing" class="btn-primary text-sm whitespace-nowrap text-center">Start Free Trial</a>
     </form>
     <p class="text-xs text-slate-600 mt-4">No card required · Cancel anytime</p>
-
-    <!-- Security badges — one row, monochrome SVG icons + short label -->
-    <div class="flex flex-wrap items-center justify-center gap-3 mt-12 pt-8 border-t border-dark-border">
-      {% set ic = {
-        'lock':   '<rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
-        'shield': '<path d="M12 3l8 3v6c0 4.5-3 7.5-8 9-5-1.5-8-4.5-8-9V6z"/>',
-        'card':   '<rect x="2.5" y="5" width="19" height="14" rx="2"/><path d="M2.5 9.5h19"/>',
-        'key':    '<circle cx="8" cy="14" r="4"/><path d="M11 11l8-8M16 4l3 3M14 6l2 2"/>',
-        'noeye':  '<path d="M3 3l18 18"/><path d="M10.6 10.6a2 2 0 0 0 2.8 2.8"/><path d="M9.4 5.2A9 9 0 0 1 21 12a16 16 0 0 1-2.4 3.2M6.3 6.3A16 16 0 0 0 3 12a9 9 0 0 0 12 5.7"/>'
-      } %}
-      {% for key, label in [
-        ('lock','256-bit SSL'),
-        ('shield','SOC 2 Infra'),
-        ('card','PCI-DSS'),
-        ('key','bcrypt Secured'),
-        ('noeye','No Data Selling')
-      ] %}
-      <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs text-slate-400 whitespace-nowrap" style="background:#0d1829;border:1px solid #1e2d45">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">{{ ic[key]|safe }}</svg>{{ label }}
-      </span>
-      {% endfor %}
-    </div>
   </div>
 </section>
 
@@ -446,6 +424,32 @@
       <span class="font-bold text-lg text-slate-400 tracking-tight">StockTwits</span>
       <!-- TradingView wordmark -->
       <span class="font-bold text-lg text-slate-400 tracking-tight">TradingView</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══ SECURITY BADGES — single row, bottom ══ -->
+<section class="py-8 px-6 border-t border-dark-border">
+  <div class="max-w-5xl mx-auto overflow-x-auto">
+    <div class="flex items-center justify-center gap-3 min-w-max mx-auto">
+      {% set ic = {
+        'lock':   '<rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
+        'shield': '<path d="M12 3l8 3v6c0 4.5-3 7.5-8 9-5-1.5-8-4.5-8-9V6z"/>',
+        'card':   '<rect x="2.5" y="5" width="19" height="14" rx="2"/><path d="M2.5 9.5h19"/>',
+        'key':    '<circle cx="8" cy="14" r="4"/><path d="M11 11l8-8M16 4l3 3M14 6l2 2"/>',
+        'noeye':  '<path d="M3 3l18 18"/><path d="M10.6 10.6a2 2 0 0 0 2.8 2.8"/><path d="M9.4 5.2A9 9 0 0 1 21 12a16 16 0 0 1-2.4 3.2M6.3 6.3A16 16 0 0 0 3 12a9 9 0 0 0 12 5.7"/>'
+      } %}
+      {% for key, label in [
+        ('lock','256-bit SSL'),
+        ('shield','SOC 2 Infra'),
+        ('card','PCI-DSS'),
+        ('key','bcrypt Secured'),
+        ('noeye','No Data Selling')
+      ] %}
+      <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs text-slate-400 whitespace-nowrap flex-shrink-0" style="background:#0d1829;border:1px solid #1e2d45">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">{{ ic[key]|safe }}</svg>{{ label }}
+      </span>
+      {% endfor %}
     </div>
   </div>
 </section>
