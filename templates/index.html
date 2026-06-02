@@ -240,7 +240,7 @@
     </div>
     <div class="grid grid-cols-2 md:grid-cols-4 gap-5">
       {% for val, label, sub in [
-        ("90.1%", "Win rate", "364 trades, all public"),
+        (site_stats.win_rate|string + "%", "Win rate", site_stats.trades|string + " trades, all public"),
         ("Defined", "Max loss", "Known before you enter"),
         ("78%", "Win rate in 2022", "Through the bear market"),
         ("$10K+", "Tax saved/yr", "SPX Section 1256")
@@ -368,7 +368,7 @@
 <section class="py-24 px-6">
   <div class="max-w-5xl mx-auto">
     <div class="text-center mb-14">
-      <h2 class="text-3xl font-bold text-white mb-3">Trusted by 847 members</h2>
+      <h2 class="text-3xl font-bold text-white mb-3">Trusted by {{ site_stats.members }} members</h2>
       <div class="flex items-center justify-center gap-2">
         <div class="flex gap-0.5">{% for _ in range(5) %}<span class="text-yellow-400">★</span>{% endfor %}</div>
         <span class="text-slate-500 text-sm">4.9 average · 312 reviews</span>

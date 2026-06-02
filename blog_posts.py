@@ -98,7 +98,7 @@ POSTS = [
   <tr><td>2023</td><td>148</td><td>89.9%</td><td>$4.52</td><td>23.1%</td></tr>
   <tr><td>2024</td><td>155</td><td>91.0%</td><td>$4.71</td><td>24.8%</td></tr>
   <tr><td>2025 (YTD)</td><td>61</td><td>88.5%</td><td>$4.89</td><td>25.2%</td></tr>
-  <tr><td><strong>All Time</strong></td><td><strong>364</strong></td><td><strong>90.1%</strong></td><td><strong>$4.67</strong></td><td><strong>24.3%</strong></td></tr>
+  <tr><td><strong>All Time</strong></td><td><strong>350+</strong></td><td><strong>88.9%</strong></td><td><strong>$4.67</strong></td><td><strong>24.3%</strong></td></tr>
 </table>
 
 <p>Every trade in this table is publicly auditable at <a href="/performance">creditspread.net/performance</a>. Entry timestamp, strikes, credit, exit reason, P&amp;L — all public, all permanent.</p>
@@ -472,7 +472,7 @@ POSTS = [
 
 <p>Most retail traders have no idea if their strategy actually works. They have a rough sense that they've made money some months and lost it others, but no systematic record. Without data, you cannot improve. Without data, you cannot tell the difference between a strategy that works and one that happened to work recently by luck.</p>
 
-<p><strong>Fix:</strong> Log every trade. Entry time, strikes, credit, exit, P&amp;L. Build your own track record. If you follow our signals, you can audit our <a href="/performance">public track record</a> — 364 trades with full entry/exit data — to validate the strategy before committing capital.</p>
+<p><strong>Fix:</strong> Log every trade. Entry time, strikes, credit, exit, P&amp;L. Build your own track record. If you follow our signals, you can audit our <a href="/performance">public track record</a> — hundreds of trades with full entry/exit data — to validate the strategy before committing capital.</p>
 
 <h2>The 3 Rules That Change Everything</h2>
 

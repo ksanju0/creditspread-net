@@ -27,11 +27,11 @@
     <p class="text-center text-xs text-slate-500 uppercase tracking-widest mb-8">Member results since service launch — Jan 2023</p>
     <div class="grid grid-cols-2 md:grid-cols-5 gap-6 text-center">
       {% for label, val, color in [
-        ("Active Members","847+","text-white"),
-        ("Avg Portfolio Growth","34.2%","text-green-400"),
-        ("Avg Member P&L (3yr)","$127,400","text-green-400"),
-        ("Member Win Rate","88–92%","text-blue-400"),
-        ("Years of Service","3+","text-yellow-400")
+        ("Active Members", site_stats.members, "text-white"),
+        ("Avg Portfolio Growth", site_stats.avg_member_growth, "text-green-400"),
+        ("Avg Member P&L (3yr)", site_stats.avg_member_pnl, "text-green-400"),
+        ("Strategy Win Rate", site_stats.win_rate|string + "%", "text-blue-400"),
+        ("Years of Service", site_stats.years, "text-yellow-400")
       ] %}
       <div>
         <div class="text-3xl font-bold {{ color }}">{{ val }}</div>
@@ -62,9 +62,9 @@
       </div>
       <div class="space-y-4">
         {% for stat, label, sub in [
-          ("847+", "Members Served", "across 3 years of invite-only operation"),
-          ("88.3%", "Lifetime Win Rate", "across 364+ live trades since Jan 2023"),
-          ("$8.6M+", "Total Strategy P&L", "traded in our live accounts"),
+          (site_stats.members, "Members Served", "across 3 years of invite-only operation"),
+          (site_stats.win_rate|string + "%", "Lifetime Win Rate", "across " ~ site_stats.trades ~ "+ live trades since " ~ site_stats.launched),
+          ("$" ~ site_stats.total_pnl_fmt, "Total Strategy P&L", "traded in our live accounts"),
           ("2004–2024", "Backtested", "20 years of validation across every market cycle")
         ] %}
         <div class="card p-5 flex items-center gap-5">
@@ -212,7 +212,7 @@
     <div class="card p-10 glow">
       <div class="text-green-400 text-xs font-bold uppercase tracking-widest mb-3">Limited Seats Available</div>
       <h2 class="text-2xl font-bold text-white mb-3">Ready to Trade Alongside Us?</h2>
-      <p class="text-slate-500 mb-8">Join 847+ members who have been receiving live SPX & QQQ alerts since 2023. Start free — upgrade when you see the results.</p>
+      <p class="text-slate-500 mb-8">Join {{ site_stats.members }} members who have been receiving live SPX &amp; QQQ alerts since 2023. Start free — upgrade when you see the results.</p>
       <div class="flex flex-col sm:flex-row gap-4 justify-center">
         <a href="/register" class="btn-primary text-sm">Start Free — No Card Needed</a>
         <a href="/performance" class="btn-secondary text-sm">See 3-Year Track Record</a>
