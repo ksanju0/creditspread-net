@@ -9,3 +9,4 @@ gunicorn==22.0.0
 requests==2.32.3
 twilio==9.3.3
 psycopg2-binary==2.9.9
+resend==2.4.0

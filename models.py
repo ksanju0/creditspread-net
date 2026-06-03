@@ -67,6 +67,20 @@ class Lead(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     converted  = db.Column(db.Boolean, default=False)
 
+class Subscriber(db.Model):
+    """Newsletter subscriber — separate from generic Lead capture."""
+    __tablename__ = 'subscribers'
+    id                = db.Column(db.Integer, primary_key=True)
+    email             = db.Column(db.String(120), unique=True, nullable=False, index=True)
+    name              = db.Column(db.String(100))
+    source            = db.Column(db.String(50))           # homepage, /newsletter, register
+    status            = db.Column(db.String(20), default='active')   # active / unsubscribed / bounced
+    unsubscribe_token = db.Column(db.String(40), unique=True)
+    subscribed_at     = db.Column(db.DateTime, default=datetime.utcnow)
+    unsubscribed_at   = db.Column(db.DateTime, nullable=True)
+    last_sent_at      = db.Column(db.DateTime, nullable=True)
+    send_count        = db.Column(db.Integer, default=0)
+
 class SocialPost(db.Model):
     __tablename__ = 'social_posts'
     id         = db.Column(db.Integer, primary_key=True)

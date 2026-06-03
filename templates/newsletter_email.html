@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pre-Market — {{ date_short }}</title>
+</head>
+<body style="margin:0;padding:0;background:#0a0f1e;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#e2e8f0;-webkit-font-smoothing:antialiased">
+
+<!-- Preheader (hidden) -->
+<div style="display:none;max-height:0;overflow:hidden">
+  {% if yesterday %}Yesterday's trade: {{ yesterday.spread }} closed {{ yesterday.pnl_fmt }}. {% endif %}Today's playbook inside.
+</div>
+
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background:#0a0f1e">
+<tr><td align="center" style="padding:24px 12px">
+
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="max-width:600px;background:#0a0f1e;border-radius:12px;overflow:hidden;border:1px solid #1e2d45">
+
+  <!-- ── Header ─────────────────────────────────────── -->
+  <tr><td style="padding:24px 28px 12px 28px">
+    <table width="100%"><tr>
+      <td>
+        <span style="color:#22c55e;font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase">● PRE-MARKET</span><br>
+        <span style="color:#64748b;font-size:13px">{{ date_long }}</span>
+      </td>
+      <td align="right">
+        <span style="font-size:18px;font-weight:700;color:#ffffff">Credit<span style="color:#22c55e">Spread</span></span>
+      </td>
+    </tr></table>
+  </td></tr>
+
+  <!-- Greeting -->
+  <tr><td style="padding:8px 28px 0 28px">
+    <h1 style="margin:0 0 6px 0;font-size:22px;font-weight:700;color:#ffffff;letter-spacing:-0.3px">
+      Good morning{% if subscriber and subscriber.name %}, {{ subscriber.name.split()[0] }}{% endif %}.
+    </h1>
+    <p style="margin:0;color:#94a3b8;font-size:15px;line-height:1.6">
+      Here's what matters before the open.
+    </p>
+  </td></tr>
+
+  <!-- ── 1. THE OPEN ─────────────────────────────────── -->
+  <tr><td style="padding:28px 28px 4px 28px">
+    <p style="margin:0 0 12px 0;color:#22c55e;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase">1 · The Open</p>
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#0d1829;border:1px solid #1e2d45;border-radius:8px">
+      <tr>
+        <td style="padding:14px 16px;border-right:1px solid #1e2d45;width:50%">
+          <div style="color:#64748b;font-size:11px;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">SPX (latest)</div>
+          <div style="color:#ffffff;font-size:18px;font-weight:700">{% if spx %}{{ "%.0f"|format(spx) }}{% else %}—{% endif %}</div>
+        </td>
+        <td style="padding:14px 16px;width:50%">
+          <div style="color:#64748b;font-size:11px;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">VIX</div>
+          <div style="color:{% if vix and vix > 25 %}#f87171{% elif vix and vix < 14 %}#fbbf24{% else %}#22c55e{% endif %};font-size:18px;font-weight:700">{% if vix %}{{ vix }}{% else %}—{% endif %}</div>
+        </td>
+      </tr>
+    </table>
+  </td></tr>
+
+  <!-- ── 2. ON THE CALENDAR ──────────────────────────── -->
+  <tr><td style="padding:24px 28px 4px 28px">
+    <p style="margin:0 0 12px 0;color:#22c55e;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase">2 · On the Calendar</p>
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#0d1829;border:1px solid #1e2d45;border-radius:8px">
+      <tr><td style="padding:14px 18px">
+        {% for item in catalysts %}
+        <div style="color:#cbd5e1;font-size:14px;line-height:1.6;padding:2px 0">
+          <span style="color:#475569">•</span> {{ item }}
+        </div>
+        {% endfor %}
+      </td></tr>
+    </table>
+  </td></tr>
+
+  <!-- ── 3. THE LEVELS ───────────────────────────────── -->
+  <tr><td style="padding:24px 28px 4px 28px">
+    <p style="margin:0 0 12px 0;color:#22c55e;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase">3 · The Levels</p>
+    <table width="100%" cellpadding="0" cellspacing="0">
+      <tr>
+        <!-- SPX -->
+        <td style="padding-right:6px;width:50%;vertical-align:top">
+          <table width="100%" cellpadding="0" cellspacing="0" style="background:#0d1829;border:1px solid #1e2d45;border-radius:8px">
+            <tr><td style="padding:14px 16px">
+              <div style="color:#22c55e;font-size:13px;font-weight:700;margin-bottom:8px">SPX</div>
+              <div style="color:#64748b;font-size:11px">Resistance</div>
+              <div style="color:#f87171;font-size:15px;font-weight:600;margin-bottom:6px">{% if spx_resistance %}{{ spx_resistance }}{% else %}—{% endif %}</div>
+              <div style="color:#64748b;font-size:11px">Support</div>
+              <div style="color:#22c55e;font-size:15px;font-weight:600">{% if spx_support %}{{ spx_support }}{% else %}—{% endif %}</div>
+            </td></tr>
+          </table>
+        </td>
+        <!-- QQQ -->
+        <td style="padding-left:6px;width:50%;vertical-align:top">
+          <table width="100%" cellpadding="0" cellspacing="0" style="background:#0d1829;border:1px solid #1e3a5f;border-radius:8px">
+            <tr><td style="padding:14px 16px">
+              <div style="color:#3b82f6;font-size:13px;font-weight:700;margin-bottom:8px">QQQ</div>
+              <div style="color:#64748b;font-size:11px">Resistance</div>
+              <div style="color:#f87171;font-size:15px;font-weight:600;margin-bottom:6px">{% if qqq_resistance %}{{ qqq_resistance }}{% else %}—{% endif %}</div>
+              <div style="color:#64748b;font-size:11px">Support</div>
+              <div style="color:#22c55e;font-size:15px;font-weight:600">{% if qqq_support %}{{ qqq_support }}{% else %}—{% endif %}</div>
+            </td></tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </td></tr>
+
+  <!-- ── 4. THE VOL PICTURE ──────────────────────────── -->
+  <tr><td style="padding:24px 28px 4px 28px">
+    <p style="margin:0 0 12px 0;color:#22c55e;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase">4 · The Vol Picture</p>
+    <p style="margin:0;color:#cbd5e1;font-size:14px;line-height:1.65;padding:14px 16px;background:#0d1829;border:1px solid #1e2d45;border-radius:8px">
+      {{ vix_narrative }}
+    </p>
+  </td></tr>
+
+  <!-- ── 5. THE TAPE — yesterday ─────────────────────── -->
+  {% if yesterday %}
+  <tr><td style="padding:24px 28px 4px 28px">
+    <p style="margin:0 0 12px 0;color:#22c55e;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase">5 · The Tape</p>
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:{% if yesterday.won %}#0d2818{% else %}#2d1a1a{% endif %};border:1px solid {% if yesterday.won %}#166534{% else %}#7f1d1d{% endif %};border-radius:8px">
+      <tr><td style="padding:14px 18px">
+        <table width="100%"><tr>
+          <td style="vertical-align:middle">
+            <div style="color:#ffffff;font-size:16px;font-weight:700;font-family:Menlo,Consolas,monospace">SPX {{ yesterday.spread }}</div>
+            <div style="color:#94a3b8;font-size:12px;margin-top:3px">Credit {{ yesterday.credit }} · {{ yesterday.reason }}</div>
+          </td>
+          <td align="right" style="vertical-align:middle">
+            <span style="background:{% if yesterday.won %}#052e16{% else %}#1a0a0a{% endif %};color:{% if yesterday.won %}#22c55e{% else %}#f87171{% endif %};padding:4px 10px;border-radius:5px;font-size:10px;font-weight:700;letter-spacing:1px">
+              {% if yesterday.won %}WIN{% else %}LOSS{% endif %}
+            </span>
+            <div style="color:{% if yesterday.won %}#22c55e{% else %}#f87171{% endif %};font-size:16px;font-weight:700;margin-top:6px">{{ yesterday.pnl_fmt }}</div>
+          </td>
+        </tr></table>
+      </td></tr>
+    </table>
+  </td></tr>
+  {% endif %}
+
+  <!-- ── 6. TODAY'S PLAYBOOK ─────────────────────────── -->
+  <tr><td style="padding:24px 28px 4px 28px">
+    <p style="margin:0 0 12px 0;color:#22c55e;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase">6 · Today's Playbook</p>
+    <p style="margin:0;color:#e2e8f0;font-size:15px;line-height:1.7;padding:16px 18px;background:#0d1829;border-left:3px solid #22c55e;border-radius:6px">
+      {{ playbook }}
+    </p>
+  </td></tr>
+
+  <!-- ── 7. THE SIGNAL CTA ───────────────────────────── -->
+  <tr><td style="padding:28px 28px 4px 28px">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:linear-gradient(135deg,#0d2818,#0a1a12);border:1px solid #166534;border-radius:10px">
+      <tr><td style="padding:24px 24px;text-align:center">
+        <div style="color:#22c55e;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px">7 · Today's Signal</div>
+        <div style="color:#ffffff;font-size:18px;font-weight:700;margin-bottom:6px">🔓 Members get the exact trade at 9:45 AM ET</div>
+        <div style="color:#94a3b8;font-size:13px;margin-bottom:18px;line-height:1.5">
+          Strikes, credit, target, stop — sized to your account, the moment we trade it.
+        </div>
+        <a href="{{ base_url }}/pricing" style="display:inline-block;background:#22c55e;color:#ffffff !important;text-decoration:none;padding:13px 30px;border-radius:8px;font-weight:700;font-size:14px">Start 7-Day Free Trial →</a>
+        {% if stats.trades %}
+        <div style="color:#475569;font-size:11px;margin-top:14px;letter-spacing:0.5px">
+          {{ stats.trades }} trades · {{ stats.win_rate }}% win rate · public log
+        </div>
+        {% endif %}
+      </td></tr>
+    </table>
+  </td></tr>
+
+  <!-- ── 8. ONE LESSON ───────────────────────────────── -->
+  {% if lesson %}
+  <tr><td style="padding:24px 28px 4px 28px">
+    <p style="margin:0 0 12px 0;color:#22c55e;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase">8 · One Lesson</p>
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#0d1829;border:1px solid #1e2d45;border-radius:8px">
+      <tr><td style="padding:16px 18px">
+        <div style="color:#ffffff;font-size:14px;font-weight:700;margin-bottom:6px;line-height:1.4">{{ lesson.title }}</div>
+        <div style="color:#94a3b8;font-size:13px;line-height:1.6;margin-bottom:10px">{{ lesson.excerpt }}</div>
+        <a href="{{ lesson.url }}" style="color:#22c55e;font-size:12px;font-weight:700;text-decoration:none">Read the full breakdown →</a>
+      </td></tr>
+    </table>
+  </td></tr>
+  {% endif %}
+
+  <!-- Stats strip -->
+  {% if stats.trades %}
+  <tr><td style="padding:28px 28px 8px 28px">
+    <table width="100%" cellpadding="0" cellspacing="0" style="border-top:1px solid #1e2d45;border-bottom:1px solid #1e2d45">
+      <tr>
+        <td style="padding:14px 0;text-align:center">
+          <div style="color:#22c55e;font-size:18px;font-weight:700">{{ stats.win_rate }}%</div>
+          <div style="color:#475569;font-size:10px;text-transform:uppercase;letter-spacing:1px;margin-top:2px">Win Rate</div>
+        </td>
+        <td style="padding:14px 0;text-align:center;border-left:1px solid #1e2d45;border-right:1px solid #1e2d45">
+          <div style="color:#ffffff;font-size:18px;font-weight:700">{{ stats.trades }}</div>
+          <div style="color:#475569;font-size:10px;text-transform:uppercase;letter-spacing:1px;margin-top:2px">Trades</div>
+        </td>
+        <td style="padding:14px 0;text-align:center">
+          <div style="color:#22c55e;font-size:18px;font-weight:700">{{ stats.total_pnl_fmt }}</div>
+          <div style="color:#475569;font-size:10px;text-transform:uppercase;letter-spacing:1px;margin-top:2px">Since Jan 2023</div>
+        </td>
+      </tr>
+    </table>
+  </td></tr>
+  {% endif %}
+
+  <!-- Footer -->
+  <tr><td style="padding:20px 28px 28px 28px">
+    <p style="margin:0 0 12px 0;color:#475569;font-size:11px;line-height:1.6">
+      You're getting this because you subscribed to CreditSpread Pre-Market.
+      {% if unsubscribe_url %}<a href="{{ unsubscribe_url }}" style="color:#94a3b8;text-decoration:underline">Unsubscribe</a> · {% endif %}<a href="{{ base_url }}" style="color:#94a3b8;text-decoration:underline">creditspread.net</a>
+    </p>
+    <p style="margin:0;color:#334155;font-size:10px;line-height:1.6">
+      Educational signal service. Not a registered investment advisor. Options trading involves significant risk of loss. Past performance does not guarantee future results.
+    </p>
+  </td></tr>
+
+</table>
+
+</td></tr>
+</table>
+
+</body>
+</html>

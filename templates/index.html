@@ -399,15 +399,27 @@
 <!-- ══ FINAL CTA (merged guarantee + capture) ══ -->
 <section class="py-24 px-6" style="background:#080d18">
   <div class="max-w-xl mx-auto text-center">
-    <h2 class="text-3xl font-bold text-white mb-3">Start free. Risk nothing.</h2>
-    <p class="text-slate-400 mb-8 leading-relaxed">Full member access for 7 days. Live SPX &amp; QQQ alerts to your phone. Cancel before day 8 and you're never charged.</p>
-    <form action="/lead-capture" method="POST" class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+    <h2 class="text-3xl font-bold text-white mb-3">Get the daily briefing.</h2>
+    <p class="text-slate-400 mb-8 leading-relaxed">
+      Five minutes before the open. Catalysts, levels, vol regime, and our trade results &mdash; every weekday at 6:00 AM ET. Free.
+    </p>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for cat, msg in messages %}
+      <div class="max-w-md mx-auto mb-4 px-5 py-3 rounded-lg text-sm {% if cat=='error' %}bg-red-900 text-red-300 border border-red-800{% else %}bg-green-900 text-green-300 border border-green-800{% endif %}">{{ msg }}</div>
+      {% endfor %}
+    {% endwith %}
+
+    <form action="/newsletter/subscribe" method="POST" class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
       <input type="hidden" name="source" value="homepage">
       <input type="email" name="email" placeholder="your@email.com" required
              class="flex-1 px-4 py-3 rounded-lg text-sm text-white" style="background:#0a0f1e;border:1px solid #1e2d45;outline:none">
-      <a href="/pricing" class="btn-primary text-sm whitespace-nowrap text-center">Start Free Trial</a>
+      <button type="submit" class="btn-primary text-sm whitespace-nowrap">Subscribe Free →</button>
     </form>
-    <p class="text-xs text-slate-600 mt-4">No card required · Cancel anytime</p>
+    <p class="text-xs text-slate-600 mt-4">
+      No spam · One-click unsubscribe ·
+      <a href="/pricing" class="hover:text-green-400">or start a 7-day trial →</a>
+    </p>
   </div>
 </section>
 

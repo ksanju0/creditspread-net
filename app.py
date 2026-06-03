@@ -18,7 +18,8 @@ if os.path.exists(ENV_FILE):
 TRADES_DB  = os.getenv('TRADES_DB_PATH', os.path.join(BASE_DIR, 'trades.db'))
 MEMBERS_DB = os.getenv('MEMBERS_DB_PATH', os.path.join(BASE_DIR, 'members.db'))
 
-from models import db, User, Lead, SocialPost, MemberTrade
+from models import db, User, Lead, SocialPost, MemberTrade, Subscriber
+import newsletter as newsletter_lib
 
 app = Flask(__name__)
 CORS(app)
@@ -407,6 +408,61 @@ def blog_post(slug):
         return redirect(url_for('blog'))
     return render_template('blog_post.html', post=post, related=get_related(slug))
 
+# ── Newsletter ────────────────────────────────────────────────────────────────
+
+@app.route('/newsletter')
+def newsletter_landing():
+    return render_template('newsletter_landing.html')
+
+@app.route('/newsletter/subscribe', methods=['POST'])
+def newsletter_subscribe():
+    email  = (request.form.get('email') or '').lower().strip()
+    name   = (request.form.get('name')  or '').strip()
+    source = (request.form.get('source') or 'unknown').strip()
+    if not email or '@' not in email:
+        flash('Please enter a valid email address.', 'error')
+        return redirect(url_for('newsletter_landing'))
+    existing = Subscriber.query.filter_by(email=email).first()
+    if existing:
+        if existing.status == 'unsubscribed':
+            existing.status          = 'active'
+            existing.unsubscribed_at = None
+            db.session.commit()
+            flash("Welcome back — you're re-subscribed.", 'success')
+        else:
+            flash("You're already subscribed.", 'success')
+        return redirect(url_for('newsletter_landing'))
+    sub = Subscriber(
+        email             = email,
+        name              = name or None,
+        source            = source,
+        status            = 'active',
+        unsubscribe_token = newsletter_lib.new_unsubscribe_token(),
+    )
+    db.session.add(sub)
+    # Also save as a lead if not already
+    if not Lead.query.filter_by(email=email).first():
+        db.session.add(Lead(email=email, name=name, source=f'newsletter:{source}'))
+    db.session.commit()
+    # Fire welcome email (non-blocking — if it fails, signup still succeeds)
+    try:
+        newsletter_lib.send_welcome(app, TRADES_DB, sub)
+    except Exception as e:
+        app.logger.warning(f"welcome email failed: {e}")
+    flash("You're in. First briefing arrives tomorrow at 6:00 AM ET.", 'success')
+    return redirect(url_for('newsletter_landing'))
+
+@app.route('/unsubscribe/<token>')
+def newsletter_unsubscribe(token):
+    sub = Subscriber.query.filter_by(unsubscribe_token=token).first()
+    if not sub:
+        return render_template('unsubscribed.html', success=False)
+    if sub.status == 'active':
+        sub.status          = 'unsubscribed'
+        sub.unsubscribed_at = datetime.utcnow()
+        db.session.commit()
+    return render_template('unsubscribed.html', success=True, email=sub.email)
+
 # ── auth ──────────────────────────────────────────────────────────────────────
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -710,7 +766,7 @@ def sitemap():
 def robots():
     return "User-agent: *\nAllow: /\nSitemap: https://creditspread.net/sitemap.xml\n", 200, {'Content-Type': 'text/plain'}
 
-APP_VERSION = 'v11-stats'  # bump to confirm deploys
+APP_VERSION = 'v12-newsletter'  # bump to confirm deploys
 
 @app.route('/api/health')
 def health():
@@ -728,7 +784,10 @@ def admin():
         return redirect(url_for('member_dashboard'))
     users = User.query.order_by(User.created_at.desc()).all()
     leads = Lead.query.order_by(Lead.created_at.desc()).limit(50).all()
+    subscribers = Subscriber.query.order_by(Subscriber.subscribed_at.desc()).limit(100).all()
+    active_subs = Subscriber.query.filter_by(status='active').count()
     return render_template('admin.html', users=users, leads=leads,
+                           subscribers=subscribers, active_subs=active_subs,
                            admin_email=os.getenv('ADMIN_EMAIL', 'clist2013@gmail.com'))
 
 @app.route('/admin/delete-member/<int:user_id>', methods=['POST'])
@@ -765,6 +824,64 @@ def admin_delete_lead(lead_id):
         db.session.delete(lead)
         db.session.commit()
         flash('Lead removed.', 'success')
+    return redirect(url_for('admin'))
+
+# ── Admin: newsletter ─────────────────────────────────────────────────────────
+
+@app.route('/admin/newsletter/test', methods=['POST'])
+@login_required
+def admin_newsletter_test():
+    if not challenge_ok(current_user.email):
+        return redirect(url_for('member_dashboard'))
+    # Build a fake Subscriber-like object using the admin's identity
+    class _FakeSub:
+        email             = current_user.email
+        name              = current_user.name
+        unsubscribe_token = 'preview-link-only'
+    fake = _FakeSub()
+    html, _ = newsletter_lib.render_newsletter(app, TRADES_DB, fake)
+    ok = newsletter_lib.send_email(current_user.email,
+                                   f"[TEST] Pre-Market — {datetime.now().strftime('%b %d')}",
+                                   html, reply_to=current_user.email)
+    flash('Test newsletter sent to your email.' if ok else
+          'Send failed — check provider config (RESEND_API_KEY or Gmail).',
+          'success' if ok else 'error')
+    return redirect(url_for('admin'))
+
+@app.route('/admin/newsletter/preview')
+@login_required
+def admin_newsletter_preview():
+    if not challenge_ok(current_user.email):
+        return redirect(url_for('member_dashboard'))
+    class _FakeSub:
+        email             = current_user.email
+        name              = current_user.name
+        unsubscribe_token = 'preview-link-only'
+    html, _ = newsletter_lib.render_newsletter(app, TRADES_DB, _FakeSub())
+    return html
+
+@app.route('/admin/newsletter/send', methods=['POST'])
+@login_required
+def admin_newsletter_send():
+    if not challenge_ok(current_user.email):
+        return redirect(url_for('member_dashboard'))
+    if request.form.get('confirm') != 'SEND':
+        flash('Confirmation phrase missing — send cancelled.', 'error')
+        return redirect(url_for('admin'))
+    res = newsletter_lib.send_daily(app, TRADES_DB, Subscriber)
+    flash(f"Newsletter sent: {res['sent']} delivered · {res['failed']} failed · {res['total']} total subscribers.",
+          'success' if res['failed'] == 0 else 'error')
+    return redirect(url_for('admin'))
+
+@app.route('/admin/delete-subscriber/<int:sub_id>', methods=['POST'])
+@login_required
+def admin_delete_subscriber(sub_id):
+    if not challenge_ok(current_user.email):
+        return redirect(url_for('member_dashboard'))
+    s = db.session.get(Subscriber, sub_id)
+    if s:
+        db.session.delete(s); db.session.commit()
+        flash('Subscriber removed.', 'success')
     return redirect(url_for('admin'))
 
 if __name__ == '__main__':

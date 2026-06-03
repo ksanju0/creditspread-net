@@ -18,7 +18,7 @@
   {% endwith %}
 
   <!-- Revenue stats -->
-  <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+  <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
     {% set member_count = users|selectattr('sub_status','eq','active')|list|length %}
     {% set free_count   = users|length - member_count %}
     {% set mrr = member_count * 179 %}
@@ -37,6 +37,34 @@
     <div class="card p-5 text-center">
       <div class="text-2xl font-bold text-yellow-400">{{ leads|length }}</div>
       <div class="text-xs text-slate-500 mt-1 uppercase tracking-wider">Email Leads</div>
+    </div>
+    <div class="card p-5 text-center" style="border-color:#166534">
+      <div class="text-2xl font-bold text-green-400">{{ active_subs }}</div>
+      <div class="text-xs text-slate-500 mt-1 uppercase tracking-wider">Newsletter Subs</div>
+    </div>
+  </div>
+
+  <!-- Newsletter controls -->
+  <div class="card p-6 mb-8" style="border-color:#1e3a5f;background:linear-gradient(135deg,#0a0f1e,#080d18)">
+    <div class="flex items-start justify-between gap-6 flex-wrap">
+      <div class="flex-1 min-w-0">
+        <div class="flex items-center gap-2 mb-1">
+          <span class="text-blue-400 text-xs font-bold uppercase tracking-widest">Pre-Market Newsletter</span>
+        </div>
+        <h2 class="font-semibold text-white">Daily briefing controls</h2>
+        <p class="text-slate-500 text-sm mt-1">Preview today's send, fire a test to yourself, or send to all active subscribers.</p>
+      </div>
+      <div class="flex gap-2 flex-wrap">
+        <a href="/admin/newsletter/preview" target="_blank" class="btn-secondary text-xs">Preview HTML</a>
+        <form method="POST" action="/admin/newsletter/test" style="display:inline">
+          <button type="submit" class="btn-secondary text-xs">Send test to me</button>
+        </form>
+        <form method="POST" action="/admin/newsletter/send" style="display:inline"
+              onsubmit="var c = prompt('Send to ALL {{ active_subs }} active subscribers? Type SEND to confirm.'); if(c !== 'SEND') return false; this.confirm.value = c; return true;">
+          <input type="hidden" name="confirm" value="">
+          <button type="submit" class="btn-primary text-xs">Send to all ({{ active_subs }})</button>
+        </form>
+      </div>
     </div>
   </div>
 
@@ -125,6 +153,54 @@
               </form>
             </td>
           </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Subscribers table -->
+  <div class="card overflow-hidden mt-8">
+    <div class="px-6 py-4 border-b border-dark-border flex items-center justify-between">
+      <h2 class="font-semibold text-white">Newsletter Subscribers</h2>
+      <span class="text-xs text-slate-500">{{ subscribers|length }} most recent · {{ active_subs }} active total</span>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="w-full">
+        <thead>
+          <tr style="background:#0d1829">
+            {% for h in ["Email","Name","Source","Subscribed","Status","Sent","Action"] %}
+            <th class="px-4 py-3 text-left text-xs text-slate-500 uppercase tracking-wider">{{ h }}</th>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for s in subscribers %}
+          <tr class="border-t border-dark-border text-sm hover:bg-dark-card">
+            <td class="px-4 py-3 text-slate-300">{{ s.email }}</td>
+            <td class="px-4 py-3 text-slate-400">{{ s.name or '—' }}</td>
+            <td class="px-4 py-3 text-xs text-blue-400">{{ s.source or '—' }}</td>
+            <td class="px-4 py-3 text-xs text-slate-500">{{ s.subscribed_at.strftime('%Y-%m-%d') if s.subscribed_at else '—' }}</td>
+            <td class="px-4 py-3 text-xs">
+              {% if s.status == 'active' %}
+                <span class="text-green-400">● Active</span>
+              {% elif s.status == 'unsubscribed' %}
+                <span class="text-slate-500">○ Unsubscribed</span>
+              {% else %}
+                <span class="text-red-400">{{ s.status }}</span>
+              {% endif %}
+            </td>
+            <td class="px-4 py-3 text-xs text-slate-500">{{ s.send_count or 0 }}</td>
+            <td class="px-4 py-3">
+              <form method="POST" action="/admin/delete-subscriber/{{ s.id }}"
+                    onsubmit="return confirm('Permanently remove subscriber {{ s.email }}?');">
+                <button type="submit" class="px-3 py-1 rounded text-xs font-semibold transition-colors"
+                        style="background:#2d1a1a;color:#f87171;border:1px solid #7f1d1d">Remove</button>
+              </form>
+            </td>
+          </tr>
+          {% else %}
+          <tr><td colspan="7" class="px-5 py-10 text-center text-slate-500 text-sm">No subscribers yet — first signup will appear here.</td></tr>
           {% endfor %}
         </tbody>
       </table>

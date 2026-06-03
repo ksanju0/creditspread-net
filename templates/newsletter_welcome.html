@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Welcome</title></head>
+<body style="margin:0;padding:0;background:#0a0f1e;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#e2e8f0">
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#0a0f1e">
+<tr><td align="center" style="padding:32px 16px">
+
+<table role="presentation" width="560" cellpadding="0" cellspacing="0" border="0" style="max-width:560px;background:#0a0f1e;border:1px solid #1e2d45;border-radius:12px;overflow:hidden">
+
+  <tr><td style="padding:28px 32px 12px 32px">
+    <span style="color:#22c55e;font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase">● WELCOME ABOARD</span>
+    <h1 style="margin:8px 0 12px 0;font-size:24px;font-weight:700;color:#ffffff;letter-spacing:-0.3px">
+      You're in{% if subscriber and subscriber.name %}, {{ subscriber.name.split()[0] }}{% endif %}.
+    </h1>
+    <p style="margin:0;color:#94a3b8;font-size:15px;line-height:1.6">
+      Your first Pre-Market briefing lands in your inbox tomorrow at <strong style="color:#ffffff">6:00 AM ET</strong>. Monday through Friday, five minutes flat, every trading day.
+    </p>
+  </td></tr>
+
+  <tr><td style="padding:8px 32px 0 32px">
+    <p style="margin:16px 0 12px 0;color:#22c55e;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase">What you'll get every morning</p>
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#0d1829;border:1px solid #1e2d45;border-radius:8px">
+      <tr><td style="padding:16px 18px">
+        {% for item in [
+          'Overnight scoreboard — SPX, VIX, yields',
+          'Today\'s catalysts — CPI, FOMC, earnings',
+          'Key SPX & QQQ support / resistance levels',
+          'Vol regime read — premium environment',
+          'Yesterday\'s trade — our win or loss, full transparency',
+          'The playbook — our read of the session',
+          'One rotating lesson from our blog'
+        ] %}
+        <div style="color:#cbd5e1;font-size:14px;line-height:1.6;padding:3px 0">
+          <span style="color:#22c55e">✓</span> {{ item }}
+        </div>
+        {% endfor %}
+      </td></tr>
+    </table>
+  </td></tr>
+
+  <tr><td style="padding:24px 32px 8px 32px">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:linear-gradient(135deg,#0d2818,#0a1a12);border:1px solid #166534;border-radius:10px">
+      <tr><td style="padding:22px 24px;text-align:center">
+        <div style="color:#ffffff;font-size:16px;font-weight:700;margin-bottom:6px">Want today's signal live?</div>
+        <div style="color:#94a3b8;font-size:13px;margin-bottom:16px;line-height:1.5">
+          Newsletter subscribers see signals delayed. Members get the alert at 9:45 AM ET, the moment we trade.
+        </div>
+        <a href="{{ base_url }}/pricing" style="display:inline-block;background:#22c55e;color:#ffffff !important;text-decoration:none;padding:12px 28px;border-radius:8px;font-weight:700;font-size:14px">Start 7-Day Free Trial →</a>
+      </td></tr>
+    </table>
+  </td></tr>
+
+  <tr><td style="padding:20px 32px 28px 32px">
+    <p style="margin:0;color:#475569;font-size:11px;line-height:1.6">
+      Hit reply on any briefing — they all reach a real person.
+      {% if unsubscribe_url %}<br><a href="{{ unsubscribe_url }}" style="color:#94a3b8">Unsubscribe</a> at any time.{% endif %}
+    </p>
+  </td></tr>
+
+</table>
+
+</td></tr>
+</table>
+</body></html>

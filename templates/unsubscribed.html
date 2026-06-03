@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Unsubscribed — CreditSpread.net{% endblock %}
+{% block content %}
+<div class="max-w-md mx-auto px-6 py-24 text-center">
+  <div class="card p-10">
+    {% if success %}
+    <div class="w-12 h-12 rounded-full mx-auto mb-4 flex items-center justify-center" style="background:#0d2818;border:1px solid #166534">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+    <h1 class="text-xl font-bold text-white mb-2">You're unsubscribed</h1>
+    <p class="text-slate-500 text-sm leading-relaxed mb-6">
+      {{ email or 'Your email' }} will no longer receive the Pre-Market briefing. No action needed.
+    </p>
+    <p class="text-xs text-slate-600 mb-6">Changed your mind? You can re-subscribe any time.</p>
+    <div class="flex gap-3 justify-center">
+      <a href="/newsletter" class="btn-secondary text-sm">Re-subscribe</a>
+      <a href="/" class="btn-primary text-sm">Back to site</a>
+    </div>
+    {% else %}
+    <h1 class="text-xl font-bold text-white mb-2">Link expired or invalid</h1>
+    <p class="text-slate-500 text-sm leading-relaxed mb-6">
+      We couldn't find an active subscription with that token. It may have already been unsubscribed.
+    </p>
+    <a href="/" class="btn-primary text-sm">Back to site</a>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

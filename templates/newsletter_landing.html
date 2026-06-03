@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}Pre-Market Newsletter — Daily SPX & QQQ Briefing | CreditSpread.net{% endblock %}
+{% block meta_description %}Free daily SPX & QQQ pre-market briefing — overnight scoreboard, today's catalysts, key levels, vol regime, and our trade transparency. Delivered 6:00 AM ET, Monday–Friday.{% endblock %}
+{% block og_title %}CreditSpread Pre-Market — Free Daily SPX & QQQ Briefing{% endblock %}
+{% block content %}
+
+<section class="py-16 px-6">
+  <div class="max-w-3xl mx-auto">
+
+    <div class="text-center mb-12">
+      <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium mb-6" style="background:#0d2818;border:1px solid #166534;color:#4ade80">
+        <span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span>
+        Free · Daily · No fluff
+      </div>
+      <h1 class="text-4xl md:text-5xl font-bold text-white mb-5 leading-tight tracking-tight">
+        Five minutes before<br>the market opens.
+      </h1>
+      <p class="text-lg text-slate-400 max-w-xl mx-auto leading-relaxed mb-10">
+        CreditSpread Pre-Market — the daily SPX &amp; QQQ briefing for options traders. Catalysts, levels, vol regime, and our trade results. Delivered every weekday at 6:00 AM ET.
+      </p>
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for cat, msg in messages %}
+        <div class="max-w-md mx-auto mb-6 px-5 py-3 rounded-lg text-sm {% if cat=='error' %}bg-red-900 text-red-300 border border-red-800{% else %}bg-green-900 text-green-300 border border-green-800{% endif %}">{{ msg }}</div>
+        {% endfor %}
+      {% endwith %}
+
+      <form action="/newsletter/subscribe" method="POST" class="max-w-md mx-auto">
+        <input type="hidden" name="source" value="newsletter_landing">
+        <div class="flex flex-col sm:flex-row gap-3 mb-3">
+          <input type="email" name="email" placeholder="your@email.com" required
+                 class="flex-1 px-4 py-3 rounded-lg text-sm text-white text-center sm:text-left"
+                 style="background:#0d1829;border:1px solid #1e2d45;outline:none">
+          <button type="submit" class="btn-primary text-sm whitespace-nowrap">Subscribe Free →</button>
+        </div>
+        <p class="text-xs text-slate-600">Free forever · No spam · One-click unsubscribe</p>
+      </form>
+    </div>
+
+    <!-- Sections preview -->
+    <div class="card p-8 mb-12">
+      <div class="text-green-400 text-xs font-bold uppercase tracking-widest mb-5">Every briefing includes</div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
+        {% for num, label, sub in [
+          ('1', 'The Open',           'Overnight scoreboard — SPX, VIX, yields'),
+          ('2', 'On the Calendar',    "Today's catalysts — CPI, FOMC, earnings"),
+          ('3', 'The Levels',         'Key SPX &amp; QQQ support / resistance'),
+          ('4', 'The Vol Picture',    'Where VIX sits, premium environment'),
+          ('5', 'The Tape',           "Yesterday's market + our trade result"),
+          ('6', "Today's Playbook",   'Our read of the session'),
+          ('7', 'The Signal',         "Members' live alert — preview"),
+          ('8', 'One Lesson',         'Rotating concept from our research'),
+        ] %}
+        <div class="flex gap-3">
+          <div class="text-green-400 font-mono text-xs font-bold w-5 flex-shrink-0 pt-0.5">{{ num }}</div>
+          <div>
+            <div class="text-white font-semibold text-sm">{{ label }}</div>
+            <div class="text-slate-500 text-xs mt-0.5 leading-relaxed">{{ sub|safe }}</div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Trust strip -->
+    <div class="text-center">
+      <div class="inline-flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs text-slate-600">
+        <span>● 5-minute read</span>
+        <span>·</span>
+        <span>Mon–Fri at 6:00 AM ET</span>
+        <span>·</span>
+        <span>One-click unsubscribe</span>
+        <span>·</span>
+        <span>No card required</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+{% endblock %}
