@@ -18,7 +18,7 @@ if os.path.exists(ENV_FILE):
 TRADES_DB  = os.getenv('TRADES_DB_PATH', os.path.join(BASE_DIR, 'trades.db'))
 MEMBERS_DB = os.getenv('MEMBERS_DB_PATH', os.path.join(BASE_DIR, 'members.db'))
 
-from models import db, User, Lead, SocialPost, MemberTrade, Subscriber
+from models import db, User, Lead, SocialPost, MemberTrade, Subscriber, AlertLog
 import newsletter as newsletter_lib
 
 app = Flask(__name__)
@@ -767,11 +767,35 @@ def sitemap():
 def robots():
     return "User-agent: *\nAllow: /\nSitemap: https://creditspread.net/sitemap.xml\n", 200, {'Content-Type': 'text/plain'}
 
-APP_VERSION = 'v13-footer'  # bump to confirm deploys
+APP_VERSION = 'v14-alertlog'  # bump to confirm deploys
 
 @app.route('/api/health')
 def health():
     return jsonify({'status': 'ok', 'version': APP_VERSION, 'time': datetime.now().isoformat()})
+
+@app.route('/api/log-alert', methods=['POST'])
+def api_log_alert():
+    """Receive an alert-send record from the VPS trading engine (key-protected)."""
+    key = request.headers.get('X-Alert-Key', '') or request.form.get('key', '')
+    if key != os.getenv('ALERT_LOG_KEY', 'changeme-alert-key'):
+        return jsonify({'error': 'unauthorized'}), 401
+    data = request.get_json(silent=True) or request.form
+    try:
+        rec = AlertLog(
+            channel    = (data.get('channel') or 'sms')[:20],
+            audience   = (data.get('audience') or 'owner')[:20],
+            alert_type = (data.get('alert_type') or 'entry')[:20],
+            recipient  = (data.get('recipient') or '')[:120],
+            trade_ref  = (data.get('trade_ref') or '')[:60],
+            status     = (data.get('status') or 'sent')[:12],
+            detail     = (data.get('detail') or '')[:2000],
+        )
+        db.session.add(rec)
+        db.session.commit()
+        return jsonify({'ok': True, 'id': rec.id})
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
 
 # ── admin ─────────────────────────────────────────────────────────────────────
 
@@ -787,8 +811,22 @@ def admin():
     leads = Lead.query.order_by(Lead.created_at.desc()).limit(50).all()
     subscribers = Subscriber.query.order_by(Subscriber.subscribed_at.desc()).limit(100).all()
     active_subs = Subscriber.query.filter_by(status='active').count()
+
+    # ── Alert delivery stats ──
+    alerts_recent = AlertLog.query.order_by(AlertLog.created_at.desc()).limit(50).all()
+    total_alerts  = AlertLog.query.count()
+    sent_alerts   = AlertLog.query.filter_by(status='sent').count()
+    failed_alerts = AlertLog.query.filter_by(status='failed').count()
+    alert_success = round(sent_alerts / total_alerts * 100, 1) if total_alerts else 0
+    from datetime import timedelta as _td
+    since_today   = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
+    alerts_today  = AlertLog.query.filter(AlertLog.created_at >= since_today).count()
+
     return render_template('admin.html', users=users, leads=leads,
                            subscribers=subscribers, active_subs=active_subs,
+                           alerts_recent=alerts_recent, total_alerts=total_alerts,
+                           sent_alerts=sent_alerts, failed_alerts=failed_alerts,
+                           alert_success=alert_success, alerts_today=alerts_today,
                            admin_email=os.getenv('ADMIN_EMAIL', 'clist2013@gmail.com'))
 
 @app.route('/admin/delete-member/<int:user_id>', methods=['POST'])

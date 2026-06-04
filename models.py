@@ -81,6 +81,19 @@ class Subscriber(db.Model):
     last_sent_at      = db.Column(db.DateTime, nullable=True)
     send_count        = db.Column(db.Integer, default=0)
 
+class AlertLog(db.Model):
+    """Every alert send attempt — for the admin delivery dashboard."""
+    __tablename__ = 'alert_logs'
+    id          = db.Column(db.Integer, primary_key=True)
+    created_at  = db.Column(db.DateTime, default=datetime.utcnow, index=True)
+    channel     = db.Column(db.String(20))   # sms / email / telegram
+    audience    = db.Column(db.String(20))   # owner / member / public
+    alert_type  = db.Column(db.String(20))   # entry / exit / test / weekly
+    recipient   = db.Column(db.String(120))  # phone / email / channel handle
+    trade_ref   = db.Column(db.String(60))   # e.g. "5200/5175P" or trade id
+    status      = db.Column(db.String(12))   # sent / failed
+    detail      = db.Column(db.Text)         # error message or extra info
+
 class SocialPost(db.Model):
     __tablename__ = 'social_posts'
     id         = db.Column(db.Integer, primary_key=True)
