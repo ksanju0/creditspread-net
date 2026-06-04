@@ -777,7 +777,7 @@ def sitemap():
 def robots():
     return "User-agent: *\nAllow: /\nSitemap: https://creditspread.net/sitemap.xml\n", 200, {'Content-Type': 'text/plain'}
 
-APP_VERSION = 'v17-creditdetail'  # bump to confirm deploys
+APP_VERSION = 'v18-qqq-winloss'  # bump to confirm deploys
 
 @app.route('/api/health')
 def health():
