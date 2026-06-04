@@ -90,7 +90,9 @@ class LiveTrade(db.Model):
     trade           = db.Column(db.String(60))     # "7220/7195P"
     entry_time      = db.Column(db.DateTime, default=datetime.utcnow)
     exit_time       = db.Column(db.DateTime, nullable=True)
-    net_credit      = db.Column(db.Float)
+    net_credit      = db.Column(db.Float)                  # credit per share at entry
+    exit_debit      = db.Column(db.Float, nullable=True)   # debit per share to close (0 = expired worthless)
+    expired_worthless = db.Column(db.Boolean, default=False)
     pnl_per_lot     = db.Column(db.Float, nullable=True)   # $ per contract
     total_lots      = db.Column(db.Integer, default=0)     # summed across members
     total_pnl       = db.Column(db.Float, nullable=True)   # pnl_per_lot × total_lots

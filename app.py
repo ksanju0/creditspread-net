@@ -78,6 +78,16 @@ def run_migrations():
                     db.session.execute(text(f'ALTER TABLE users ADD COLUMN {col} {ddl}'))
                     db.session.commit()
                     print(f"[migration] Added users.{col}")
+
+            # live_trades added columns
+            if 'live_trades' in insp.get_table_names():
+                lt_cols = {c['name'] for c in insp.get_columns('live_trades')}
+                lt_new = {'exit_debit': 'FLOAT', 'expired_worthless': 'BOOLEAN DEFAULT FALSE'}
+                for col, coltype in lt_new.items():
+                    if col not in lt_cols:
+                        db.session.execute(text(f'ALTER TABLE live_trades ADD COLUMN {col} {coltype}'))
+                        db.session.commit()
+                        print(f"[migration] Added live_trades.{col}")
     except Exception as e:
         print(f"[migration] error: {e}")
 
@@ -767,7 +777,7 @@ def sitemap():
 def robots():
     return "User-agent: *\nAllow: /\nSitemap: https://creditspread.net/sitemap.xml\n", 200, {'Content-Type': 'text/plain'}
 
-APP_VERSION = 'v16-sto'  # bump to confirm deploys
+APP_VERSION = 'v17-creditdetail'  # bump to confirm deploys
 
 @app.route('/api/health')
 def health():
@@ -855,12 +865,15 @@ def api_trade_exit():
         if not lt:
             return jsonify({'error': 'trade not found'}), 404
         lt.exit_time   = datetime.utcnow()
+        lt.exit_debit  = d.get('exit_debit')
         lt.pnl_per_lot = d.get('pnl_per_lot')
         lt.total_pnl   = round((lt.pnl_per_lot or 0) * (lt.total_lots or 0), 2)
         lt.status      = d.get('status', 'CLOSED')
         lt.exit_reason = d.get('exit_reason')
+        # Expired worthless = closed at ~$0 debit → kept 100% of the credit
+        lt.expired_worthless = bool(lt.exit_debit is not None and lt.exit_debit <= 0.05)
         db.session.commit()
-        return jsonify({'ok': True, 'total_pnl': lt.total_pnl})
+        return jsonify({'ok': True, 'total_pnl': lt.total_pnl, 'expired_worthless': lt.expired_worthless})
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': str(e)}), 500

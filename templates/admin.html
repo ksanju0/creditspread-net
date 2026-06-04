@@ -54,7 +54,7 @@
       <table class="w-full text-sm">
         <thead>
           <tr style="background:#0d1829">
-            {% for h in ["Entry Date/Time","Ticker","Trade","Exit Date/Time","P&L / Lot","Total Lots","Total P&L","Members Alerted"] %}
+            {% for h in ["Entry Date/Time","Ticker","Trade","Credit / Lot","Exit Date/Time","Exit","P&L / Lot","Total Lots","Total P&L","Members Alerted"] %}
             <th class="px-4 py-3 text-left text-xs text-slate-500 uppercase tracking-wider whitespace-nowrap">{{ h }}</th>
             {% endfor %}
           </tr>
@@ -65,8 +65,18 @@
             <td class="px-4 py-3 text-slate-400 whitespace-nowrap">{{ t.entry_time.strftime('%Y-%m-%d %H:%M') if t.entry_time else '—' }}</td>
             <td class="px-4 py-3"><span class="font-semibold {{ 'text-green-400' if t.ticker=='SPX' else 'text-blue-400' }}">{{ t.ticker }}</span></td>
             <td class="px-4 py-3 font-mono font-bold text-white whitespace-nowrap">{{ t.trade }}</td>
+            <!-- Credit per lot = net_credit × 100 -->
+            <td class="px-4 py-3 text-green-400 font-semibold whitespace-nowrap">
+              {% if t.net_credit is not none %}${{ "%.0f"|format(t.net_credit * 100) }} <span class="text-slate-600">(${{ t.net_credit }})</span>{% else %}—{% endif %}
+            </td>
             <td class="px-4 py-3 text-slate-400 whitespace-nowrap">
               {% if t.exit_time %}{{ t.exit_time.strftime('%Y-%m-%d %H:%M') }}{% else %}<span class="badge-open px-2 py-0.5 rounded-full">OPEN</span>{% endif %}
+            </td>
+            <!-- Exit: bought-to-close debit OR expired worthless -->
+            <td class="px-4 py-3 whitespace-nowrap">
+              {% if t.exit_time is none %}<span class="text-slate-600">—</span>
+              {% elif t.expired_worthless %}<span class="text-green-400 font-semibold">Expired worthless ✓<br><span class="text-slate-500 text-xs font-normal">kept 100% credit</span></span>
+              {% else %}<span class="text-slate-300">BTC ${{ t.exit_debit }}</span><br><span class="text-slate-600 text-xs">${{ "%.0f"|format((t.exit_debit or 0) * 100) }}/lot</span>{% endif %}
             </td>
             <td class="px-4 py-3 font-semibold {% if t.pnl_per_lot and t.pnl_per_lot > 0 %}text-green-400{% elif t.pnl_per_lot %}text-red-400{% else %}text-slate-500{% endif %}">
               {% if t.pnl_per_lot is not none %}{{ '+' if t.pnl_per_lot >= 0 else '' }}${{ "%.0f"|format(t.pnl_per_lot) }}{% else %}—{% endif %}
@@ -80,7 +90,7 @@
             </td>
           </tr>
           {% else %}
-          <tr><td colspan="8" class="px-5 py-12 text-center text-slate-500">No live trades yet — they'll appear here as signals fire.</td></tr>
+          <tr><td colspan="10" class="px-5 py-12 text-center text-slate-500">No live trades yet — they'll appear here as signals fire.</td></tr>
           {% endfor %}
         </tbody>
       </table>
