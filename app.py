@@ -767,7 +767,7 @@ def sitemap():
 def robots():
     return "User-agent: *\nAllow: /\nSitemap: https://creditspread.net/sitemap.xml\n", 200, {'Content-Type': 'text/plain'}
 
-APP_VERSION = 'v15-livetrades'  # bump to confirm deploys
+APP_VERSION = 'v16-sto'  # bump to confirm deploys
 
 @app.route('/api/health')
 def health():
@@ -777,7 +777,7 @@ def _alert_key_ok(req):
     key = req.headers.get('X-Alert-Key', '') or (req.form.get('key', '') if req.form else '')
     return key == os.getenv('ALERT_LOG_KEY', 'changeme-alert-key')
 
-def _fan_out_to_members(net_credit, risk_default=2.0):
+def _fan_out_to_members(net_credit, ticker='SPX', trade_ref='', risk_default=2.0):
     """
     Compute aggregated member lots and (optionally) send each member their alert.
     Returns (total_lots, members_alerted, members_total).
@@ -786,6 +786,10 @@ def _fan_out_to_members(net_credit, risk_default=2.0):
     members = User.query.filter(User.plan == 'member',
                                 User.sub_status == 'active',
                                 User.account_size.isnot(None)).all()
+    # Ensure the trade ref reads as a credit-spread "Sell to Open"
+    ref = trade_ref or ''
+    if ref and not ref.lower().startswith('sell to open'):
+        ref = f"Sell to Open {ref}"
     total_lots = 0
     alerted = 0
     for m in members:
@@ -798,7 +802,9 @@ def _fan_out_to_members(net_credit, risk_default=2.0):
             try:
                 from twilio.rest import Client
                 Client(os.getenv('TWILIO_ACCOUNT_SID'), os.getenv('TWILIO_AUTH_TOKEN')).messages.create(
-                    body=f"CS Signal: {lots} lot(s) sized to your account. See dashboard.",
+                    body=(f"CREDIT SPREAD SIGNAL\n{ref} {ticker}\n"
+                          f"Credit: ${net_credit} | YOUR SIZE: {lots} lot(s)\n"
+                          f"creditspread.net/dashboard"),
                     from_=os.getenv('TWILIO_FROM_NUMBER'), to=m.phone)
                 alerted += 1
             except Exception:
@@ -815,11 +821,15 @@ def api_trade_entry():
         key = str(d.get('trade_key', ''))
         if key and LiveTrade.query.filter_by(trade_key=key).first():
             return jsonify({'ok': True, 'note': 'already recorded'})
-        total_lots, alerted, total_m = _fan_out_to_members(d.get('net_credit'))
+        ticker   = d.get('ticker', 'SPX')
+        trade_str = d.get('trade', '')
+        if trade_str and not trade_str.lower().startswith('sell to open'):
+            trade_str = f"Sell to Open {trade_str}"
+        total_lots, alerted, total_m = _fan_out_to_members(d.get('net_credit'), ticker, trade_str)
         lt = LiveTrade(
             trade_key       = key or None,
-            ticker          = d.get('ticker', 'SPX'),
-            trade           = d.get('trade', ''),
+            ticker          = ticker,
+            trade           = trade_str,
             net_credit      = d.get('net_credit'),
             total_lots      = total_lots,
             members_alerted = alerted,
