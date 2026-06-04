@@ -81,6 +81,24 @@ class Subscriber(db.Model):
     last_sent_at      = db.Column(db.DateTime, nullable=True)
     send_count        = db.Column(db.Integer, default=0)
 
+class LiveTrade(db.Model):
+    """One row per live signal — the admin trade dashboard view."""
+    __tablename__ = 'live_trades'
+    id              = db.Column(db.Integer, primary_key=True)
+    trade_key       = db.Column(db.String(40), unique=True, index=True)  # VPS trade id
+    ticker          = db.Column(db.String(10), default='SPX')
+    trade           = db.Column(db.String(60))     # "7220/7195P"
+    entry_time      = db.Column(db.DateTime, default=datetime.utcnow)
+    exit_time       = db.Column(db.DateTime, nullable=True)
+    net_credit      = db.Column(db.Float)
+    pnl_per_lot     = db.Column(db.Float, nullable=True)   # $ per contract
+    total_lots      = db.Column(db.Integer, default=0)     # summed across members
+    total_pnl       = db.Column(db.Float, nullable=True)   # pnl_per_lot × total_lots
+    members_alerted = db.Column(db.Integer, default=0)     # successful sends
+    members_total   = db.Column(db.Integer, default=0)     # eligible members
+    status          = db.Column(db.String(20), default='OPEN')
+    exit_reason     = db.Column(db.String(40), nullable=True)
+
 class AlertLog(db.Model):
     """Every alert send attempt — for the admin delivery dashboard."""
     __tablename__ = 'alert_logs'

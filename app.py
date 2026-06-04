@@ -18,7 +18,7 @@ if os.path.exists(ENV_FILE):
 TRADES_DB  = os.getenv('TRADES_DB_PATH', os.path.join(BASE_DIR, 'trades.db'))
 MEMBERS_DB = os.getenv('MEMBERS_DB_PATH', os.path.join(BASE_DIR, 'members.db'))
 
-from models import db, User, Lead, SocialPost, MemberTrade, Subscriber, AlertLog
+from models import db, User, Lead, SocialPost, MemberTrade, Subscriber, AlertLog, LiveTrade
 import newsletter as newsletter_lib
 
 app = Flask(__name__)
@@ -767,11 +767,93 @@ def sitemap():
 def robots():
     return "User-agent: *\nAllow: /\nSitemap: https://creditspread.net/sitemap.xml\n", 200, {'Content-Type': 'text/plain'}
 
-APP_VERSION = 'v14-alertlog'  # bump to confirm deploys
+APP_VERSION = 'v15-livetrades'  # bump to confirm deploys
 
 @app.route('/api/health')
 def health():
     return jsonify({'status': 'ok', 'version': APP_VERSION, 'time': datetime.now().isoformat()})
+
+def _alert_key_ok(req):
+    key = req.headers.get('X-Alert-Key', '') or (req.form.get('key', '') if req.form else '')
+    return key == os.getenv('ALERT_LOG_KEY', 'changeme-alert-key')
+
+def _fan_out_to_members(net_credit, risk_default=2.0):
+    """
+    Compute aggregated member lots and (optionally) send each member their alert.
+    Returns (total_lots, members_alerted, members_total).
+    Members with an account_size get lots sized to their risk %.
+    """
+    members = User.query.filter(User.plan == 'member',
+                                User.sub_status == 'active',
+                                User.account_size.isnot(None)).all()
+    total_lots = 0
+    alerted = 0
+    for m in members:
+        risk = m.risk_pct or risk_default
+        stop_cost = (net_credit or 1) * 2 * 100
+        lots = max(1, int((m.account_size * risk / 100) / stop_cost)) if net_credit else 1
+        total_lots += lots
+        # Attempt member SMS via Twilio if configured (HTTP — works on Render)
+        if m.phone and os.getenv('TWILIO_ACCOUNT_SID', '').startswith('AC'):
+            try:
+                from twilio.rest import Client
+                Client(os.getenv('TWILIO_ACCOUNT_SID'), os.getenv('TWILIO_AUTH_TOKEN')).messages.create(
+                    body=f"CS Signal: {lots} lot(s) sized to your account. See dashboard.",
+                    from_=os.getenv('TWILIO_FROM_NUMBER'), to=m.phone)
+                alerted += 1
+            except Exception:
+                pass
+    return total_lots, alerted, len(members)
+
+@app.route('/api/trade-entry', methods=['POST'])
+def api_trade_entry():
+    """VPS posts a new signal. Webapp records it + fans out to members."""
+    if not _alert_key_ok(request):
+        return jsonify({'error': 'unauthorized'}), 401
+    d = request.get_json(silent=True) or {}
+    try:
+        key = str(d.get('trade_key', ''))
+        if key and LiveTrade.query.filter_by(trade_key=key).first():
+            return jsonify({'ok': True, 'note': 'already recorded'})
+        total_lots, alerted, total_m = _fan_out_to_members(d.get('net_credit'))
+        lt = LiveTrade(
+            trade_key       = key or None,
+            ticker          = d.get('ticker', 'SPX'),
+            trade           = d.get('trade', ''),
+            net_credit      = d.get('net_credit'),
+            total_lots      = total_lots,
+            members_alerted = alerted,
+            members_total   = total_m,
+            status          = 'OPEN',
+        )
+        db.session.add(lt)
+        db.session.commit()
+        return jsonify({'ok': True, 'id': lt.id, 'total_lots': total_lots, 'alerted': alerted})
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/trade-exit', methods=['POST'])
+def api_trade_exit():
+    """VPS posts an exit. Webapp updates P&L on the matching trade."""
+    if not _alert_key_ok(request):
+        return jsonify({'error': 'unauthorized'}), 401
+    d = request.get_json(silent=True) or {}
+    try:
+        key = str(d.get('trade_key', ''))
+        lt = LiveTrade.query.filter_by(trade_key=key).first() if key else None
+        if not lt:
+            return jsonify({'error': 'trade not found'}), 404
+        lt.exit_time   = datetime.utcnow()
+        lt.pnl_per_lot = d.get('pnl_per_lot')
+        lt.total_pnl   = round((lt.pnl_per_lot or 0) * (lt.total_lots or 0), 2)
+        lt.status      = d.get('status', 'CLOSED')
+        lt.exit_reason = d.get('exit_reason')
+        db.session.commit()
+        return jsonify({'ok': True, 'total_pnl': lt.total_pnl})
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/api/log-alert', methods=['POST'])
 def api_log_alert():
@@ -822,7 +904,11 @@ def admin():
     since_today   = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
     alerts_today  = AlertLog.query.filter(AlertLog.created_at >= since_today).count()
 
+    # ── Live trades (trade-centric view) ──
+    live_trades = LiveTrade.query.order_by(LiveTrade.entry_time.desc()).limit(100).all()
+
     return render_template('admin.html', users=users, leads=leads,
+                           live_trades=live_trades,
                            subscribers=subscribers, active_subs=active_subs,
                            alerts_recent=alerts_recent, total_alerts=total_alerts,
                            sent_alerts=sent_alerts, failed_alerts=failed_alerts,
