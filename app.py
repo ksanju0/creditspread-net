@@ -109,6 +109,7 @@ def inject_site_verification():
     return {
         'google_site_verification': os.getenv('GOOGLE_SITE_VERIFICATION', ''),
         'bing_site_verification':   os.getenv('BING_SITE_VERIFICATION', ''),
+        'current_year':             datetime.now().year,
     }
 
 @app.context_processor
@@ -766,7 +767,7 @@ def sitemap():
 def robots():
     return "User-agent: *\nAllow: /\nSitemap: https://creditspread.net/sitemap.xml\n", 200, {'Content-Type': 'text/plain'}
 
-APP_VERSION = 'v12-newsletter'  # bump to confirm deploys
+APP_VERSION = 'v13-footer'  # bump to confirm deploys
 
 @app.route('/api/health')
 def health():
