@@ -801,7 +801,7 @@ def sitemap():
 def robots():
     return "User-agent: *\nAllow: /\nSitemap: https://creditspread.net/sitemap.xml\n", 200, {'Content-Type': 'text/plain'}
 
-APP_VERSION = 'v20-customer-trades'  # bump to confirm deploys
+APP_VERSION = 'v21-sto-format'  # bump to confirm deploys
 
 @app.route('/api/health')
 def health():
@@ -820,10 +820,7 @@ def _fan_out_to_members(net_credit, ticker='SPX', trade_ref='', risk_default=2.0
     members = User.query.filter(User.plan == 'member',
                                 User.sub_status == 'active',
                                 User.account_size.isnot(None)).all()
-    # Ensure the trade ref reads as a credit-spread "Sell to Open"
-    ref = trade_ref or ''
-    if ref and not ref.lower().startswith('sell to open'):
-        ref = f"Sell to Open {ref}"
+    ref = trade_ref or ''   # expected like "STO 7220/7195P @$4.8"
     total_lots = 0
     alerted = 0
     for m in members:
@@ -836,8 +833,8 @@ def _fan_out_to_members(net_credit, ticker='SPX', trade_ref='', risk_default=2.0
             try:
                 from twilio.rest import Client
                 Client(os.getenv('TWILIO_ACCOUNT_SID'), os.getenv('TWILIO_AUTH_TOKEN')).messages.create(
-                    body=(f"CREDIT SPREAD SIGNAL\n{ref} {ticker}\n"
-                          f"Credit: ${net_credit} | YOUR SIZE: {lots} lot(s)\n"
+                    body=(f"{ticker} CREDIT SPREAD\n{ref}\n"
+                          f"YOUR SIZE: {lots} lot(s)\n"
                           f"creditspread.net/dashboard"),
                     from_=os.getenv('TWILIO_FROM_NUMBER'), to=m.phone)
                 alerted += 1
@@ -857,8 +854,10 @@ def api_trade_entry():
             return jsonify({'ok': True, 'note': 'already recorded'})
         ticker   = d.get('ticker', 'SPX')
         trade_str = d.get('trade', '')
-        if trade_str and not trade_str.lower().startswith('sell to open'):
-            trade_str = f"Sell to Open {trade_str}"
+        # Normalize to STO format if a bare strike string arrives
+        if trade_str and not trade_str.upper().startswith('STO'):
+            cr = d.get('net_credit')
+            trade_str = f"STO {trade_str}" + (f" @${cr}" if cr else "")
         total_lots, alerted, total_m = _fan_out_to_members(d.get('net_credit'), ticker, trade_str)
         lt = LiveTrade(
             trade_key       = key or None,
