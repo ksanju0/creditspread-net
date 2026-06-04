@@ -777,7 +777,7 @@ def sitemap():
 def robots():
     return "User-agent: *\nAllow: /\nSitemap: https://creditspread.net/sitemap.xml\n", 200, {'Content-Type': 'text/plain'}
 
-APP_VERSION = 'v18-qqq-winloss'  # bump to confirm deploys
+APP_VERSION = 'v19-pnl-formula'  # bump to confirm deploys
 
 @app.route('/api/health')
 def health():
@@ -866,7 +866,14 @@ def api_trade_exit():
             return jsonify({'error': 'trade not found'}), 404
         lt.exit_time   = datetime.utcnow()
         lt.exit_debit  = d.get('exit_debit')
-        lt.pnl_per_lot = d.get('pnl_per_lot')
+        # Authoritative P&L: (credit collected − debit paid to close) × 100 per lot.
+        #   BTC:               credit $1, debit $0.8 → (1-0.8)*100 = +$20/lot
+        #   Expired worthless: credit $1, debit $0   → (1-0)*100   = +$100/lot
+        #   Loss:              credit $1, debit $2   → (1-2)*100   = -$100/lot
+        if lt.exit_debit is not None and lt.net_credit is not None:
+            lt.pnl_per_lot = round((lt.net_credit - lt.exit_debit) * 100, 2)
+        else:
+            lt.pnl_per_lot = d.get('pnl_per_lot')
         lt.total_pnl   = round((lt.pnl_per_lot or 0) * (lt.total_lots or 0), 2)
         lt.status      = d.get('status', 'CLOSED')
         lt.exit_reason = d.get('exit_reason')
