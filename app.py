@@ -801,7 +801,7 @@ def sitemap():
 def robots():
     return "User-agent: *\nAllow: /\nSitemap: https://creditspread.net/sitemap.xml\n", 200, {'Content-Type': 'text/plain'}
 
-APP_VERSION = 'v21-sto-format'  # bump to confirm deploys
+APP_VERSION = 'v22-adminreset'  # bump to confirm deploys
 
 @app.route('/api/health')
 def health():
@@ -904,6 +904,32 @@ def api_trade_exit():
         lt.expired_worthless = bool(lt.exit_debit is not None and lt.exit_debit <= 0.05)
         db.session.commit()
         return jsonify({'ok': True, 'total_pnl': lt.total_pnl, 'expired_worthless': lt.expired_worthless})
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/admin-reset', methods=['POST'])
+def api_admin_reset():
+    """Key-protected: create or reset the ADMIN_EMAIL account's password. Bootstrap only."""
+    if not _alert_key_ok(request):
+        return jsonify({'error': 'unauthorized'}), 401
+    d = request.get_json(silent=True) or {}
+    new_pw = d.get('password')
+    if not new_pw or len(new_pw) < 8:
+        return jsonify({'error': 'password too short'}), 400
+    admin_email = os.getenv('ADMIN_EMAIL', 'clist2013@gmail.com')
+    try:
+        u = User.query.filter_by(email=admin_email).first()
+        created = False
+        if not u:
+            u = User(email=admin_email, name='Admin', plan='member', sub_status='active')
+            db.session.add(u)
+            created = True
+        u.password_hash = generate_password_hash(new_pw)
+        u.plan = 'member'
+        u.sub_status = 'active'
+        db.session.commit()
+        return jsonify({'ok': True, 'email': admin_email, 'created': created})
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
