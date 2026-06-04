@@ -237,7 +237,55 @@
   </div>
   {% endif %}
 
-  <!-- Recent signals for this member -->
+  <!-- ══ LIVE SIGNALS (from the trading engine, sized to your account) ══ -->
+  <div class="card overflow-hidden mb-8">
+    <div class="px-6 py-4 border-b border-dark-border flex items-center justify-between">
+      <h3 class="font-semibold text-white">Live Signals</h3>
+      <span class="text-xs text-slate-500">
+        {% if current_user.account_size %}Sized to your ${{ "{:,.0f}".format(current_user.account_size) }} account{% else %}Set your account size to see your lots/P&L{% endif %}
+      </span>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead>
+          <tr style="background:#0d1829">
+            {% for h in ["Entry","Ticker","Trade","Credit / Lot","Exit","Exit Price","P&L / Lot","Your Lots","Your P&L"] %}
+            <th class="px-4 py-3 text-left text-xs text-slate-500 uppercase tracking-wider whitespace-nowrap">{{ h }}</th>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for t in customer_trades %}
+          <tr class="border-t border-dark-border hover:bg-dark-card text-xs">
+            <td class="px-4 py-3 text-slate-400 whitespace-nowrap">{{ t.entry_time.strftime('%m-%d %H:%M') if t.entry_time else '—' }}</td>
+            <td class="px-4 py-3"><span class="font-semibold {{ 'text-green-400' if t.ticker=='SPX' else 'text-blue-400' }}">{{ t.ticker }}</span></td>
+            <td class="px-4 py-3 font-mono font-bold text-white whitespace-nowrap">{{ t.trade }}</td>
+            <td class="px-4 py-3 text-green-400 font-semibold whitespace-nowrap">{% if t.net_credit is not none %}${{ "%.0f"|format(t.net_credit*100) }}{% else %}—{% endif %}</td>
+            <td class="px-4 py-3 text-slate-400 whitespace-nowrap">{% if t.exit_time %}{{ t.exit_time.strftime('%m-%d %H:%M') }}{% else %}<span class="badge-open px-2 py-0.5 rounded-full">OPEN</span>{% endif %}</td>
+            <td class="px-4 py-3 whitespace-nowrap">
+              {% if t.exit_time is none %}<span class="text-slate-600">—</span>
+              {% elif t.expired_worthless %}<span class="text-green-400">Expired worthless</span>
+              {% else %}<span class="text-slate-300">BTC ${{ t.exit_debit }}</span>{% endif %}
+            </td>
+            <td class="px-4 py-3 whitespace-nowrap">
+              {% if t.pnl_per_lot is none %}<span class="text-slate-500">—</span>
+              {% elif t.pnl_per_lot >= 0 %}<span class="px-1.5 py-0.5 rounded text-xs font-bold mr-1" style="background:#052e16;color:#22c55e">WIN</span><span class="text-green-400 font-semibold">+${{ "%.0f"|format(t.pnl_per_lot) }}</span>
+              {% else %}<span class="px-1.5 py-0.5 rounded text-xs font-bold mr-1" style="background:#1a0a0a;color:#f87171">LOSS</span><span class="text-red-400 font-semibold">-${{ "%.0f"|format(t.pnl_per_lot|abs) }}</span>{% endif %}
+            </td>
+            <td class="px-4 py-3 text-blue-400 font-semibold">{{ t.your_lots if t.your_lots is not none else '—' }}</td>
+            <td class="px-4 py-3 font-bold {% if t.your_pnl and t.your_pnl > 0 %}text-green-400{% elif t.your_pnl and t.your_pnl < 0 %}text-red-400{% else %}text-slate-500{% endif %}">
+              {% if t.your_pnl is not none %}{{ '+' if t.your_pnl >= 0 else '-' }}${{ "{:,.0f}".format(t.your_pnl|abs) }}{% else %}—{% endif %}
+            </td>
+          </tr>
+          {% else %}
+          <tr><td colspan="9" class="px-5 py-10 text-center text-slate-500">No live signals yet — they'll appear here the moment the engine fires one.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Recent signals for this member (personal sync log) -->
   <div class="card overflow-hidden mb-8">
     <div class="px-6 py-4 border-b border-dark-border flex items-center justify-between">
       <div>

@@ -537,6 +537,28 @@ def logout():
 
 # ── member dashboard ──────────────────────────────────────────────────────────
 
+def build_customer_trades(user, limit=50):
+    """Live trades sized to THIS customer's account (per-lot economics + their lots/P&L)."""
+    rows = LiveTrade.query.order_by(LiveTrade.entry_time.desc()).limit(limit).all()
+    acct = user.account_size if user and user.account_size else None
+    risk = (user.risk_pct or 2.0) if user else 2.0
+    out = []
+    for t in rows:
+        # this customer's lots for this trade (same sizing formula)
+        if acct and t.net_credit:
+            your_lots = max(1, int((acct * risk / 100) / (t.net_credit * 2 * 100)))
+        else:
+            your_lots = None
+        your_pnl = round((t.pnl_per_lot or 0) * your_lots, 2) if (your_lots and t.pnl_per_lot is not None) else None
+        out.append({
+            'entry_time': t.entry_time, 'ticker': t.ticker, 'trade': t.trade,
+            'net_credit': t.net_credit, 'exit_time': t.exit_time,
+            'exit_debit': t.exit_debit, 'expired_worthless': t.expired_worthless,
+            'pnl_per_lot': t.pnl_per_lot, 'status': t.status,
+            'your_lots': your_lots, 'your_pnl': your_pnl,
+        })
+    return out
+
 @app.route('/dashboard')
 @login_required
 def member_dashboard():
@@ -546,9 +568,11 @@ def member_dashboard():
     sync_member_trades_for_user(current_user)
     member_stats = get_member_stats(current_user) if current_user.account_size else None
     contracts    = calc_contracts(current_user.account_size or 0, 4.80, current_user.risk_pct or 2.0)
+    customer_trades = build_customer_trades(current_user)
     return render_template('dashboard_member.html',
         stats=stats, vix=vix,
         member_stats=member_stats,
+        customer_trades=customer_trades,
         contracts=contracts)
 
 @app.route('/dashboard/setup-account', methods=['POST'])
@@ -777,7 +801,7 @@ def sitemap():
 def robots():
     return "User-agent: *\nAllow: /\nSitemap: https://creditspread.net/sitemap.xml\n", 200, {'Content-Type': 'text/plain'}
 
-APP_VERSION = 'v19-pnl-formula'  # bump to confirm deploys
+APP_VERSION = 'v20-customer-trades'  # bump to confirm deploys
 
 @app.route('/api/health')
 def health():
