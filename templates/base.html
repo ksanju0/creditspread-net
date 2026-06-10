@@ -15,10 +15,10 @@
 <meta property="og:url" content="https://creditspread.net{{ request.path }}">
 <meta name="twitter:site" content="@CreditSpreadNet">
 
-<!-- Favicon — CS mark with S letterform, site theme colors -->
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 84 104'%3E%3Cdefs%3E%3CclipPath id='t'%3E%3Crect x='0' y='0' width='84' height='52'/%3E%3C/clipPath%3E%3CclipPath id='b'%3E%3Crect x='0' y='52' width='84' height='52'/%3E%3C/clipPath%3E%3C/defs%3E%3Cpath d='M66,22 C66,10 56,4 44,4 L22,4 C10,4 4,12 4,24 L4,80 C4,92 10,100 22,100 L44,100 C56,100 66,92 66,80' stroke='%2322c55e' stroke-width='7' fill='none' stroke-linecap='round'/%3E%3Cpath d='M50,22 C22,22 22,50 42,50 C62,50 62,78 34,78' stroke='%2322c55e' stroke-width='20' fill='none' stroke-linecap='round' clip-path='url(%23t)'/%3E%3Cpath d='M50,22 C22,22 22,50 42,50 C62,50 62,78 34,78' stroke='%233b82f6' stroke-width='20' fill='none' stroke-linecap='round' clip-path='url(%23b)'/%3E%3C/svg%3E">
+<!-- Favicon — CreditSpread mark -->
+<link rel="icon" type="image/svg+xml" href="/static/Logo-Favicon.svg">
 <!-- Apple touch icon -->
-<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 84 104'%3E%3Crect width='84' height='104' rx='16' fill='%230a0f1e'/%3E%3Cdefs%3E%3CclipPath id='t2'%3E%3Crect x='0' y='0' width='84' height='52'/%3E%3C/clipPath%3E%3CclipPath id='b2'%3E%3Crect x='0' y='52' width='84' height='52'/%3E%3C/clipPath%3E%3C/defs%3E%3Cpath d='M66,22 C66,10 56,4 44,4 L22,4 C10,4 4,12 4,24 L4,80 C4,92 10,100 22,100 L44,100 C56,100 66,92 66,80' stroke='%2322c55e' stroke-width='7' fill='none' stroke-linecap='round'/%3E%3Cpath d='M50,22 C22,22 22,50 42,50 C62,50 62,78 34,78' stroke='%2322c55e' stroke-width='20' fill='none' stroke-linecap='round' clip-path='url(%23t2)'/%3E%3Cpath d='M50,22 C22,22 22,50 42,50 C62,50 62,78 34,78' stroke='%233b82f6' stroke-width='20' fill='none' stroke-linecap='round' clip-path='url(%23b2)'/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="/static/Logo-Favicon.svg">
 <meta name="theme-color" content="#0a0f1e">
 <!-- Open Graph -->
 <meta property="og:title" content="{% block og_title %}CreditSpread.net — High Probability SPX & QQQ Credit Spread Signals{% endblock %}">
@@ -36,7 +36,7 @@
   "@type":"Organization",
   "name":"CreditSpread.net",
   "url":"https://creditspread.net",
-  "logo":"https://creditspread.net/static/logo.svg",
+  "logo":"https://creditspread.net/static/logo-wordmark.png",
   "description":"Educational SPX and QQQ credit spread signal service with a live, public 3-year track record.",
   "sameAs":["https://twitter.com/CreditSpreadNet","https://reddit.com/r/thetagang"]
 }
@@ -147,11 +147,7 @@ tailwind.config = {
   <div class="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
 
     <a href="/" class="flex items-center gap-2">
-      <span class="flex h-8 w-8 items-center justify-center rounded-md"
-            style="background:var(--primary);color:var(--primaryd)">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m7 14 4-4 4 4 5-6"/></svg>
-      </span>
-      <span class="text-base font-semibold tracking-tight">Credit<span style="color:var(--primary)">Spread</span></span>
+      <img src="/static/logo-wordmark.svg" alt="CreditSpread" style="height:36px;width:auto;display:block">
     </a>
 
     {# Desktop links #}
@@ -246,19 +242,7 @@ tailwind.config = {
       <div>
         <!-- Footer logo -->
         <a href="/" class="flex items-center gap-2 mb-3">
-          <svg width="22" height="28" viewBox="0 0 84 104" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <clipPath id="ftop"><rect x="0" y="0" width="84" height="52"/></clipPath>
-              <clipPath id="fbot"><rect x="0" y="52" width="84" height="52"/></clipPath>
-            </defs>
-            <path d="M66,22 C66,10 56,4 44,4 L22,4 C10,4 4,12 4,24 L4,80 C4,92 10,100 22,100 L44,100 C56,100 66,92 66,80"
-                  stroke="#22c55e" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M50,22 C22,22 22,50 42,50 C62,50 62,78 34,78"
-                  stroke="#22c55e" stroke-width="20" fill="none" stroke-linecap="round" clip-path="url(#ftop)"/>
-            <path d="M50,22 C22,22 22,50 42,50 C62,50 62,78 34,78"
-                  stroke="#3b82f6" stroke-width="20" fill="none" stroke-linecap="round" clip-path="url(#fbot)"/>
-          </svg>
-          <span class="font-bold text-white">Credit<span class="text-green-400">Spread</span></span>
+          <img src="/static/logo-wordmark.svg" alt="CreditSpread" style="height:40px;width:auto;display:block">
         </a>
         <p class="text-sm text-slate-500 leading-relaxed">High probability. ZERO guesswork. Live SPX &amp; QQQ credit spread alerts from 30-year Wall Street veterans.</p>
       </div>

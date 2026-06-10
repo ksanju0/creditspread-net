@@ -58,6 +58,8 @@ def run_migrations():
         'telegram_chat_id':    'VARCHAR(40)',
         'free_months':         'INTEGER DEFAULT 0',
         'referral_count':      'INTEGER DEFAULT 0',
+        'reset_token':         'VARCHAR(100)',
+        'reset_token_expiry':  'TIMESTAMP',
     }
     try:
         with app.app_context():
@@ -534,6 +536,68 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for('index'))
+
+@app.route('/forgot-password', methods=['GET', 'POST'])
+def forgot_password():
+    if current_user.is_authenticated:
+        return redirect(url_for('member_dashboard'))
+    if request.method == 'POST':
+        email = request.form.get('email', '').lower().strip()
+        user  = User.query.filter_by(email=email).first()
+        # Always show success to prevent email enumeration
+        if user:
+            import secrets
+            from datetime import timedelta
+            token = secrets.token_urlsafe(32)
+            user.reset_token        = token
+            user.reset_token_expiry = datetime.utcnow() + timedelta(hours=1)
+            db.session.commit()
+            reset_url = url_for('reset_password', token=token, _external=True)
+            html = f"""
+<p>Hi {user.name},</p>
+<p>We received a request to reset your CreditSpread.net password.</p>
+<p><a href="{reset_url}" style="background:#22c55e;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;display:inline-block;font-weight:600;">Reset Password</a></p>
+<p>Or copy this link: {reset_url}</p>
+<p>This link expires in 1 hour. If you didn't request this, you can safely ignore this email.</p>
+"""
+            text = f"Reset your CreditSpread.net password: {reset_url}\n\nExpires in 1 hour."
+            try:
+                newsletter_lib.send_email(
+                    to=user.email,
+                    subject='Reset your CreditSpread.net password',
+                    html=html,
+                    text=text,
+                )
+            except Exception as e:
+                print(f"[forgot-password] email error: {e}")
+        flash('If that email has an account, a reset link has been sent.', 'success')
+        return redirect(url_for('forgot_password'))
+    return render_template('forgot_password.html')
+
+@app.route('/reset-password/<token>', methods=['GET', 'POST'])
+def reset_password(token):
+    if current_user.is_authenticated:
+        return redirect(url_for('member_dashboard'))
+    user = User.query.filter_by(reset_token=token).first()
+    if not user or not user.reset_token_expiry or user.reset_token_expiry < datetime.utcnow():
+        flash('This reset link is invalid or has expired.', 'error')
+        return redirect(url_for('forgot_password'))
+    if request.method == 'POST':
+        new_pw     = request.form.get('password', '')
+        confirm_pw = request.form.get('confirm_password', '')
+        if len(new_pw) < 8:
+            flash('Password must be at least 8 characters.', 'error')
+            return render_template('reset_password.html', token=token)
+        if new_pw != confirm_pw:
+            flash('Passwords do not match.', 'error')
+            return render_template('reset_password.html', token=token)
+        user.password_hash      = generate_password_hash(new_pw)
+        user.reset_token        = None
+        user.reset_token_expiry = None
+        db.session.commit()
+        flash('Password reset successfully. Please sign in.', 'success')
+        return redirect(url_for('login'))
+    return render_template('reset_password.html', token=token)
 
 @app.route('/dashboard/change-password', methods=['POST'])
 @login_required
