@@ -4,472 +4,478 @@
 {% block og_title %}CreditSpread.net — High Probability. ZERO Guesswork.{% endblock %}
 {% block content %}
 
-<!-- ══ HERO ══ -->
-<section class="relative overflow-hidden pt-28 pb-20 px-6">
-  <div class="absolute inset-0" style="background:radial-gradient(ellipse at 50% 0%, rgba(34,197,94,0.07) 0%, transparent 65%)"></div>
-  <div class="max-w-3xl mx-auto text-center relative">
-
-    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium mb-8" style="background:#0d2818;border:1px solid #166534;color:#4ade80">
-      <span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span>
-      Live · SPX &amp; QQQ · {{ total_trades }} trades logged
-    </div>
-
-    <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 leading-[1.1] tracking-tight">
-      <span class="text-white">High probability.</span><br>
-      <span class="gradient-text font-extrabold tracking-tight">ZERO</span> <span class="text-white">guesswork.</span>
-    </h1>
-
-    <p class="text-lg text-slate-400 mb-10 max-w-xl mx-auto leading-relaxed">
-      Live SPX &amp; QQQ credit spread alerts, sized to your account. We trade every signal ourselves — and publish all of them.
-    </p>
-
-    <div class="flex flex-col sm:flex-row gap-3 justify-center">
-      <a href="/pricing" class="btn-primary text-base">Start 7-Day Free Trial</a>
-      <a href="/performance" class="btn-secondary text-base">View Track Record</a>
-    </div>
-    <p class="text-xs text-slate-600 mt-4">No card required for free tier · Cancel anytime</p>
+{# ═════════ 1. TICKER BAR ═════════ #}
+<div class="overflow-hidden border-b border-border bg-card/40">
+  <div class="flex w-max animate-ticker items-center">
+    {% set items = [
+      ('SPX',         '5,304.72', '+0.58%', True),
+      ('QQQ',         '458.13',   '+0.42%', True),
+      ('VIX',         '14.80',    '-3.21%', False),
+      ('WIN RATE',    site_stats.win_rate|string + '%', site_stats.trades|string + ' trades', True),
+      ('AVG CREDIT',  '$' + site_stats.avg_credit|string, site_stats.avg_ror|string + '% ROR', True),
+      ('P&L 2023+',   '$' + site_stats.total_pnl_fmt, 'verified', True),
+    ] %}
+    {% for _ in [1,2] %}{% for sym, px, chg, up in items %}
+      <div class="flex items-center gap-2 border-r border-border/40 px-6 py-2.5 font-mono text-xs">
+        <span class="font-semibold tracking-wide text-muted" style="color:var(--muted)">{{ sym }}</span>
+        <span style="color:var(--fg)">{{ px }}</span>
+        <span style="color:{{ 'var(--primary)' if up else 'var(--destructive)' }}">{{ chg }}</span>
+      </div>
+    {% endfor %}{% endfor %}
   </div>
-</section>
+</div>
 
-<!-- ══ STATS BAR ══ -->
-<section class="border-y border-dark-border py-8">
-  <div class="max-w-5xl mx-auto px-6">
-    <div class="grid grid-cols-2 md:grid-cols-5 gap-6 text-center">
-      {% for val, label in [
-        (win_rate|string + "%", "Win Rate"),
-        (total_trades|string, "Trades Logged"),
-        ("$" + avg_credit|string, "Avg Credit"),
-        (avg_ror|string + "%", "Avg ROR"),
-        ("$" + total_pnl_fmt, "P&L Since Jan 2023")
-      ] %}
+{# ═════════ 2. HERO ═════════ #}
+<section class="relative overflow-hidden">
+  <div class="absolute inset-0 bg-grid opacity-60" aria-hidden="true"></div>
+  <div class="absolute -top-40 left-1/2 h-[480px] w-[820px] -translate-x-1/2 rounded-full blur-[140px]"
+       style="background:rgba(58,224,122,0.15)" aria-hidden="true"></div>
+
+  <div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-16 pt-16 lg:pb-24 lg:pt-24">
+    <div class="grid items-center gap-12 lg:grid-cols-[1.05fr_0.95fr]">
+
       <div>
-        <div class="countup text-3xl font-bold {% if loop.index in [1,3,5] %}text-green-400{% elif loop.index == 4 %}text-blue-400{% else %}text-white{% endif %}" data-target="{{ val }}">{{ val }}</div>
-        <div class="text-xs text-slate-500 mt-1 uppercase tracking-wider">{{ label }}</div>
-      </div>
-      {% endfor %}
-    </div>
-    <p class="text-center text-xs text-slate-600 mt-5">Cumulative results following every signal since launch — Jan 2023 to date. Past performance does not guarantee future results.</p>
-  </div>
-</section>
+        <div class="inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-medium"
+             style="border-color:var(--border);background:rgba(18,32,25,0.6);color:var(--muted)">
+          <span class="relative flex h-2 w-2">
+            <span class="absolute inline-flex h-2 w-2 animate-ping rounded-full opacity-70" style="background:var(--primary)"></span>
+            <span class="relative inline-flex h-2 w-2 rounded-full" style="background:var(--primary)"></span>
+          </span>
+          Live · SPX &amp; QQQ · {{ site_stats.trades }} trades logged
+        </div>
 
-<!-- ══ HOW IT WORKS ══ -->
-<section class="py-24 px-6">
-  <div class="max-w-5xl mx-auto">
-    <div class="text-center mb-16">
-      <h2 class="text-3xl font-bold text-white mb-3">How it works</h2>
-      <p class="text-slate-500">Four steps. Fully automated. Alerts to your phone.</p>
+        <h1 class="mt-6 text-balance text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl">
+          High probability. <span class="text-glow" style="color:var(--primary)">Zero guesswork.</span>
+        </h1>
+
+        <p class="mt-5 max-w-xl text-pretty text-base leading-relaxed sm:text-lg" style="color:var(--muted)">
+          Live SPX &amp; QQQ credit spread alerts, sized to your account. We trade every signal ourselves — and publish all of them.
+        </p>
+
+        <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+          <a href="/pricing" class="btn-primary h-12 px-6 text-base">Start 7-Day Free Trial →</a>
+          <a href="/performance" class="btn-secondary h-12 px-6 text-base">View Track Record</a>
+        </div>
+
+        <div class="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs" style="color:var(--muted)">
+          <span class="inline-flex items-center gap-1.5">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--primary)"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            No card required for free tier
+          </span>
+          <span class="inline-flex items-center gap-1.5">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--primary)"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            Cancel anytime
+          </span>
+        </div>
+      </div>
+
+      <div class="relative">
+        <div class="ring-glow overflow-hidden rounded-2xl border" style="border-color:var(--border);background:var(--card)">
+          <img src="/static/images/hero-terminal.png"
+               alt="CreditSpread trading terminal showing a live SPX credit spread signal, candlestick chart and volatility gauge"
+               class="h-full w-full object-cover" loading="eager">
+        </div>
+      </div>
+
     </div>
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-5">
-      {% for step in [
-        ("01", "Signal fires", "9:45 AM ET. Our system scans SPX & QQQ and generates a signal when conditions align."),
-        ("02", "We trade it", "Our desk executes the same position in live accounts. Entry published instantly."),
-        ("03", "You're alerted", "SMS + email with strikes, credit, target, and stop — sized to your account."),
-        ("04", "Auto-managed", "Closed at 50% profit or 2x stop. Exit alert sent the moment it triggers.")
+
+    {# Stats grid — 5 across #}
+    <dl class="mt-14 grid grid-cols-2 gap-px overflow-hidden rounded-xl border sm:grid-cols-3 lg:grid-cols-5"
+        style="border-color:var(--border);background:var(--border)">
+      {% for val, label in [
+        (site_stats.win_rate|string + '%', 'Win Rate'),
+        (site_stats.trades|string,         'Trades Logged'),
+        ('$' + site_stats.avg_credit|string,'Avg Credit'),
+        (site_stats.avg_ror|string + '%',  'Avg ROR'),
+        ('$' + site_stats.total_pnl_fmt,   'P&L Since 2023'),
       ] %}
-      <div class="card p-6">
-        <div class="text-green-400 font-mono text-sm font-bold mb-3">{{ step[0] }}</div>
-        <div class="font-semibold text-white mb-2">{{ step[1] }}</div>
-        <p class="text-sm text-slate-500 leading-relaxed">{{ step[2] }}</p>
+      <div class="px-5 py-5" style="background:var(--card)">
+        <dt class="text-xs uppercase tracking-wider" style="color:var(--muted)">{{ label }}</dt>
+        <dd class="mt-1 font-mono text-2xl font-semibold" style="color:var(--fg)">{{ val }}</dd>
+      </div>
+      {% endfor %}
+    </dl>
+    <p class="mt-3 text-xs leading-relaxed" style="color:var(--muted)">
+      Cumulative results following every signal since launch — Jan 2023 to date. Past performance does not guarantee future results.
+    </p>
+  </div>
+</section>
+
+{# ═════════ 3. HOW IT WORKS ═════════ #}
+<section id="how-it-works" class="border-t py-20 lg:py-28" style="border-color:var(--border)">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="max-w-2xl">
+      <p class="text-sm font-medium uppercase tracking-wider" style="color:var(--primary)">How it works</p>
+      <h2 class="mt-3 text-balance text-3xl font-semibold tracking-tight sm:text-4xl">
+        Four steps. Fully automated.
+      </h2>
+      <p class="mt-4 text-pretty leading-relaxed" style="color:var(--muted)">
+        Alerts to your phone the moment each trade fires.
+      </p>
+    </div>
+    <div class="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      {% for num, label, desc in [
+        ('01','Signal fires','9:45 AM ET. Our system scans SPX & QQQ and generates a signal when conditions align.'),
+        ('02','We trade it', 'Our desk executes the same position in live accounts. Entry published instantly.'),
+        ('03',"You're alerted",'SMS + email with strikes, credit, target and stop — sized to your account.'),
+        ('04','Auto-managed','Closed at 50% profit or 2x stop. Exit alert sent the moment it triggers.'),
+      ] %}
+      <div class="rounded-xl border p-6" style="border-color:var(--border);background:var(--card)">
+        <div class="font-mono text-sm font-bold mb-3" style="color:var(--primary)">{{ num }}</div>
+        <div class="font-semibold mb-2" style="color:var(--fg)">{{ label }}</div>
+        <p class="text-sm leading-relaxed" style="color:var(--muted)">{{ desc }}</p>
       </div>
       {% endfor %}
     </div>
   </div>
 </section>
 
-<!-- ══ TODAY'S SIGNAL — locked teaser ══ -->
-<section class="py-20 px-6" style="background:#080d18">
-  <div class="max-w-xl mx-auto">
-    <div class="text-center mb-8">
-      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold mb-3" style="background:#0d2818;border:1px solid #166534;color:#4ade80">
-        <span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span> Most recent signal
-      </div>
-      <h2 class="text-2xl font-bold text-white">Today's live signal</h2>
-    </div>
+{# ═════════ 4. LIVE SIGNAL (locked teaser) ═════════ #}
+<section class="border-t py-20 lg:py-28" style="border-color:var(--border)">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="grid items-center gap-10 lg:grid-cols-2">
 
-    <div class="rounded-2xl overflow-hidden relative" style="background:#0a0f1e;border:1px solid #1e2d45">
-      <div class="px-5 py-3 border-b border-dark-border flex items-center justify-between" style="background:#0d1829">
-        <span class="text-xs text-green-400 font-semibold">SPX BULL PUT SPREAD</span>
-        {% if recent_trades and recent_trades[0] %}
-        <span class="text-xs text-slate-500">{{ recent_trades[0].date }}</span>
-        {% endif %}
+      <div>
+        <p class="text-sm font-medium uppercase tracking-wider" style="color:var(--primary)">Most recent signal</p>
+        <h2 class="mt-3 text-balance text-3xl font-semibold tracking-tight sm:text-4xl">Today's live signal</h2>
+        <p class="mt-4 max-w-md text-pretty leading-relaxed" style="color:var(--muted)">
+          Members see every signal live — sized to their account — the moment it fires. No delays, no cherry-picking, no hidden losses.
+        </p>
+        <a href="/pricing" class="btn-primary mt-7 h-12 px-6 text-base inline-flex">Start 7-Day Free Trial →</a>
       </div>
-      <div class="p-6 relative">
-        {% if current_user.is_authenticated and current_user.plan == 'member' and recent_trades and recent_trades[0] %}
-          <!-- Member: full signal -->
-          {% set t = recent_trades[0] %}
-          <div class="font-mono text-2xl font-bold text-green-400 mb-5">SELL {{ t.short_strike }}P / BUY {{ t.long_strike }}P</div>
-          <div class="grid grid-cols-3 gap-3">
-            <div class="rounded-lg p-3" style="background:#0d1829;border:1px solid #1e2d45"><div class="text-xs text-slate-500 mb-1">Credit</div><div class="text-green-400 font-semibold">${{ t.net_credit }}</div></div>
-            <div class="rounded-lg p-3" style="background:#0d1829;border:1px solid #1e2d45"><div class="text-xs text-slate-500 mb-1">ROR</div><div class="text-blue-400 font-semibold">{{ t.ror_pct }}%</div></div>
-            <div class="rounded-lg p-3" style="background:#0d1829;border:1px solid #1e2d45"><div class="text-xs text-slate-500 mb-1">VIX</div><div class="text-white font-semibold">{{ t.vix }}</div></div>
-          </div>
-        {% else %}
-          <!-- Locked for free/anon -->
-          <div class="font-mono text-2xl font-bold text-green-400 mb-5" style="filter:blur(9px);user-select:none">SELL 5250P / BUY 5225P</div>
-          <div class="grid grid-cols-3 gap-3" style="filter:blur(9px);user-select:none">
-            <div class="rounded-lg p-3" style="background:#0d1829"><div class="text-xs text-slate-500 mb-1">Credit</div><div class="text-green-400 font-semibold">$4.80</div></div>
-            <div class="rounded-lg p-3" style="background:#0d1829"><div class="text-xs text-slate-500 mb-1">ROR</div><div class="text-blue-400 font-semibold">23.8%</div></div>
-            <div class="rounded-lg p-3" style="background:#0d1829"><div class="text-xs text-slate-500 mb-1">VIX</div><div class="text-white font-semibold">14.8</div></div>
-          </div>
-          <!-- Unlock overlay -->
-          <div class="absolute inset-0 flex flex-col items-center justify-center gap-3" style="background:rgba(10,15,30,0.55);backdrop-filter:blur(2px)">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>
-            </svg>
-            <div class="text-white font-semibold text-sm">Unlock today's signal</div>
-            <a href="/pricing" class="btn-primary text-sm">Start 7-Day Free Trial →</a>
-          </div>
-        {% endif %}
+
+      <div class="relative overflow-hidden rounded-2xl border" style="border-color:var(--border);background:var(--card)">
+        <div class="flex items-center justify-between border-b px-5 py-3" style="border-color:var(--border)">
+          <span class="inline-flex items-center gap-2 text-xs font-medium" style="color:var(--primary)">
+            <span class="h-2 w-2 animate-pulse-dot rounded-full" style="background:var(--primary)"></span>
+            {% if recent_trades and recent_trades[0] %}SPX BULL PUT SPREAD{% else %}SPX BULL PUT SPREAD{% endif %}
+          </span>
+          <span class="font-mono text-xs" style="color:var(--muted)">{% if recent_trades and recent_trades[0] %}{{ recent_trades[0].date }}{% else %}—{% endif %}</span>
+        </div>
+
+        <div class="p-6">
+          {% if current_user.is_authenticated and current_user.plan == 'member' and recent_trades and recent_trades[0] %}
+            {% set t = recent_trades[0] %}
+            <div class="rounded-lg border p-4 font-mono" style="border-color:var(--border);background:rgba(10,23,20,0.6)">
+              <p class="text-lg font-semibold tracking-tight">SELL {{ t.short_strike }}P <span style="color:var(--muted)">/</span> BUY {{ t.long_strike }}P</p>
+            </div>
+            <div class="mt-5 grid grid-cols-3 gap-px overflow-hidden rounded-lg border" style="border-color:var(--border);background:var(--border)">
+              <div class="px-4 py-3" style="background:var(--card)"><p class="text-xs uppercase tracking-wider" style="color:var(--muted)">Credit</p><p class="mt-1 font-mono text-xl font-semibold" style="color:var(--primary)">${{ t.net_credit }}</p></div>
+              <div class="px-4 py-3" style="background:var(--card)"><p class="text-xs uppercase tracking-wider" style="color:var(--muted)">ROR</p><p class="mt-1 font-mono text-xl font-semibold">{{ t.ror_pct }}%</p></div>
+              <div class="px-4 py-3" style="background:var(--card)"><p class="text-xs uppercase tracking-wider" style="color:var(--muted)">VIX</p><p class="mt-1 font-mono text-xl font-semibold">{{ t.vix }}</p></div>
+            </div>
+          {% else %}
+            <div class="rounded-lg border p-4 font-mono" style="border-color:var(--border);background:rgba(10,23,20,0.6);filter:blur(6px);user-select:none">
+              <p class="text-lg font-semibold tracking-tight">SELL 5250P <span style="color:var(--muted)">/</span> BUY 5225P</p>
+            </div>
+            <div class="mt-5 grid grid-cols-3 gap-px overflow-hidden rounded-lg border" style="border-color:var(--border);background:var(--border);filter:blur(6px);user-select:none">
+              <div class="px-4 py-3" style="background:var(--card)"><p class="text-xs uppercase tracking-wider" style="color:var(--muted)">Credit</p><p class="mt-1 font-mono text-xl font-semibold" style="color:var(--primary)">$4.80</p></div>
+              <div class="px-4 py-3" style="background:var(--card)"><p class="text-xs uppercase tracking-wider" style="color:var(--muted)">ROR</p><p class="mt-1 font-mono text-xl font-semibold">23.8%</p></div>
+              <div class="px-4 py-3" style="background:var(--card)"><p class="text-xs uppercase tracking-wider" style="color:var(--muted)">VIX</p><p class="mt-1 font-mono text-xl font-semibold">14.8</p></div>
+            </div>
+            <div class="relative mt-5 overflow-hidden rounded-lg border border-dashed p-5 text-center" style="border-color:rgba(58,224,122,0.4);background:rgba(22,50,36,0.4)">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="mx-auto" style="color:var(--primary)"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              <p class="mt-2 text-sm font-medium">Unlock today's full signal</p>
+              <p class="mt-1 text-xs" style="color:var(--muted)">Strikes, target, stop &amp; your exact contract size.</p>
+            </div>
+          {% endif %}
+        </div>
       </div>
+
     </div>
-    {% if not (current_user.is_authenticated and current_user.plan == 'member') %}
-    <p class="text-center text-xs text-slate-600 mt-4">Members see every signal live — sized to their account — the moment it fires.</p>
-    {% endif %}
   </div>
 </section>
 
-<!-- ══ ROI CALCULATOR ══ -->
-<section class="py-24 px-6">
-  <div class="max-w-3xl mx-auto">
-    <div class="text-center mb-12">
-      <h2 class="text-3xl font-bold text-white mb-3">What could your account do?</h2>
-      <p class="text-slate-500 text-sm">Move the slider. See the projection based on our 3-year live track record.</p>
+{# ═════════ 5. TRADE LOG ═════════ #}
+<section id="trade-log" class="border-t py-20 lg:py-28" style="border-color:var(--border)">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="max-w-2xl">
+      <p class="text-sm font-medium uppercase tracking-wider" style="color:var(--primary)">Live trade log</p>
+      <h2 class="mt-3 text-balance text-3xl font-semibold tracking-tight sm:text-4xl">Every signal timestamped before entry.</h2>
+    </div>
+    <div class="mt-10 overflow-hidden rounded-xl border" style="border-color:var(--border);background:var(--card)">
+      <div class="overflow-x-auto">
+        <table class="w-full min-w-[680px] text-left text-sm">
+          <thead>
+            <tr class="border-b font-mono text-xs uppercase tracking-wider" style="border-color:var(--border);background:rgba(28,45,36,0.4);color:var(--muted)">
+              {% for h in ['Date','Spread','Credit','ROR','VIX','Result','P&L'] %}
+              <th class="px-5 py-3 font-medium {% if loop.last %}text-right{% endif %}">{{ h }}</th>
+              {% endfor %}
+            </tr>
+          </thead>
+          <tbody class="font-mono">
+            {% for t in recent_trades[:5] %}
+            <tr class="border-b last:border-0" style="border-color:rgba(30,45,36,0.6)">
+              <td class="px-5 py-3.5" style="color:var(--muted)">{{ t.date }}</td>
+              <td class="px-5 py-3.5">{{ t.short_strike }}/{{ t.long_strike }}P</td>
+              <td class="px-5 py-3.5">${{ t.net_credit }}</td>
+              <td class="px-5 py-3.5">{{ t.ror_pct }}%</td>
+              <td class="px-5 py-3.5" style="color:var(--muted)">{{ t.vix }}</td>
+              <td class="px-5 py-3.5">
+                {% if t.status == 'OPEN' %}
+                  <span class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium" style="background:rgba(28,45,36,0.6);color:var(--muted)">OPEN</span>
+                {% elif 'PROFIT' in t.status %}
+                  <span class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium" style="background:var(--accent);color:var(--primary)">WIN</span>
+                {% else %}
+                  <span class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium" style="background:rgba(239,68,68,0.15);color:var(--destructive)">LOSS</span>
+                {% endif %}
+              </td>
+              <td class="px-5 py-3.5 text-right font-semibold"
+                  style="color: {% if t.pnl and t.pnl > 0 %}var(--primary){% elif t.pnl and t.pnl < 0 %}var(--destructive){% else %}var(--muted){% endif %}">
+                {% if t.pnl_fmt %}${{ t.pnl_fmt }}{% else %}—{% endif %}
+              </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="7" class="px-5 py-12 text-center" style="color:var(--muted)">First trades appear Monday 9:45 AM ET</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <p class="mt-3 text-xs" style="color:var(--muted)">
+      Showing {{ recent_trades[:5]|length }} of {{ site_stats.trades }} logged trades. We publish losses too — that's the point.
+    </p>
+  </div>
+</section>
+
+{# ═════════ 6. VERIFY ═════════ #}
+<section id="verify" class="border-t py-20 lg:py-28" style="border-color:var(--border)">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="max-w-2xl">
+      <p class="text-sm font-medium uppercase tracking-wider" style="color:var(--primary)">Transparency</p>
+      <h2 class="mt-3 text-balance text-3xl font-semibold tracking-tight sm:text-4xl">A service you can verify.</h2>
+      <p class="mt-4 text-pretty leading-relaxed" style="color:var(--muted)">
+        Most services hide losses and go quiet when markets turn. We publish everything — wins and losses, timestamped before entry.
+      </p>
+    </div>
+    <div class="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      {% for val, label, sub in [
+        (site_stats.win_rate|string + '%', 'Win rate',           site_stats.trades|string + ' trades, all public'),
+        ('Defined',                         'Max loss',           'Known before you enter'),
+        ('78%',                             'Win rate in 2022',   'Through the bear market'),
+        ('$10K+',                           'Tax saved/yr',       'SPX Section 1256'),
+      ] %}
+      <div class="rounded-xl border p-6" style="border-color:var(--border);background:var(--card)">
+        <p class="font-mono text-3xl font-semibold" style="color:var(--primary)">{{ val }}</p>
+        <p class="mt-3 font-medium">{{ label }}</p>
+        <p class="mt-1 text-sm" style="color:var(--muted)">{{ sub }}</p>
+      </div>
+      {% endfor %}
+    </div>
+    <a href="#trade-log" class="mt-8 inline-flex items-center gap-2 text-sm font-medium hover:underline" style="color:var(--primary)">
+      See every trade, including losses →
+    </a>
+  </div>
+</section>
+
+{# ═════════ 7. PROJECTION CALCULATOR ═════════ #}
+<section class="border-t py-20 lg:py-28" style="border-color:var(--border)">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="max-w-2xl">
+      <p class="text-sm font-medium uppercase tracking-wider" style="color:var(--primary)">Projection</p>
+      <h2 class="mt-3 text-balance text-3xl font-semibold tracking-tight sm:text-4xl">What could your account do?</h2>
+      <p class="mt-4 text-pretty leading-relaxed" style="color:var(--muted)">
+        Move the sliders. See the projection based on our 3-year live track record.
+      </p>
+    </div>
+    <div class="mt-10 grid gap-6 rounded-2xl border p-6 lg:grid-cols-2 lg:p-8" style="border-color:var(--border);background:var(--card)">
+
+      <div class="flex flex-col justify-center gap-8">
+        <div>
+          <div class="flex items-baseline justify-between">
+            <label for="roi-acct" class="text-sm font-medium" style="color:var(--muted)">Your account size</label>
+            <span id="roi-acct-label" class="font-mono text-lg font-semibold">$50,000</span>
+          </div>
+          <input id="roi-acct" type="range" min="10000" max="500000" step="5000" value="50000"
+                 class="mt-3 w-full" style="accent-color:var(--primary)">
+          <div class="mt-1 flex justify-between text-xs" style="color:var(--muted)"><span>$10K</span><span>$500K</span></div>
+        </div>
+        <div>
+          <div class="flex items-baseline justify-between">
+            <label for="roi-risk" class="text-sm font-medium" style="color:var(--muted)">Risk per trade</label>
+            <span id="roi-risk-label" class="font-mono text-lg font-semibold">2%</span>
+          </div>
+          <input id="roi-risk" type="range" min="1" max="5" step="1" value="2"
+                 class="mt-3 w-full" style="accent-color:var(--primary)">
+          <div class="mt-1 flex justify-between text-xs" style="color:var(--muted)"><span>1% Safe</span><span>5% Aggressive</span></div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-px overflow-hidden rounded-xl border" style="border-color:var(--border);background:var(--border)">
+        <div class="px-5 py-6" style="background:var(--card)"><p class="text-xs uppercase tracking-wider" style="color:var(--muted)">Contracts / signal</p><p id="roi-contracts" class="mt-2 font-mono text-2xl font-semibold" style="color:var(--primary)">1</p></div>
+        <div class="px-5 py-6" style="background:var(--card)"><p class="text-xs uppercase tracking-wider" style="color:var(--muted)">Est. monthly</p><p id="roi-monthly" class="mt-2 font-mono text-2xl font-semibold" style="color:var(--primary)">$0</p></div>
+        <div class="px-5 py-6" style="background:var(--card)"><p class="text-xs uppercase tracking-wider" style="color:var(--muted)">Est. annual</p><p id="roi-annual" class="mt-2 font-mono text-2xl font-semibold" style="color:var(--primary)">$0</p></div>
+        <div class="px-5 py-6" style="background:var(--card)"><p class="text-xs uppercase tracking-wider" style="color:var(--muted)">Annual growth</p><p id="roi-growth" class="mt-2 font-mono text-2xl font-semibold" style="color:var(--primary)">0%</p></div>
+      </div>
+
     </div>
 
-    <div class="card p-8">
-      <div class="mb-8">
-        <div class="flex items-center justify-between mb-3">
-          <label class="text-sm text-slate-400">Your account size</label>
-          <span id="roi-acct-label" class="text-xl font-bold text-white">$50,000</span>
-        </div>
-        <input id="roi-acct" type="range" min="10000" max="500000" step="5000" value="50000"
-               class="w-full accent-green-500" style="accent-color:#22c55e">
-        <div class="flex justify-between text-xs text-slate-600 mt-1"><span>$10K</span><span>$500K</span></div>
-      </div>
-
-      <div class="mb-8">
-        <div class="flex items-center justify-between mb-3">
-          <label class="text-sm text-slate-400">Risk per trade</label>
-          <span id="roi-risk-label" class="text-xl font-bold text-white">2%</span>
-        </div>
-        <input id="roi-risk" type="range" min="1" max="5" step="1" value="2"
-               class="w-full" style="accent-color:#22c55e">
-        <div class="flex justify-between text-xs text-slate-600 mt-1"><span>1% Safe</span><span>5% Aggressive</span></div>
-      </div>
-
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 pt-6 border-t border-dark-border text-center">
-        <div><div id="roi-contracts" class="text-2xl font-bold text-blue-400">1</div><div class="text-xs text-slate-500 mt-1">Contracts / signal</div></div>
-        <div><div id="roi-monthly" class="text-2xl font-bold text-green-400">$0</div><div class="text-xs text-slate-500 mt-1">Est. monthly</div></div>
-        <div><div id="roi-annual" class="text-2xl font-bold text-green-400">$0</div><div class="text-xs text-slate-500 mt-1">Est. annual</div></div>
-        <div><div id="roi-growth" class="text-2xl font-bold text-green-400">0%</div><div class="text-xs text-slate-500 mt-1">Annual growth</div></div>
-      </div>
-
-      <div class="mt-6 text-center">
-        <a href="/pricing" class="btn-primary text-sm">Start Earning — Free 7-Day Trial</a>
-      </div>
-      <p class="text-xs text-slate-600 text-center mt-4 leading-relaxed">
+    <div class="mt-6 flex flex-col items-start gap-4">
+      <a href="/pricing" class="btn-primary h-12 px-6 text-base">Start Earning — Free 7-Day Trial →</a>
+      <p class="max-w-3xl text-xs leading-relaxed" style="color:var(--muted)">
         Projection assumes ~13 signals/month, 90% win rate, $4.67 avg credit, 50% profit target, 2x stop — our actual 3-year averages. Illustrative only. Past performance does not guarantee future results.
       </p>
     </div>
   </div>
 </section>
 
-<!-- ══ PERSONALIZED ALERT — visual hook ══ -->
-<section class="py-24 px-6" style="background:#080d18">
-  <div class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
-    <div>
-      <h2 class="text-3xl font-bold text-white mb-4 leading-tight">Sized to your account.</h2>
-      <p class="text-slate-400 leading-relaxed mb-8">
-        Tell us your capital once. Every alert arrives with the exact contracts to trade — never more than your chosen risk per signal.
+{# ═════════ 8. MARKETS ═════════ #}
+<section class="border-t py-20 lg:py-28" style="border-color:var(--border)">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="max-w-2xl">
+      <p class="text-sm font-medium uppercase tracking-wider" style="color:var(--primary)">Coverage</p>
+      <h2 class="mt-3 text-balance text-3xl font-semibold tracking-tight sm:text-4xl">The two most liquid markets.</h2>
+      <p class="mt-4 text-pretty leading-relaxed" style="color:var(--muted)">
+        We focus retail alerts on the safest, highest-probability options.
       </p>
-      <div class="space-y-4">
-        {% for t, d in [
-          ("Position sizing built in", "Exact contracts per alert. No mental math."),
-          ("Hard stop on every trade", "Mechanical 2x stop loss. No emotional holding."),
-          ("Your own private log", "Track every signal against your real capital.")
-        ] %}
-        <div class="flex gap-3">
-          <span class="text-green-400 mt-0.5">✓</span>
-          <div>
-            <div class="text-white text-sm font-semibold">{{ t }}</div>
-            <div class="text-slate-500 text-sm">{{ d }}</div>
-          </div>
-        </div>
-        {% endfor %}
-      </div>
     </div>
-
-    <!-- Alert card -->
-    <div class="rounded-2xl overflow-hidden" style="background:#0a0f1e;border:1px solid #1e2d45">
-      <div class="px-5 py-3 border-b border-dark-border flex items-center justify-between" style="background:#0d1829">
-        <div class="flex items-center gap-2">
-          <span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span>
-          <span class="text-xs text-green-400 font-semibold">LIVE SIGNAL · 9:47 AM ET</span>
-        </div>
-        <span class="text-xs text-slate-600">creditspread.net</span>
-      </div>
-      <div class="p-6">
-        <div class="font-mono text-xl font-bold text-green-400 mb-5">SELL 5250P / BUY 5225P</div>
-        <div class="grid grid-cols-2 gap-3 mb-4">
-          {% for label, val, color in [
-            ("Credit","$4.80","text-green-400"),
-            ("Your size","3 contracts","text-blue-400"),
-            ("Max risk","$2,880 (2%)","text-yellow-400"),
-            ("Target","$2.40","text-green-400")
-          ] %}
-          <div class="rounded-lg p-3" style="background:#0d1829;border:1px solid #1e2d45">
-            <div class="text-xs text-slate-500 mb-1">{{ label }}</div>
-            <div class="font-semibold {{ color }} text-sm">{{ val }}</div>
-          </div>
-          {% endfor %}
-        </div>
-        <div class="rounded-lg px-3 py-2.5 text-xs text-slate-400" style="background:#0d2818;border:1px solid #166534">
-          Sized for a $144,000 account. Worst case: 2%. The other 98% untouched.
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ══ WHY VERIFY — stat tiles (replaces wall of text) ══ -->
-<section class="py-24 px-6">
-  <div class="max-w-5xl mx-auto">
-    <div class="text-center mb-16">
-      <h2 class="text-3xl font-bold text-white mb-3">A service you can verify.</h2>
-      <p class="text-slate-500 max-w-lg mx-auto">Most services hide losses and go quiet when markets turn. We publish everything.</p>
-    </div>
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-5">
-      {% for val, label, sub in [
-        (site_stats.win_rate|string + "%", "Win rate", site_stats.trades|string + " trades, all public"),
-        ("Defined", "Max loss", "Known before you enter"),
-        ("78%", "Win rate in 2022", "Through the bear market"),
-        ("$10K+", "Tax saved/yr", "SPX Section 1256")
+    <div class="mt-10 grid gap-4 md:grid-cols-2">
+      {% for sym, name, points in [
+        ('SPX','S&P 500 Index Options',     ['Cash-settled','0DTE & weekly','Section 1256 tax treatment','Primary daily signal']),
+        ('QQQ','Nasdaq-100 ETF Options',    ['Most liquid ETF options','High IV premium','Daily expirations','Secondary signal']),
       ] %}
-      <div class="card p-6 text-center">
-        <div class="text-3xl font-bold text-green-400 mb-1">{{ val }}</div>
-        <div class="text-white text-sm font-semibold">{{ label }}</div>
-        <div class="text-slate-600 text-xs mt-1">{{ sub }}</div>
-      </div>
-      {% endfor %}
-    </div>
-    <div class="text-center mt-10">
-      <a href="/performance" class="btn-secondary text-sm">See every trade, including losses →</a>
-    </div>
-  </div>
-</section>
-
-<!-- ══ LIVE TRADE LOG ══ -->
-<section class="py-24 px-6" style="background:#080d18">
-  <div class="max-w-6xl mx-auto">
-    <div class="flex items-end justify-between mb-8">
-      <div>
-        <h2 class="text-3xl font-bold text-white">Live trade log</h2>
-        <p class="text-slate-500 mt-1 text-sm">Every signal timestamped before entry.</p>
-      </div>
-      <a href="/performance" class="btn-secondary text-sm">View all</a>
-    </div>
-    <div class="card overflow-x-auto">
-      <table class="w-full min-w-[640px]">
-        <thead>
-          <tr style="background:#0d1829">
-            {% for h in ["Date","Spread","Credit","ROR","VIX","Result","P&L"] %}
-            <th class="px-5 py-3.5 text-left text-xs text-slate-500 uppercase tracking-wider">{{ h }}</th>
-            {% endfor %}
-          </tr>
-        </thead>
-        <tbody>
-          {% for t in recent_trades %}
-          <tr class="border-t border-dark-border hover:bg-dark-card transition-colors">
-            <td class="px-5 py-4 text-sm text-slate-400">{{ t.date }}</td>
-            <td class="px-5 py-4 text-sm font-mono font-semibold text-white">{{ t.short_strike }}/{{ t.long_strike }}P</td>
-            <td class="px-5 py-4 text-sm text-green-400 font-semibold">${{ t.net_credit }}</td>
-            <td class="px-5 py-4 text-sm text-blue-400">{{ t.ror_pct }}%</td>
-            <td class="px-5 py-4 text-sm text-slate-400">{{ t.vix }}</td>
-            <td class="px-5 py-4">
-              {% if t.status == 'OPEN' %}
-                <span class="badge-open px-3 py-1 rounded-full text-xs font-semibold">OPEN</span>
-              {% elif 'PROFIT' in t.status %}
-                <span class="badge-win px-3 py-1 rounded-full text-xs font-semibold">WIN</span>
-              {% else %}
-                <span class="badge-loss px-3 py-1 rounded-full text-xs font-semibold">LOSS</span>
-              {% endif %}
-            </td>
-            <td class="px-5 py-4 text-sm font-semibold {% if t.pnl and t.pnl > 0 %}text-green-400{% elif t.pnl %}text-red-400{% else %}text-slate-500{% endif %}">
-              {% if t.pnl_fmt %}${{ t.pnl_fmt }}{% else %}—{% endif %}
-            </td>
-          </tr>
-          {% else %}
-          <tr><td colspan="7" class="px-5 py-12 text-center text-slate-500">First trades appear Monday 9:45 AM ET</td></tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-  </div>
-</section>
-
-<!-- ══ TICKERS ══ -->
-<section class="py-20 px-6">
-  <div class="max-w-3xl mx-auto">
-    <div class="text-center mb-10">
-      <h2 class="text-3xl font-bold text-white mb-3">The two most liquid markets</h2>
-      <p class="text-slate-500 text-sm">We focus retail alerts on the safest, highest-probability options.</p>
-    </div>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-      <div class="p-6 rounded-xl" style="background:linear-gradient(160deg,#0d2818,#0a1a12);border:1px solid #166534">
-        <div class="text-2xl font-bold text-green-400 mb-1">SPX</div>
-        <div class="text-white font-semibold mb-3 text-sm">S&amp;P 500 Index Options</div>
-        <p class="text-xs text-slate-500 leading-relaxed">Cash-settled · 0DTE &amp; weekly · Section 1256 tax treatment · Primary daily signal</p>
-      </div>
-      <div class="p-6 rounded-xl" style="background:#0d1829;border:1px solid #1e3a5f">
-        <div class="text-2xl font-bold text-blue-400 mb-1">QQQ</div>
-        <div class="text-white font-semibold mb-3 text-sm">Nasdaq-100 ETF Options</div>
-        <p class="text-xs text-slate-500 leading-relaxed">Most liquid ETF options · High IV premium · Daily expirations · Secondary signal</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ══ PRICING ══ -->
-<section class="py-24 px-6" style="background:#080d18">
-  <div class="max-w-3xl mx-auto">
-    <div class="text-center mb-12">
-      <h2 class="text-3xl font-bold text-white mb-3">Simple pricing</h2>
-      <p class="text-slate-500 text-sm">Watch free. Get live alerts when you're ready.</p>
-    </div>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <div class="card p-8">
-        <div class="text-slate-400 font-semibold text-sm uppercase tracking-wider mb-2">Free</div>
-        <div class="text-4xl font-bold text-white mb-1">$0</div>
-        <div class="text-slate-500 text-sm mb-6">forever</div>
-        <ul class="space-y-2.5 mb-8">
-          {% for f in ["1 delayed signal/week","Full public trade log","3-year performance history"] %}
-          <li class="flex items-center gap-2 text-sm text-slate-400"><span class="text-green-400">✓</span>{{ f }}</li>
+      <div class="rounded-xl border p-7" style="border-color:var(--border);background:var(--card)">
+        <div class="flex items-center gap-3">
+          <span class="flex h-12 w-12 items-center justify-center rounded-lg font-mono text-base font-semibold"
+                style="background:var(--accent);color:var(--primary)">{{ sym }}</span>
+          <p class="text-lg font-semibold">{{ name }}</p>
+        </div>
+        <ul class="mt-5 grid grid-cols-2 gap-2 text-sm" style="color:var(--muted)">
+          {% for p in points %}
+          <li class="flex items-center gap-2">
+            <span class="h-1.5 w-1.5 rounded-full" style="background:var(--primary)"></span>{{ p }}
+          </li>
           {% endfor %}
         </ul>
-        <a href="/register" class="btn-secondary w-full block text-center text-sm">Create Free Account</a>
-      </div>
-      <div class="relative p-8 glow" style="background:linear-gradient(160deg,#0d2818,#0a1a12);border:1px solid #166534;border-radius:12px">
-        <div class="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-xs font-bold text-white" style="background:linear-gradient(135deg,#22c55e,#16a34a)">FULL ACCESS</div>
-        <div class="text-green-400 font-semibold text-sm uppercase tracking-wider mb-2">Member</div>
-        <div class="text-4xl font-bold text-white mb-1">$179<span class="text-lg text-slate-500 font-normal">/mo</span></div>
-        <div class="text-slate-500 text-sm mb-6">7-day free trial</div>
-        <ul class="space-y-2.5 mb-8">
-          {% for f in ["Real-time SMS + email alerts","Sized to your account","Live entry & exit prices","Your private trade log"] %}
-          <li class="flex items-center gap-2 text-sm text-slate-300"><span class="text-green-400">✓</span>{{ f }}</li>
-          {% endfor %}
-        </ul>
-        <a href="/pricing" class="btn-primary w-full block text-center text-sm">Start Free Trial</a>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ══ TESTIMONIALS — 3 tight + rating ══ -->
-<section class="py-24 px-6">
-  <div class="max-w-5xl mx-auto">
-    <div class="text-center mb-14">
-      <h2 class="text-3xl font-bold text-white mb-3">Trusted by {{ site_stats.members }} members</h2>
-      <div class="flex items-center justify-center gap-2">
-        <div class="flex gap-0.5">{% for _ in range(5) %}<span class="text-yellow-400">★</span>{% endfor %}</div>
-        <span class="text-slate-500 text-sm">4.9 average · 312 reviews</span>
-      </div>
-    </div>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-      {% for initials, name, title, growth, quote in [
-        ("MR","Michael R.","Ex-Portfolio Manager","+41%","Textbook institutional methodology. Alerts hit before my coffee, trade's done by noon. Nothing to second-guess."),
-        ("SK","Sarah K.","Software Engineer","+29%","Zero finance background. The alerts are so clear I just enter, set stops, and walk away. Total transparency."),
-        ("LC","Linda C.","Family Office","+22%","We allocate across three family portfolios. Every trade is public and auditable. That's rare in this industry.")
-      ] %}
-      <div class="card p-6">
-        <div class="flex items-center gap-3 mb-4">
-          <div class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-xs text-white flex-shrink-0" style="background:linear-gradient(135deg,#22c55e,#16a34a)">{{ initials }}</div>
-          <div>
-            <div class="text-white font-semibold text-sm">{{ name }}</div>
-            <div class="text-slate-500 text-xs">{{ title }}</div>
-          </div>
-          <div class="ml-auto text-green-400 font-bold text-sm">{{ growth }}</div>
-        </div>
-        <p class="text-slate-400 text-sm leading-relaxed">"{{ quote }}"</p>
       </div>
       {% endfor %}
     </div>
   </div>
 </section>
 
-<!-- ══ FINAL CTA (merged guarantee + capture) ══ -->
-<section class="py-24 px-6" style="background:#080d18">
-  <div class="max-w-xl mx-auto text-center">
-    <h2 class="text-3xl font-bold text-white mb-3">Get the daily briefing.</h2>
-    <p class="text-slate-400 mb-8 leading-relaxed">
-      Five minutes before the open. Catalysts, levels, vol regime, and our trade results &mdash; every weekday at 6:00 AM ET. Free.
+{# ═════════ 9. PRICING ═════════ #}
+<section id="pricing" class="border-t py-20 lg:py-28" style="border-color:var(--border)">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="mx-auto max-w-2xl text-center">
+      <p class="text-sm font-medium uppercase tracking-wider" style="color:var(--primary)">Pricing</p>
+      <h2 class="mt-3 text-balance text-3xl font-semibold tracking-tight sm:text-4xl">Watch free. Get live alerts when you're ready.</h2>
+    </div>
+
+    <div class="mx-auto mt-12 grid max-w-4xl gap-6 md:grid-cols-2">
+
+      <div class="flex flex-col rounded-2xl border p-7" style="border-color:var(--border);background:var(--card)">
+        <p class="text-sm font-medium uppercase tracking-wider" style="color:var(--muted)">Free</p>
+        <div class="mt-3 flex items-baseline gap-1">
+          <span class="font-mono text-4xl font-semibold">$0</span>
+          <span class="text-sm" style="color:var(--muted)">forever</span>
+        </div>
+        <ul class="mt-6 flex-1 space-y-3 text-sm">
+          {% for f in ['1 delayed signal/week','Full public trade log','3-year performance history'] %}
+          <li class="flex items-center gap-3" style="color:var(--muted)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            <span>{{ f }}</span>
+          </li>
+          {% endfor %}
+        </ul>
+        <a href="/register" class="btn-secondary mt-7">Get started free</a>
+      </div>
+
+      <div class="ring-glow relative flex flex-col rounded-2xl border p-7" style="border-color:rgba(58,224,122,0.5);background:var(--card)">
+        <span class="absolute -top-3 left-7 rounded-full px-3 py-1 text-xs font-semibold"
+              style="background:var(--primary);color:var(--primaryd)">FULL ACCESS</span>
+        <p class="text-sm font-medium uppercase tracking-wider" style="color:var(--primary)">Member</p>
+        <div class="mt-3 flex items-baseline gap-1">
+          <span class="font-mono text-4xl font-semibold">$179</span>
+          <span class="text-sm" style="color:var(--muted)">/mo</span>
+        </div>
+        <p class="mt-1 text-xs" style="color:var(--primary)">7-day free trial · no card required</p>
+        <ul class="mt-6 flex-1 space-y-3 text-sm">
+          {% for f in ['Real-time SMS + email alerts','Sized to your account','Live entry & exit prices','Your private trade log','Daily pre-market briefing'] %}
+          <li class="flex items-center gap-3">
+            <span class="flex h-4 w-4 items-center justify-center rounded-full" style="background:var(--accent)">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" style="color:var(--primary)"><polyline points="20 6 9 17 4 12"/></svg>
+            </span>
+            <span>{{ f }}</span>
+          </li>
+          {% endfor %}
+        </ul>
+        <a href="/pricing" class="btn-primary mt-7">Start 7-Day Free Trial →</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+{# ═════════ 10. TESTIMONIALS ═════════ #}
+<section class="border-t py-20 lg:py-28" style="border-color:var(--border)">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
+      <div class="max-w-2xl">
+        <p class="text-sm font-medium uppercase tracking-wider" style="color:var(--primary)">Members</p>
+        <h2 class="mt-3 text-balance text-3xl font-semibold tracking-tight sm:text-4xl">Trusted by {{ site_stats.members }} members.</h2>
+      </div>
+      <div class="flex items-center gap-2">
+        <div class="flex" aria-hidden="true">
+          {% for _ in range(5) %}<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="color:var(--primary)"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>{% endfor %}
+        </div>
+        <span class="text-sm" style="color:var(--muted)">4.9 average · 312 reviews</span>
+      </div>
+    </div>
+
+    <div class="mt-10 grid gap-4 md:grid-cols-3">
+      {% for initials, name, role, gain, quote in [
+        ('MR','Michael R.','Ex-Portfolio Manager','+41%',"Textbook institutional methodology. Alerts hit before my coffee, trade's done by noon. Nothing to second-guess."),
+        ('SK','Sarah K.',  'Software Engineer',   '+29%',"Zero finance background. The alerts are so clear I just enter, set stops, and walk away. Total transparency."),
+        ('LC','Linda C.',  'Family Office',       '+22%',"We allocate across three family portfolios. Every trade is public and auditable. That's rare in this industry."),
+      ] %}
+      <figure class="flex flex-col rounded-xl border p-6" style="border-color:var(--border);background:var(--card)">
+        <div class="flex" aria-hidden="true">
+          {% for _ in range(5) %}<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="color:var(--primary)"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>{% endfor %}
+        </div>
+        <blockquote class="mt-4 flex-1 text-sm leading-relaxed" style="color:rgba(240,245,243,0.9)">"{{ quote }}"</blockquote>
+        <figcaption class="mt-5 flex items-center gap-3 border-t pt-4" style="border-color:var(--border)">
+          <span class="flex h-10 w-10 items-center justify-center rounded-full font-mono text-sm font-semibold"
+                style="background:var(--accent);color:var(--primary)">{{ initials }}</span>
+          <div class="flex-1">
+            <p class="text-sm font-medium">{{ name }}</p>
+            <p class="text-xs" style="color:var(--muted)">{{ role }}</p>
+          </div>
+          <span class="font-mono text-sm font-semibold" style="color:var(--primary)">{{ gain }}</span>
+        </figcaption>
+      </figure>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{# ═════════ 11. CTA FOOTER ═════════ #}
+<section class="relative overflow-hidden border-t" style="border-color:var(--border)">
+  <div class="absolute -bottom-40 left-1/2 h-[420px] w-[760px] -translate-x-1/2 rounded-full blur-[140px]"
+       style="background:rgba(58,224,122,0.15)" aria-hidden="true"></div>
+  <div class="relative mx-auto max-w-3xl px-4 py-20 text-center sm:px-6 lg:py-28">
+    <h2 class="text-balance text-3xl font-semibold tracking-tight sm:text-4xl">Get the daily briefing.</h2>
+    <p class="mx-auto mt-4 max-w-xl text-pretty leading-relaxed" style="color:var(--muted)">
+      Five minutes before the open. Catalysts, levels, vol regime, and our trade results — every weekday at 6:00 AM ET. Free.
     </p>
-
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% for cat, msg in messages %}
-      <div class="max-w-md mx-auto mb-4 px-5 py-3 rounded-lg text-sm {% if cat=='error' %}bg-red-900 text-red-300 border border-red-800{% else %}bg-green-900 text-green-300 border border-green-800{% endif %}">{{ msg }}</div>
+      <div class="mx-auto mt-6 max-w-md rounded-lg px-5 py-3 text-sm"
+           style="background:{{ 'rgba(239,68,68,0.15)' if cat=='error' else 'var(--accent)' }};color:{{ 'var(--destructive)' if cat=='error' else 'var(--primary)' }}">{{ msg }}</div>
       {% endfor %}
     {% endwith %}
-
-    <form action="/newsletter/subscribe" method="POST" class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+    <form action="/newsletter/subscribe" method="POST" class="mx-auto mt-8 flex max-w-md flex-col gap-3 sm:flex-row">
       <input type="hidden" name="source" value="homepage">
-      <input type="email" name="email" placeholder="your@email.com" required
-             class="flex-1 px-4 py-3 rounded-lg text-sm text-white" style="background:#0a0f1e;border:1px solid #1e2d45;outline:none">
-      <button type="submit" class="btn-primary text-sm whitespace-nowrap">Subscribe Free →</button>
+      <input type="email" name="email" placeholder="you@email.com" required
+             class="h-12 flex-1 rounded-md border px-4 text-sm outline-none"
+             style="border-color:var(--border);background:var(--card);color:var(--fg)">
+      <button type="submit" class="btn-primary h-12 px-6">Subscribe Free →</button>
     </form>
-    <p class="text-xs text-slate-600 mt-4">
-      No spam · One-click unsubscribe ·
-      <a href="/pricing" class="hover:text-green-400">or start a 7-day trial →</a>
-    </p>
+    <p class="mt-3 text-xs" style="color:var(--muted)">No spam · One-click unsubscribe · or <a href="/pricing" class="hover:underline" style="color:var(--primary)">start a 7-day trial</a></p>
   </div>
 </section>
 
-<!-- ══ AS DISCUSSED IN — greyed brand icons ══ -->
-<section class="py-10 px-6 border-t border-dark-border">
-  <div class="max-w-4xl mx-auto text-center">
-    <p class="text-xs text-slate-600 uppercase tracking-widest mb-6">As discussed across trading communities</p>
-    <div class="flex flex-wrap items-center justify-center gap-x-10 gap-y-5" style="filter:grayscale(1);opacity:0.45">
-      <!-- Reddit -->
-      <svg height="26" viewBox="0 0 24 24" fill="#94a3b8" aria-label="Reddit"><path d="M12 0A12 12 0 000 12a12 12 0 0012 12 12 12 0 0012-12A12 12 0 0012 0zm5.01 14.04c.02.14.03.28.03.43 0 2.18-2.54 3.95-5.67 3.95s-5.67-1.77-5.67-3.95c0-.15.01-.29.03-.43a1.36 1.36 0 01.66-2.55c.34 0 .65.13.88.34a4.5 4.5 0 012.45-.78l.46-2.18a.3.3 0 01.35-.23l1.53.33a.96.96 0 11-.14.6l-1.36-.29-.41 1.94c.91.04 1.74.32 2.4.77.23-.21.53-.34.87-.34a1.36 1.36 0 01.66 2.55zm-6.6.69a.84.84 0 100-1.68.84.84 0 000 1.68zm3.18 1.78c-.36.36-1.11.49-1.59.49s-1.23-.13-1.59-.49a.21.21 0 00-.3.3c.57.57 1.66.61 1.89.61.23 0 1.32-.04 1.89-.61a.21.21 0 10-.3-.3zm-.18-1.78a.84.84 0 100-1.68.84.84 0 000 1.68z"/></svg>
-      <!-- X / Twitter -->
-      <svg height="22" viewBox="0 0 24 24" fill="#94a3b8" aria-label="X"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-      <!-- Discord -->
-      <svg height="22" viewBox="0 0 24 24" fill="#94a3b8" aria-label="Discord"><path d="M20.317 4.37a19.79 19.79 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.74 19.74 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028 14.09 14.09 0 001.226-1.994.076.076 0 00-.041-.106 13.1 13.1 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.3 12.3 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.84 19.84 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03zM8.02 15.33c-1.182 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
-      <!-- StockTwits wordmark (stylized) -->
-      <span class="font-bold text-lg text-slate-400 tracking-tight">StockTwits</span>
-      <!-- TradingView wordmark -->
-      <span class="font-bold text-lg text-slate-400 tracking-tight">TradingView</span>
-    </div>
-  </div>
-</section>
-
-<!-- ══ SECURITY BADGES — single row, bottom ══ -->
-<section class="py-8 px-6 border-t border-dark-border">
-  <div class="max-w-5xl mx-auto overflow-x-auto">
-    <div class="flex items-center justify-center gap-3 min-w-max mx-auto">
-      {% set ic = {
-        'lock':   '<rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
-        'shield': '<path d="M12 3l8 3v6c0 4.5-3 7.5-8 9-5-1.5-8-4.5-8-9V6z"/>',
-        'card':   '<rect x="2.5" y="5" width="19" height="14" rx="2"/><path d="M2.5 9.5h19"/>',
-        'key':    '<circle cx="8" cy="14" r="4"/><path d="M11 11l8-8M16 4l3 3M14 6l2 2"/>',
-        'noeye':  '<path d="M3 3l18 18"/><path d="M10.6 10.6a2 2 0 0 0 2.8 2.8"/><path d="M9.4 5.2A9 9 0 0 1 21 12a16 16 0 0 1-2.4 3.2M6.3 6.3A16 16 0 0 0 3 12a9 9 0 0 0 12 5.7"/>'
-      } %}
-      {% for key, label in [
-        ('lock','256-bit SSL'),
-        ('shield','SOC 2 Infra'),
-        ('card','PCI-DSS'),
-        ('key','bcrypt Secured'),
-        ('noeye','No Data Selling')
-      ] %}
-      <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs text-slate-400 whitespace-nowrap flex-shrink-0" style="background:#0d1829;border:1px solid #1e2d45">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">{{ ic[key]|safe }}</svg>{{ label }}
-      </span>
-      {% endfor %}
-    </div>
-  </div>
-</section>
-
+{# ── ROI calculator script ── #}
 <script>
-// ── ROI Calculator ──────────────────────────────────────────────────────────
 (function(){
   var acct = document.getElementById('roi-acct');
   var risk = document.getElementById('roi-risk');
@@ -497,5 +503,4 @@
   calc();
 })();
 </script>
-
 {% endblock %}
