@@ -48,7 +48,14 @@
   <div class="card overflow-hidden mb-8">
     <div class="px-6 py-4 border-b border-dark-border flex items-center justify-between">
       <h2 class="font-semibold text-white">Live Trades</h2>
-      <span class="text-xs text-slate-500">{{ live_trades|length }} trades · entry, exit, P&L, member lots & alerts</span>
+      <div class="flex items-center gap-3">
+        <span class="text-xs text-slate-500">{{ live_trades|length }} trades · entry, exit, P&L, member lots & alerts</span>
+        <form method="POST" action="/admin/dedupe-trades" style="display:inline"
+              onsubmit="return confirm('Collapse duplicate trade rows (same ticker/trade/date)? Keeps the oldest of each set.');">
+          <button type="submit" class="px-3 py-1 rounded text-xs font-semibold transition-colors"
+                  style="background:#1a1a2e;color:#fbbf24;border:1px solid #2d2d5e">Dedupe</button>
+        </form>
+      </div>
     </div>
     <div class="overflow-x-auto">
       <table class="w-full text-sm">

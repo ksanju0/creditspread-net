@@ -826,7 +826,7 @@ def sitemap():
 def robots():
     return "User-agent: *\nAllow: /\nSitemap: https://creditspread.net/sitemap.xml\n", 200, {'Content-Type': 'text/plain'}
 
-APP_VERSION = 'v23-pwchange'  # bump to confirm deploys
+APP_VERSION = 'v24-dedupe-qqq'  # bump to confirm deploys
 
 @app.route('/api/health')
 def health():
@@ -877,7 +877,19 @@ def api_trade_entry():
         key = str(d.get('trade_key', ''))
         if key and LiveTrade.query.filter_by(trade_key=key).first():
             return jsonify({'ok': True, 'note': 'already recorded'})
-        ticker   = d.get('ticker', 'SPX')
+        ticker    = d.get('ticker', 'SPX')
+        trade_str = d.get('trade', '')
+        # ── Webapp-level dedup: same (ticker, trade, date) already taken today? ──
+        if trade_str:
+            from sqlalchemy import func
+            today = datetime.utcnow().date()
+            dupe = LiveTrade.query.filter(
+                LiveTrade.ticker == ticker,
+                LiveTrade.trade == trade_str,
+                func.date(LiveTrade.entry_time) == today,
+            ).first()
+            if dupe:
+                return jsonify({'ok': True, 'note': 'duplicate suppressed', 'existing_id': dupe.id})
         trade_str = d.get('trade', '')
         # Normalize to STO format if a bare strike string arrives
         if trade_str and not trade_str.upper().startswith('STO'):
@@ -1074,6 +1086,29 @@ def admin_newsletter_send():
     res = newsletter_lib.send_daily(app, TRADES_DB, Subscriber)
     flash(f"Newsletter sent: {res['sent']} delivered · {res['failed']} failed · {res['total']} total subscribers.",
           'success' if res['failed'] == 0 else 'error')
+    return redirect(url_for('admin'))
+
+@app.route('/admin/dedupe-trades', methods=['POST'])
+@login_required
+def admin_dedupe_trades():
+    """Collapse duplicate LiveTrade rows: same (ticker, trade, date) → keep oldest, delete rest."""
+    if not challenge_ok(current_user.email):
+        return redirect(url_for('member_dashboard'))
+    from sqlalchemy import func
+    # Find groups with duplicates
+    rows = LiveTrade.query.order_by(LiveTrade.entry_time.asc()).all()
+    seen = {}
+    deleted = 0
+    for r in rows:
+        if not r.entry_time:
+            continue
+        key = (r.ticker, r.trade, r.entry_time.date())
+        if key in seen:
+            db.session.delete(r); deleted += 1
+        else:
+            seen[key] = r.id
+    db.session.commit()
+    flash(f'Removed {deleted} duplicate trade row(s).', 'success' if deleted else 'error')
     return redirect(url_for('admin'))
 
 @app.route('/admin/delete-subscriber/<int:sub_id>', methods=['POST'])
