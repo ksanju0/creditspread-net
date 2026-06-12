@@ -1,0 +1,16 @@
+services:
+  creditspread:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      - PORT=8000
+    expose:
+      - "8000"
+    networks: [web]
+
+networks:
+  # Shared network with the iprepgenius stack (Caddy reverse-proxy + Postgres live here).
+  web:
+    external: true
+    name: iprepgenius_web
