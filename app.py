@@ -1036,7 +1036,8 @@ def api_log_alert():
 # ── admin ─────────────────────────────────────────────────────────────────────
 
 def challenge_ok(email):
-    return email == os.getenv('ADMIN_EMAIL', 'clist2013@gmail.com')
+    admins = [e.strip().lower() for e in os.getenv('ADMIN_EMAIL', 'clist2013@gmail.com').split(',') if e.strip()]
+    return (email or '').lower() in admins
 
 @app.route('/admin')
 @login_required
